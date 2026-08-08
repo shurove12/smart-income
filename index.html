@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Income</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, "Noto Sans Bengali", sans-serif;
+    }
+
+    body {
+      background: #f5f7fb;
+      color: #111827;
+      padding-bottom: 90px;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #2563eb, #9333ea);
+      color: white;
+      padding: 25px 20px 30px;
+      border-radius: 0 0 25px 25px;
+    }
+
+    .brand {
+      font-size: 25px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .welcome {
+      font-size: 15px;
+      opacity: .9;
+    }
+
+    .balance-card {
+      background: rgba(255,255,255,.16);
+      margin-top: 22px;
+      padding: 20px;
+      border-radius: 18px;
+    }
+
+    .balance-title {
+      font-size: 15px;
+      opacity: .9;
+    }
+
+    .balance {
+      font-size: 32px;
+      font-weight: bold;
+      margin-top: 8px;
+    }
+
+    .container {
+      padding: 18px;
+      max-width: 650px;
+      margin: auto;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 5px;
+    }
+
+    .stat {
+      background: white;
+      padding: 18px;
+      border-radius: 18px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.05);
+    }
+
+    .stat-title {
+      color: #6b7280;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 21px;
+      font-weight: bold;
+    }
+
+    .section {
+      background: white;
+      padding: 20px;
+      margin-top: 18px;
+      border-radius: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.05);
+    }
+
+    .section-title {
+      font-size: 21px;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .quick-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .action {
+      border: 1px solid #dbeafe;
+      background: #eff6ff;
+      padding: 22px 10px;
+      border-radius: 15px;
+      text-align: center;
+      color: #2563eb;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .action:nth-child(2) {
+      background: #ecfdf5;
+      border-color: #d1fae5;
+      color: #16a34a;
+    }
+
+    .task {
+      border: 1px solid #e5e7eb;
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .task-icon {
+      font-size: 35px;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .task-title {
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .task-reward {
+      text-align: center;
+      color: #6b7280;
+      margin: 8px 0 15px;
+    }
+
+    .button {
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 17px;
+      font-weight: bold;
+      color: white;
+      background: #2563eb;
+      cursor: pointer;
+    }
+
+    .referral {
+      background: linear-gradient(135deg, #8b5cf6, #ec4899);
+      color: white;
+      padding: 22px;
+      border-radius: 20px;
+      margin-top: 18px;
+    }
+
+    .referral h2 {
+      font-size: 21px;
+      margin-bottom: 8px;
+    }
+
+    .referral p {
+      opacity: .95;
+      margin-bottom: 15px;
+    }
+
+    .referral-box {
+      background: rgba(255,255,255,.18);
+      padding: 13px;
+      border-radius: 12px;
+      font-size: 13px;
+      word-break: break-all;
+    }
+
+    .copy-button {
+      margin-top: 12px;
+      background: white;
+      color: #7c3aed;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 72px;
+      background: white;
+      border-top: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .nav-item {
+      text-align: center;
+      color: #6b7280;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .nav-icon {
+      display: block;
+      font-size: 23px;
+      margin-bottom: 3px;
+    }
+
+    .nav-item.active {
+      color: #2563eb;
+      font-weight: bold;
+    }
+
+    @media (min-width: 600px) {
+      .header {
+        border-radius: 0 0 30px 30px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="header">
+    <div class="brand">Smart Income</div>
+    <div class="welcome">👋 স্বাগতম! স্মার্টভাবে কাজ করুন ও রিওয়ার্ড সংগ্রহ করুন।</div>
+
+    <div class="balance-card">
+      <div class="balance-title">মেইন ব্যালেন্স</div>
+      <div class="balance">৳ 0.00</div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <div class="stats">
+
+      <div class="stat">
+        <div class="stat-title">📋 আজকের Tasks</div>
+        <div class="stat-value">0 / 10</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-title">👥 মোট Referral</div>
+        <div class="stat-value">0</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-title">📺 মোট Tasks</div>
+        <div class="stat-value">0</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-title">💰 মোট Income</div>
+        <div class="stat-value">৳ 0.00</div>
+      </div>
+
+    </div>
+
+    <section class="section">
+      <div class="section-title">দ্রুত একশন</div>
+
+      <div class="quick-actions">
+
+        <div class="action" onclick="showMessage('Tasks পেজ খুব শীঘ্রই আসছে')">
+          📋<br>
+          Task করুন
+        </div>
+
+        <div class="action" onclick="showMessage('Withdrawal পেজ খুব শীঘ্রই আসছে')">
+          💰<br>
+          Withdraw
+        </div>
+
+      </div>
+    </section>
+
+    <section class="section">
+
+      <div class="section-title">কাজের ভিডিও দেখুন</div>
+
+      <div class="task">
+
+        <div class="task-icon">🎬</div>
+
+        <div class="task-title">
+          কাজের নিয়ম শিখুন
+        </div>
+
+        <div class="task-reward">
+          Smart Income কীভাবে ব্যবহার করবেন
+        </div>
+
+        <button class="button"
+          onclick="showMessage('Tutorial ভিডিও এখানে যুক্ত হবে')">
+          কাজের ভিডিও দেখুন
+        </button>
+
+      </div>
+
+    </section>
+
+    <div class="referral">
+
+      <h2>👥 বন্ধুদের Referral করুন</h2>
+
+      <p>
+        আপনার Referral Link শেয়ার করুন।
+      </p>
+
+      <div class="referral-box" id="referralLink">
+        SmartIncomeBot Referral Link
+      </div>
+
+      <button class="copy-button" onclick="copyReferral()">
+        📋 কপি করুন
+      </button>
+
+    </div>
+
+  </main>
+
+  <nav class="bottom-nav">
+
+    <div class="nav-item active">
+      <span class="nav-icon">🏠</span>
+      হোম
+    </div>
+
+    <div class="nav-item">
+      <span class="nav-icon">☷</span>
+      টাস্ক
+    </div>
+
+    <div class="nav-item">
+      <span class="nav-icon">👥</span>
+      রেফার
+    </div>
+
+    <div class="nav-item">
+      <span class="nav-icon">💰</span>
+      Wallet
+    </div>
+
+    <div class="nav-item">
+      <span class="nav-icon">👤</span>
+      প্রোফাইল
+    </div>
+
+  </nav>
+
+  <script>
+
+    function showMessage(message) {
+      alert(message);
+    }
+
+    function copyReferral() {
+
+      const link =
+        "https://t.me/SmartIncomeBot?startapp=ref123456";
+
+      navigator.clipboard.writeText(link)
+        .then(() => {
+          alert("Referral Link কপি হয়েছে!");
+        })
+        .catch(() => {
+          alert("Link কপি করা যায়নি।");
+        });
+    }
+
+  </script>
+
+</body>
+  </html>
