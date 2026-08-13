@@ -3,391 +3,274 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart Income</title>
+  <title>Smart Income - Official</title>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, "Noto Sans Bengali", sans-serif;
-    }
+    :root { --primary: #2563eb; --secondary: #7e22ce; --success: #10b981; --bg: #f8fafc; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+    body { background: var(--bg); color: #334155; padding-bottom: 80px; }
 
-    body {
-      background: #f5f7fb;
-      color: #111827;
-      padding-bottom: 90px;
-    }
+    /* অ্যাড এরিয়া */
+    .ad-slot { background: #e2e8f0; text-align: center; font-size: 10px; color: #94a3b8; padding: 5px; min-height: 50px; }
 
-    .header {
-      background: linear-gradient(135deg, #2563eb, #9333ea);
-      color: white;
-      padding: 25px 20px 30px;
-      border-radius: 0 0 25px 25px;
-    }
+    /* ডিজাইন এলিমেন্ট */
+    .header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 25px 20px; border-radius: 0 0 30px 30px; position: relative; }
+    .balance-card { background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); padding: 15px; border-radius: 20px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.2); }
+    
+    .container { padding: 15px; max-width: 500px; margin: auto; }
+    .card { background: white; padding: 15px; border-radius: 20px; margin-bottom: 15px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+    
+    .grid-menu { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .menu-item { background: white; padding: 20px; border-radius: 15px; text-align: center; cursor: pointer; transition: 0.2s; border-bottom: 4px solid #ddd; }
+    .menu-item:active { transform: scale(0.95); }
+    .menu-item i { font-size: 28px; display: block; margin-bottom: 8px; }
 
-    .brand {
-      font-size: 25px;
-      font-weight: bold;
-      margin-bottom: 8px;
-    }
+    /* টাস্ক ও স্পিন */
+    .task-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: white; border-radius: 12px; margin-bottom: 8px; border-left: 5px solid var(--primary); }
+    .spin-container { text-align: center; padding: 30px; }
+    .spin-wheel { width: 200px; height: 200px; border-radius: 50%; border: 5px solid var(--primary); margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-weight: bold; background: white; }
 
-    .welcome {
-      font-size: 15px;
-      opacity: .9;
-    }
+    /* বটম নেভিগেশন */
+    .nav-bar { position: fixed; bottom: 0; width: 100%; background: white; height: 70px; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #e2e8f0; }
+    .nav-link { color: #94a3b8; font-size: 12px; text-decoration: none; text-align: center; cursor: pointer; }
+    .nav-link.active { color: var(--primary); font-weight: bold; }
 
-    .balance-card {
-      background: rgba(255,255,255,.16);
-      margin-top: 22px;
-      padding: 20px;
-      border-radius: 18px;
-    }
+    /* পপআপ নোটিশ */
+    #notice-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 9999; }
+    .modal-content { background: white; padding: 25px; border-radius: 25px; width: 85%; max-width: 400px; text-align: center; }
 
-    .balance-title {
-      font-size: 15px;
-      opacity: .9;
-    }
-
-    .balance {
-      font-size: 32px;
-      font-weight: bold;
-      margin-top: 8px;
-    }
-
-    .container {
-      padding: 18px;
-      max-width: 650px;
-      margin: auto;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-top: 5px;
-    }
-
-    .stat {
-      background: white;
-      padding: 18px;
-      border-radius: 18px;
-      box-shadow: 0 2px 10px rgba(0,0,0,.05);
-    }
-
-    .stat-title {
-      color: #6b7280;
-      font-size: 14px;
-      margin-bottom: 8px;
-    }
-
-    .stat-value {
-      font-size: 21px;
-      font-weight: bold;
-    }
-
-    .section {
-      background: white;
-      padding: 20px;
-      margin-top: 18px;
-      border-radius: 20px;
-      box-shadow: 0 2px 10px rgba(0,0,0,.05);
-    }
-
-    .section-title {
-      font-size: 21px;
-      font-weight: bold;
-      margin-bottom: 15px;
-    }
-
-    .quick-actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .action {
-      border: 1px solid #dbeafe;
-      background: #eff6ff;
-      padding: 22px 10px;
-      border-radius: 15px;
-      text-align: center;
-      color: #2563eb;
-      font-weight: bold;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    .action:nth-child(2) {
-      background: #ecfdf5;
-      border-color: #d1fae5;
-      color: #16a34a;
-    }
-
-    .task {
-      border: 1px solid #e5e7eb;
-      border-radius: 18px;
-      padding: 18px;
-    }
-
-    .task-icon {
-      font-size: 35px;
-      text-align: center;
-      margin-bottom: 8px;
-    }
-
-    .task-title {
-      text-align: center;
-      font-size: 20px;
-      font-weight: bold;
-    }
-
-    .task-reward {
-      text-align: center;
-      color: #6b7280;
-      margin: 8px 0 15px;
-    }
-
-    .button {
-      width: 100%;
-      border: none;
-      border-radius: 12px;
-      padding: 14px;
-      font-size: 17px;
-      font-weight: bold;
-      color: white;
-      background: #2563eb;
-      cursor: pointer;
-    }
-
-    .referral {
-      background: linear-gradient(135deg, #8b5cf6, #ec4899);
-      color: white;
-      padding: 22px;
-      border-radius: 20px;
-      margin-top: 18px;
-    }
-
-    .referral h2 {
-      font-size: 21px;
-      margin-bottom: 8px;
-    }
-
-    .referral p {
-      opacity: .95;
-      margin-bottom: 15px;
-    }
-
-    .referral-box {
-      background: rgba(255,255,255,.18);
-      padding: 13px;
-      border-radius: 12px;
-      font-size: 13px;
-      word-break: break-all;
-    }
-
-    .copy-button {
-      margin-top: 12px;
-      background: white;
-      color: #7c3aed;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 10px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 72px;
-      background: white;
-      border-top: 1px solid #e5e7eb;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      z-index: 100;
-    }
-
-    .nav-item {
-      text-align: center;
-      color: #6b7280;
-      font-size: 12px;
-      cursor: pointer;
-    }
-
-    .nav-icon {
-      display: block;
-      font-size: 23px;
-      margin-bottom: 3px;
-    }
-
-    .nav-item.active {
-      color: #2563eb;
-      font-weight: bold;
-    }
-
-    @media (min-width: 600px) {
-      .header {
-        border-radius: 0 0 30px 30px;
-      }
-    }
+    .btn-main { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 10px; font-weight: bold; width: 100%; cursor: pointer; }
+    .btn-tg { background: #0088cc; color: white; text-decoration: none; display: block; padding: 10px; border-radius: 10px; margin-top: 10px; font-weight: bold; }
   </style>
 </head>
-
 <body>
 
-  <header class="header">
-    <div class="brand">Smart Income</div>
-    <div class="welcome">👋 স্বাগতম! স্মার্টভাবে কাজ করুন ও রিওয়ার্ড সংগ্রহ করুন।</div>
+  <!-- Notice Modal -->
+  <div id="notice-modal">
+    <div class="modal-content">
+      <h2 id="notice-title">গুরুত্বপূর্ণ নোটিশ</h2>
+      <p id="notice-text" style="margin: 15px 0; color: #64748b;">আমাদের অ্যাপে কাজ করার সময় অবশ্যই ভিপিএন ইউএসএ সার্ভার কানেক্ট করবেন। ধন্যবাদ।</p>
+      <button class="btn-main" onclick="closeNotice()">ঠিক আছে</button>
+      <a href="https://t.me/your_link" class="btn-tg">টেলিগ্রাম গ্রুপে জয়েন করুন</a>
+    </div>
+  </div>
 
+  <div class="ad-slot">Top Banner Ad (Adsterra/Monetag)</div>
+
+  <header class="header">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <p style="font-size: 14px; opacity: 0.9;">স্বাগতম 👋</p>
+        <h3 id="user-display-name">লোড হচ্ছে...</h3>
+      </div>
+      <div style="text-align: right;">
+        <p style="font-size: 12px; opacity: 0.9;">ইউজার লেভেল</p>
+        <b id="user-level-badge">Level 1</b>
+      </div>
+    </div>
     <div class="balance-card">
-      <div class="balance-title">মেইন ব্যালেন্স</div>
-      <div class="balance">৳ 0.00</div>
+      <p style="font-size: 14px;">আপনার মোট ব্যালেন্স</p>
+      <h1 style="font-size: 32px;">৳ <span id="balance">0.00</span></h1>
     </div>
   </header>
 
   <main class="container">
-
-    <div class="stats">
-
-      <div class="stat">
-        <div class="stat-title">📋 আজকের Tasks</div>
-        <div class="stat-value">0 / 10</div>
+    
+    <!-- Home Page -->
+    <div id="home-page" class="page">
+      <div class="grid-menu">
+        <div class="menu-item" onclick="dailyBonus()"><i>🎁</i>ডেইলি বোনাস</div>
+        <div class="menu-item" onclick="navigateTo('spin-page')"><i>🎡</i>লাকি স্পিন</div>
+        <div class="menu-item" onclick="navigateTo('task-page')"><i>🎯</i>টাস্ক করুন</div>
+        <div class="menu-item" onclick="alert('আপনার রেফার লিঙ্ক: t.me/SmartBot?start=12345')"><i>👥</i>রেফার করুন</div>
       </div>
-
-      <div class="stat">
-        <div class="stat-title">👥 মোট Referral</div>
-        <div class="stat-value">0</div>
+      
+      <div class="card" style="margin-top: 15px; border-left: 5px solid #f59e0b;">
+        <h4>🏆 লিডারবোর্ড</h4>
+        <p style="font-size: 13px; color: #64748b;">সেরা ১০ জন আর্নারদের তালিকা দেখুন</p>
       </div>
-
-      <div class="stat">
-        <div class="stat-title">📺 মোট Tasks</div>
-        <div class="stat-value">0</div>
-      </div>
-
-      <div class="stat">
-        <div class="stat-title">💰 মোট Income</div>
-        <div class="stat-value">৳ 0.00</div>
-      </div>
-
     </div>
 
-    <section class="section">
-      <div class="section-title">দ্রুত একশন</div>
-
-      <div class="quick-actions">
-
-        <div class="action" onclick="showMessage('Tasks পেজ খুব শীঘ্রই আসছে')">
-          📋<br>
-          Task করুন
-        </div>
-
-        <div class="action" onclick="showMessage('Withdrawal পেজ খুব শীঘ্রই আসছে')">
-          💰<br>
-          Withdraw
-        </div>
-
+    <!-- Task Page -->
+    <div id="task-page" class="page" style="display: none;">
+      <h3 style="margin-bottom: 15px;">ডেইলি টাস্ক (0/10)</h3>
+      <div id="task-list">
+        <!-- টাস্ক আইটেমগুলো এখানে আসবে -->
       </div>
-    </section>
+    </div>
 
-    <section class="section">
-
-      <div class="section-title">কাজের ভিডিও দেখুন</div>
-
-      <div class="task">
-
-        <div class="task-icon">🎬</div>
-
-        <div class="task-title">
-          কাজের নিয়ম শিখুন
-        </div>
-
-        <div class="task-reward">
-          Smart Income কীভাবে ব্যবহার করবেন
-        </div>
-
-        <button class="button"
-          onclick="showMessage('Tutorial ভিডিও এখানে যুক্ত হবে')">
-          কাজের ভিডিও দেখুন
-        </button>
-
+    <!-- Spin Page -->
+    <div id="spin-page" class="page" style="display: none;">
+      <div class="card spin-container">
+        <h3>স্পিন করে ইনকাম করুন</h3>
+        <div class="spin-wheel" id="wheel">Spin Me!</div>
+        <button class="btn-main" onclick="startSpin()">স্পিন শুরু করুন</button>
+        <p style="margin-top: 10px; font-size: 12px; color: #64748b;">প্রতি স্পিনে পাবেন ০.১০ - ০.৫০ টাকা</p>
       </div>
+    </div>
 
-    </section>
-
-    <div class="referral">
-
-      <h2>👥 বন্ধুদের Referral করুন</h2>
-
-      <p>
-        আপনার Referral Link শেয়ার করুন।
-      </p>
-
-      <div class="referral-box" id="referralLink">
-        SmartIncomeBot Referral Link
+    <!-- Wallet Page -->
+    <div id="wallet-page" class="page" style="display: none;">
+      <div class="card">
+        <h3>উইথড্র রিকোয়েস্ট</h3>
+        <div style="margin-top: 15px;">
+          <label style="font-size: 14px;">পেমেন্ট মেথড</label>
+          <select id="pay-method" style="width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px;">
+            <option value="bkash">বিকাশ (Bkash)</option>
+            <option value="nagad">নগদ (Nagad)</option>
+            <option value="rocket">রকেট (Rocket)</option>
+          </select>
+          <input type="number" id="pay-number" placeholder="আপনার নম্বর" style="width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #ddd;">
+          <input type="number" id="pay-amount" placeholder="টাকার পরিমাণ (মিন ৫০)" style="width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #ddd;">
+          <button class="btn-main" style="background: var(--success);" onclick="requestWithdraw()">টাকা তুলুন</button>
+        </div>
       </div>
+    </div>
 
-      <button class="copy-button" onclick="copyReferral()">
-        📋 কপি করুন
-      </button>
-
+    <!-- Profile Page -->
+    <div id="profile-page" class="page" style="display: none;">
+      <div class="card" style="text-align: center;">
+        <img src="https://ui-avatars.com/api/?name=User&background=random" style="width: 80px; border-radius: 50%;">
+        <h3 id="prof-name">ইউজার নেম</h3>
+        <p id="prof-id" style="font-size: 12px; color: #64748b;">ID: 882910</p>
+      </div>
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee;">
+          <span>মোট রেফার</span><b id="prof-ref">0</b>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee;">
+          <span>মোট টাস্ক</span><b id="prof-task">0</b>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee;">
+          <span>লেভেল</span><b id="prof-level">1</b>
+        </div>
+      </div>
     </div>
 
   </main>
 
-  <nav class="bottom-nav">
+  <div class="ad-slot" style="position: fixed; bottom: 70px; width: 100%;">Bottom Banner Ad</div>
 
-    <div class="nav-item active">
-      <span class="nav-icon">🏠</span>
-      হোম
-    </div>
-
-    <div class="nav-item">
-      <span class="nav-icon">☷</span>
-      টাস্ক
-    </div>
-
-    <div class="nav-item">
-      <span class="nav-icon">👥</span>
-      রেফার
-    </div>
-
-    <div class="nav-item">
-      <span class="nav-icon">💰</span>
-      Wallet
-    </div>
-
-    <div class="nav-item">
-      <span class="nav-icon">👤</span>
-      প্রোফাইল
-    </div>
-
+  <nav class="nav-bar">
+    <div class="nav-link active" onclick="navigateTo('home-page')"><i>🏠</i>হোম</div>
+    <div class="nav-link" onclick="navigateTo('task-page')"><i>📋</i>টাস্ক</div>
+    <div class="nav-link" onclick="navigateTo('wallet-page')"><i>💰</i>ওয়ালেট</div>
+    <div class="nav-link" onclick="navigateTo('profile-page')"><i>👤</i>প্রোফাইল</div>
   </nav>
 
   <script>
+    // --- 1. Firebase Initialize ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyDDH2aUaelHHLKXehWOgCA9JIDzZRZe6r8",
+      authDomain: "smartincome-bot.firebaseapp.com",
+      databaseURL: "https://smartincome-bot-default-rtdb.firebaseio.com",
+      projectId: "smartincome-bot",
+      storageBucket: "smartincome-bot.firebasestorage.app",
+      messagingSenderId: "245535730811",
+      appId: "1:245535730811:web:6d0dc7db74158adaff86de",
+      measurementId: "G-0488KWSSH5"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-    function showMessage(message) {
-      alert(message);
+    // --- 2. User State ---
+    let userID = "user_01"; // পরবর্তীতে এটি টেলিগ্রাম আইডি বা ইউনিক আইডি হবে
+    let currentUser = {
+      balance: 0.00,
+      tasks: 0,
+      refers: 0,
+      level: 1,
+      lastBonus: ""
+    };
+
+    // --- 3. ডাটাবেস থেকে ডেটা লোড ---
+    function loadUserData() {
+      db.ref('users/' + userID).on('value', (snapshot) => {
+        if (snapshot.exists()) {
+          currentUser = snapshot.val();
+          updateUI();
+        } else {
+          // নতুন ইউজার তৈরি
+          db.ref('users/' + userID).set(currentUser);
+        }
+      });
     }
 
-    function copyReferral() {
-
-      const link =
-        "https://t.me/SmartIncomeBot?startapp=ref123456";
-
-      navigator.clipboard.writeText(link)
-        .then(() => {
-          alert("Referral Link কপি হয়েছে!");
-        })
-        .catch(() => {
-          alert("Link কপি করা যায়নি।");
-        });
+    function updateUI() {
+      document.getElementById('balance').innerText = currentUser.balance.toFixed(2);
+      document.getElementById('user-display-name').innerText = "Abdur Rahman";
+      document.getElementById('prof-name').innerText = "Abdur Rahman";
+      document.getElementById('prof-ref').innerText = currentUser.refers;
+      document.getElementById('prof-task').innerText = currentUser.tasks;
+      document.getElementById('user-level-badge').innerText = "Level " + currentUser.level;
     }
+
+    // --- 4. নেভিগেশন ---
+    function navigateTo(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+      document.getElementById(pageId).style.display = 'block';
+      
+      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+      // এখানে ক্লিক করা আইটেমকে একটিভ করার কোড
+    }
+
+    // --- 5. স্পিন লজিক ---
+    function startSpin() {
+      alert("অ্যাড লোড হচ্ছে... (Monetag Interstitial)");
+      // অ্যাড দেখা শেষ হলে:
+      setTimeout(() => {
+        let win = (Math.random() * 0.5).toFixed(2);
+        updateBalance(parseFloat(win));
+        alert("অভিনন্দন! আপনি জিতেছেন ৳" + win);
+      }, 1500);
+    }
+
+    // --- 6. ডেইলি বোনাস ---
+    function dailyBonus() {
+      const today = new Date().toLocaleDateString();
+      if (currentUser.lastBonus === today) {
+        alert("আপনি আজকে ইতিমধ্যে বোনাস নিয়েছেন!");
+      } else {
+        updateBalance(1.00);
+        db.ref('users/' + userID).update({ lastBonus: today });
+        alert("ডেইলি বোনাস ১ টাকা যোগ করা হয়েছে!");
+      }
+    }
+
+    // --- 7. টাকা আপডেট ফাংশন ---
+    function updateBalance(amount) {
+      let newBalance = currentUser.balance + amount;
+      db.ref('users/' + userID).update({ balance: newBalance });
+    }
+
+    // উইথড্র রিকোয়েস্ট
+    function requestWithdraw() {
+      const amount = document.getElementById('pay-amount').value;
+      const num = document.getElementById('pay-number').value;
+      if(amount < 50) return alert("সর্বনিম্ন ৫০ টাকা হতে হবে");
+      
+      db.ref('withdraws').push({
+        userID: userID,
+        amount: amount,
+        number: num,
+        method: document.getElementById('pay-method').value,
+        status: 'pending'
+      });
+      alert("আপনার রিকোয়েস্ট সফল হয়েছে!");
+    }
+
+    // নোটিশ কন্ট্রোল
+    function closeNotice() { document.getElementById('notice-modal').style.display = 'none'; }
+    window.onload = () => { 
+      loadUserData();
+      setTimeout(() => { document.getElementById('notice-modal').style.display = 'flex'; }, 1000);
+    };
 
   </script>
 
 </body>
-  </html>
+</html>
