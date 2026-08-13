@@ -3,167 +3,153 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart Income - Official</title>
+  <title>Smart Income PRO</title>
 
-  <!-- Firebase SDKs -->
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
+  <!-- Adsterra Social Bar (ভিডিও অ্যাডের বিকল্প হিসেবে সেরা) -->
+  <script src="https://pl30829857.effectivecpmnetwork.com/4b/d7/30/4bd730cfb454d252a609a44ff22171c8.js"></script>
+
   <style>
-    :root { --primary: #2563eb; --secondary: #7e22ce; --success: #10b981; --bg: #f8fafc; }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-    body { background: var(--bg); color: #334155; padding-bottom: 80px; }
+    :root { --primary: #2563eb; --secondary: #7e22ce; --success: #10b981; --bg: #f1f5f9; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
+    body { background: var(--bg); color: #1e293b; padding-bottom: 80px; }
 
-    /* অ্যাড এরিয়া */
-    .ad-slot { background: #e2e8f0; text-align: center; font-size: 10px; color: #94a3b8; padding: 5px; min-height: 50px; }
+    /* অ্যাডস সেন্টার */
+    .ad-slot { display: flex; justify-content: center; margin: 10px 0; background: #fff; padding: 5px; border-radius: 10px; }
 
-    /* ডিজাইন এলিমেন্ট */
-    .header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 25px 20px; border-radius: 0 0 30px 30px; position: relative; }
-    .balance-card { background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); padding: 15px; border-radius: 20px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.2); }
-    
+    /* হেডার */
+    .header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 20px; border-radius: 0 0 25px 25px; display: flex; justify-content: space-between; align-items: center; }
+    .balance-card { background: rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 15px; text-align: center; border: 1px solid rgba(255,255,255,0.2); }
+
     .container { padding: 15px; max-width: 500px; margin: auto; }
-    .card { background: white; padding: 15px; border-radius: 20px; margin-bottom: 15px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-    
-    .grid-menu { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .menu-item { background: white; padding: 20px; border-radius: 15px; text-align: center; cursor: pointer; transition: 0.2s; border-bottom: 4px solid #ddd; }
-    .menu-item:active { transform: scale(0.95); }
-    .menu-item i { font-size: 28px; display: block; margin-bottom: 8px; }
+    .page { display: none; animation: fadeIn 0.3s; }
+    .page.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    /* টাস্ক ও স্পিন */
-    .task-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: white; border-radius: 12px; margin-bottom: 8px; border-left: 5px solid var(--primary); }
-    .spin-container { text-align: center; padding: 30px; }
-    .spin-wheel { width: 200px; height: 200px; border-radius: 50%; border: 5px solid var(--primary); margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-weight: bold; background: white; }
+    /* মেনু কার্ড */
+    .grid-menu { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .card { background: white; padding: 20px; border-radius: 18px; text-align: center; cursor: pointer; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-bottom: 4px solid #e2e8f0; }
+    .card i { font-size: 30px; display: block; margin-bottom: 10px; }
+
+    /* স্পিন হুইল */
+    .wheel-box { position: relative; width: 200px; height: 200px; border: 8px solid var(--primary); border-radius: 50%; margin: 20px auto; display: flex; align-items: center; justify-content: center; font-weight: bold; background: #fff; transition: transform 3s cubic-bezier(0.1, 0, 0.1, 1); }
+
+    /* টাস্ক ও ভিডিও লিস্ট */
+    .list-item { background: white; padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid var(--primary); }
+    .locked { opacity: 0.5; filter: grayscale(1); }
 
     /* বটম নেভিগেশন */
-    .nav-bar { position: fixed; bottom: 0; width: 100%; background: white; height: 70px; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #e2e8f0; }
-    .nav-link { color: #94a3b8; font-size: 12px; text-decoration: none; text-align: center; cursor: pointer; }
+    .nav-bar { position: fixed; bottom: 0; width: 100%; background: white; height: 70px; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #e2e8f0; z-index: 100; }
+    .nav-link { text-align: center; color: #64748b; font-size: 11px; text-decoration: none; cursor: pointer; }
     .nav-link.active { color: var(--primary); font-weight: bold; }
+    .nav-link i { font-size: 22px; display: block; }
 
-    /* পপআপ নোটিশ */
-    #notice-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 9999; }
-    .modal-content { background: white; padding: 25px; border-radius: 25px; width: 85%; max-width: 400px; text-align: center; }
-
-    .btn-main { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 10px; font-weight: bold; width: 100%; cursor: pointer; }
-    .btn-tg { background: #0088cc; color: white; text-decoration: none; display: block; padding: 10px; border-radius: 10px; margin-top: 10px; font-weight: bold; }
+    .btn-main { width: 100%; padding: 14px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; background: var(--primary); color: white; font-size: 16px; }
   </style>
 </head>
 <body>
 
-  <!-- Notice Modal -->
-  <div id="notice-modal">
-    <div class="modal-content">
-      <h2 id="notice-title">গুরুত্বপূর্ণ নোটিশ</h2>
-      <p id="notice-text" style="margin: 15px 0; color: #64748b;">আমাদের অ্যাপে কাজ করার সময় অবশ্যই ভিপিএন ইউএসএ সার্ভার কানেক্ট করবেন। ধন্যবাদ।</p>
-      <button class="btn-main" onclick="closeNotice()">ঠিক আছে</button>
-      <a href="https://t.me/your_link" class="btn-tg">টেলিগ্রাম গ্রুপে জয়েন করুন</a>
-    </div>
-  </div>
-
-  <div class="ad-slot">Top Banner Ad (Adsterra/Monetag)</div>
-
   <header class="header">
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-      <div>
-        <p style="font-size: 14px; opacity: 0.9;">স্বাগতম 👋</p>
-        <h3 id="user-display-name">লোড হচ্ছে...</h3>
-      </div>
-      <div style="text-align: right;">
-        <p style="font-size: 12px; opacity: 0.9;">ইউজার লেভেল</p>
-        <b id="user-level-badge">Level 1</b>
-      </div>
+    <div>
+      <p style="font-size: 12px;">স্বাগতম 👋</p>
+      <h3 id="top-user-name">ইউজার</h3>
     </div>
     <div class="balance-card">
-      <p style="font-size: 14px;">আপনার মোট ব্যালেন্স</p>
-      <h1 style="font-size: 32px;">৳ <span id="balance">0.00</span></h1>
+      <span style="font-size: 12px;">ব্যালেন্স</span>
+      <h2 id="top-balance">৳ 0.00</h2>
     </div>
   </header>
 
-  <main class="container">
+  <div class="container">
     
-    <!-- Home Page -->
-    <div id="home-page" class="page">
+    <!-- HOME PAGE -->
+    <div id="home" class="page active">
+      <div class="ad-slot">
+        <!-- Banner Ad -->
+        <script>atOptions={'key':'f70b806885d12defbb6515475012d220','format':'iframe','height':50,'width':320,'params':{}};</script>
+        <script src="https://www.highperformanceformat.com/f70b806885d12defbb6515475012d220/invoke.js"></script>
+      </div>
       <div class="grid-menu">
-        <div class="menu-item" onclick="dailyBonus()"><i>🎁</i>ডেইলি বোনাস</div>
-        <div class="menu-item" onclick="navigateTo('spin-page')"><i>🎡</i>লাকি স্পিন</div>
-        <div class="menu-item" onclick="navigateTo('task-page')"><i>🎯</i>টাস্ক করুন</div>
-        <div class="menu-item" onclick="alert('আপনার রেফার লিঙ্ক: t.me/SmartBot?start=12345')"><i>👥</i>রেফার করুন</div>
-      </div>
-      
-      <div class="card" style="margin-top: 15px; border-left: 5px solid #f59e0b;">
-        <h4>🏆 লিডারবোর্ড</h4>
-        <p style="font-size: 13px; color: #64748b;">সেরা ১০ জন আর্নারদের তালিকা দেখুন</p>
+        <div class="card" onclick="navigateTo('videos')"><i>📺</i>ডেইলি ভিডিও</div>
+        <div class="card" onclick="navigateTo('tasks')"><i>📋</i>টাস্ক করুন</div>
+        <div class="card" onclick="navigateTo('spin')"><i>🎡</i>লাকি স্পিন</div>
+        <div class="card" onclick="copyRefer()"><i>👥</i>রেফার করুন</div>
       </div>
     </div>
 
-    <!-- Task Page -->
-    <div id="task-page" class="page" style="display: none;">
-      <h3 style="margin-bottom: 15px;">ডেইলি টাস্ক (0/10)</h3>
-      <div id="task-list">
-        <!-- টাস্ক আইটেমগুলো এখানে আসবে -->
-      </div>
+    <!-- DAILY VIDEOS PAGE -->
+    <div id="videos" class="page">
+      <h3>ডেইলি ভিডিও (১০টি)</h3>
+      <p style="font-size: 12px; margin-bottom: 10px;">লেভেল ১ এর জন্য ১০টি ভিডিও দেখা বাধ্যতামূলক।</p>
+      <div id="video-list"></div>
     </div>
 
-    <!-- Spin Page -->
-    <div id="spin-page" class="page" style="display: none;">
-      <div class="card spin-container">
-        <h3>স্পিন করে ইনকাম করুন</h3>
-        <div class="spin-wheel" id="wheel">Spin Me!</div>
-        <button class="btn-main" onclick="startSpin()">স্পিন শুরু করুন</button>
-        <p style="margin-top: 10px; font-size: 12px; color: #64748b;">প্রতি স্পিনে পাবেন ০.১০ - ০.৫০ টাকা</p>
-      </div>
-    </div>
-
-    <!-- Wallet Page -->
-    <div id="wallet-page" class="page" style="display: none;">
+    <!-- SPIN PAGE -->
+    <div id="spin" class="page">
       <div class="card">
-        <h3>উইথড্র রিকোয়েস্ট</h3>
-        <div style="margin-top: 15px;">
-          <label style="font-size: 14px;">পেমেন্ট মেথড</label>
-          <select id="pay-method" style="width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px;">
-            <option value="bkash">বিকাশ (Bkash)</option>
-            <option value="nagad">নগদ (Nagad)</option>
-            <option value="rocket">রকেট (Rocket)</option>
-          </select>
-          <input type="number" id="pay-number" placeholder="আপনার নম্বর" style="width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #ddd;">
-          <input type="number" id="pay-amount" placeholder="টাকার পরিমাণ (মিন ৫০)" style="width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #ddd;">
-          <button class="btn-main" style="background: var(--success);" onclick="requestWithdraw()">টাকা তুলুন</button>
-        </div>
+        <h3>স্পিন করে ইনকাম</h3>
+        <div class="wheel-box" id="wheel">SPIN</div>
+        <button class="btn-main" onclick="playSpin()">স্পিন শুরু করুন</button>
       </div>
     </div>
 
-    <!-- Profile Page -->
-    <div id="profile-page" class="page" style="display: none;">
-      <div class="card" style="text-align: center;">
-        <img src="https://ui-avatars.com/api/?name=User&background=random" style="width: 80px; border-radius: 50%;">
-        <h3 id="prof-name">ইউজার নেম</h3>
-        <p id="prof-id" style="font-size: 12px; color: #64748b;">ID: 882910</p>
-      </div>
+    <!-- TASKS PAGE -->
+    <div id="tasks" class="page">
+      <h3>টাস্ক লিস্ট</h3>
+      <div id="task-list"></div>
+    </div>
+
+    <!-- TASK DETAILS (Pop up style) -->
+    <div id="task-details" class="page">
       <div class="card">
-        <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee;">
-          <span>মোট রেফার</span><b id="prof-ref">0</b>
-        </div>
-        <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee;">
-          <span>মোট টাস্ক</span><b id="prof-task">0</b>
-        </div>
-        <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee;">
-          <span>লেভেল</span><b id="prof-level">1</b>
+        <h2 id="det-title">টাস্ক ডিটেইলস</h2>
+        <div class="ad-slot" id="task-native-ad"></div>
+        <p id="det-desc" style="text-align: left; margin: 15px 0; color: #64748b;">কাজের নিয়ম: লিঙ্কে ক্লিক করে ১ মিনিট অপেক্ষা করুন এবং ব্যাক করুন।</p>
+        <button class="btn-main" onclick="completeTask()">কাজটি শুরু করুন</button>
+      </div>
+    </div>
+
+    <!-- WITHDRAW PAGE -->
+    <div id="withdraw" class="page">
+      <div class="card">
+        <h3>টাকা উত্তোলন</h3>
+        <div id="lock-msg" style="color: red; font-size: 13px; margin: 10px 0;">🔒 লেভেল ১ লক: ১০ রেফার ও ১০ ভিডিও দেখা বাকি।</div>
+        <div id="withdraw-form" class="locked">
+          <input type="number" id="w-num" placeholder="নম্বর" style="width:100%; padding:12px; margin-bottom:10px;">
+          <input type="number" id="w-amount" placeholder="পরিমাণ" style="width:100%; padding:12px; margin-bottom:10px;">
+          <button class="btn-main" style="background:var(--success);" onclick="requestWithdraw()">উইথড্র রিকোয়েস্ট</button>
         </div>
       </div>
     </div>
 
-  </main>
+    <!-- PROFILE PAGE -->
+    <div id="profile" class="page">
+      <div class="card">
+        <img src="https://ui-avatars.com/api/?name=User" style="width:70px; border-radius:50%;">
+        <h2 id="prof-name">ইউজার নেম</h2>
+        <p>Level: <span id="prof-level">1</span></p>
+      </div>
+      <div class="card" style="margin-top:10px; text-align: left;">
+        <p>মোট রেফার: <b id="prof-refs">0</b></p>
+        <p>ভিডিও দেখা: <b id="prof-vids">0/10</b></p>
+        <p>টাস্ক সম্পন্ন: <b id="prof-tasks">0</b></p>
+      </div>
+    </div>
 
-  <div class="ad-slot" style="position: fixed; bottom: 70px; width: 100%;">Bottom Banner Ad</div>
+  </div>
 
   <nav class="nav-bar">
-    <div class="nav-link active" onclick="navigateTo('home-page')"><i>🏠</i>হোম</div>
-    <div class="nav-link" onclick="navigateTo('task-page')"><i>📋</i>টাস্ক</div>
-    <div class="nav-link" onclick="navigateTo('wallet-page')"><i>💰</i>ওয়ালেট</div>
-    <div class="nav-link" onclick="navigateTo('profile-page')"><i>👤</i>প্রোফাইল</div>
+    <div class="nav-link active" onclick="navigateTo('home')"><i>🏠</i>হোম</div>
+    <div class="nav-link" onclick="navigateTo('videos')"><i>📺</i>ভিডিও</div>
+    <div class="nav-link" onclick="navigateTo('withdraw')"><i>💰</i>ওয়ালেট</div>
+    <div class="nav-link" onclick="navigateTo('profile')"><i>👤</i>প্রোফাইল</div>
   </nav>
 
   <script>
-    // --- 1. Firebase Initialize ---
+    // --- Firebase Initialize ---
     const firebaseConfig = {
       apiKey: "AIzaSyDDH2aUaelHHLKXehWOgCA9JIDzZRZe6r8",
       authDomain: "smartincome-bot.firebaseapp.com",
@@ -177,99 +163,122 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // --- 2. User State ---
-    let userID = "user_01"; // পরবর্তীতে এটি টেলিগ্রাম আইডি বা ইউনিক আইডি হবে
-    let currentUser = {
-      balance: 0.00,
-      tasks: 0,
-      refers: 0,
-      level: 1,
-      lastBonus: ""
-    };
+    // --- User State ---
+    let userID = "user_9921";
+    let userData = { balance: 0.0, vids: 0, refers: 0, tasks: 0, level: 1, name: "স্মার্ট ইউজার" };
+    const dLink = "https://www.effectivecpmnetwork.com/uzb1t5ufj8?key=e19391500b97ca1f8e98e175831054cd";
 
-    // --- 3. ডাটাবেস থেকে ডেটা লোড ---
-    function loadUserData() {
-      db.ref('users/' + userID).on('value', (snapshot) => {
-        if (snapshot.exists()) {
-          currentUser = snapshot.val();
+    function sync() {
+      db.ref('users/' + userID).on('value', (s) => {
+        if(s.exists()){
+          userData = s.val();
           updateUI();
         } else {
-          // নতুন ইউজার তৈরি
-          db.ref('users/' + userID).set(currentUser);
+          db.ref('users/' + userID).set(userData);
         }
       });
     }
 
     function updateUI() {
-      document.getElementById('balance').innerText = currentUser.balance.toFixed(2);
-      document.getElementById('user-display-name').innerText = "Abdur Rahman";
-      document.getElementById('prof-name').innerText = "Abdur Rahman";
-      document.getElementById('prof-ref').innerText = currentUser.refers;
-      document.getElementById('prof-task').innerText = currentUser.tasks;
-      document.getElementById('user-level-badge').innerText = "Level " + currentUser.level;
-    }
-
-    // --- 4. নেভিগেশন ---
-    function navigateTo(pageId) {
-      document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
-      document.getElementById(pageId).style.display = 'block';
+      document.getElementById('top-balance').innerText = "৳ " + userData.balance.toFixed(2);
+      document.getElementById('top-user-name').innerText = userData.name;
+      document.getElementById('prof-name').innerText = userData.name;
+      document.getElementById('prof-level').innerText = userData.level;
+      document.getElementById('prof-refs').innerText = userData.refers;
+      document.getElementById('prof-vids').innerText = userData.vids + "/10";
       
-      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-      // এখানে ক্লিক করা আইটেমকে একটিভ করার কোড
+      // লেভেল চেক
+      if(userData.refers >= 10 && userData.vids >= 10) {
+        document.getElementById('lock-msg').style.display = 'none';
+        document.getElementById('withdraw-form').classList.remove('locked');
+      }
+      renderVideos();
+      renderTasks();
     }
 
-    // --- 5. স্পিন লজিক ---
-    function startSpin() {
-      alert("অ্যাড লোড হচ্ছে... (Monetag Interstitial)");
-      // অ্যাড দেখা শেষ হলে:
-      setTimeout(() => {
-        let win = (Math.random() * 0.5).toFixed(2);
-        updateBalance(parseFloat(win));
-        alert("অভিনন্দন! আপনি জিতেছেন ৳" + win);
-      }, 1500);
-    }
-
-    // --- 6. ডেইলি বোনাস ---
-    function dailyBonus() {
-      const today = new Date().toLocaleDateString();
-      if (currentUser.lastBonus === today) {
-        alert("আপনি আজকে ইতিমধ্যে বোনাস নিয়েছেন!");
-      } else {
-        updateBalance(1.00);
-        db.ref('users/' + userID).update({ lastBonus: today });
-        alert("ডেইলি বোনাস ১ টাকা যোগ করা হয়েছে!");
+    // --- ভিডিও সেকশন ---
+    function renderVideos() {
+      const container = document.getElementById('video-list');
+      container.innerHTML = "";
+      for (let i = 1; i <= 10; i++) {
+        const done = i <= userData.vids;
+        container.innerHTML += `
+          <div class="list-item ${done?'locked':''}">
+            <span>ভিডিও #${i}</span>
+            <button onclick="watchVideo(${i})" ${done?'disabled':''} class="btn-main" style="width:auto; padding:5px 15px;">দেখুন</button>
+          </div>`;
       }
     }
 
-    // --- 7. টাকা আপডেট ফাংশন ---
-    function updateBalance(amount) {
-      let newBalance = currentUser.balance + amount;
-      db.ref('users/' + userID).update({ balance: newBalance });
+    function watchVideo(id) {
+      if(id !== userData.vids + 1) return alert("সিরিয়াল বজায় রাখুন");
+      window.open(dLink, "_blank"); // Ad
+      setTimeout(() => {
+        db.ref('users/' + userID).update({ vids: userData.vids + 1, balance: userData.balance + 0.50 });
+        alert("ভিডিও দেখা সফল! ০.৫০ টাকা যোগ হয়েছে।");
+      }, 5000);
     }
 
-    // উইথড্র রিকোয়েস্ট
-    function requestWithdraw() {
-      const amount = document.getElementById('pay-amount').value;
-      const num = document.getElementById('pay-number').value;
-      if(amount < 50) return alert("সর্বনিম্ন ৫০ টাকা হতে হবে");
-      
-      db.ref('withdraws').push({
-        userID: userID,
-        amount: amount,
-        number: num,
-        method: document.getElementById('pay-method').value,
-        status: 'pending'
-      });
-      alert("আপনার রিকোয়েস্ট সফল হয়েছে!");
+    // --- স্পিন লজিক ---
+    function playSpin() {
+      window.open(dLink, "_blank"); // সোশ্যাল অ্যাড বা ভিডিও অ্যাড হিসেবে কাজ করবে
+      const wheel = document.getElementById('wheel');
+      const rand = Math.floor(Math.random() * 360) + 1440;
+      wheel.style.transform = `rotate(${rand}deg)`;
+      setTimeout(() => {
+        let win = (Math.random() * 0.5).toFixed(2);
+        db.ref('users/' + userID).update({ balance: userData.balance + parseFloat(win) });
+        alert("আপনি জিতেছেন ৳" + win);
+      }, 3500);
     }
 
-    // নোটিশ কন্ট্রোল
-    function closeNotice() { document.getElementById('notice-modal').style.display = 'none'; }
-    window.onload = () => { 
-      loadUserData();
-      setTimeout(() => { document.getElementById('notice-modal').style.display = 'flex'; }, 1000);
-    };
+    // --- টাস্ক সিস্টেম ---
+    function renderTasks() {
+      const container = document.getElementById('task-list');
+      container.innerHTML = "";
+      for (let i = 1; i <= 5; i++) {
+        container.innerHTML += `
+          <div class="list-item" onclick="openTask(${i})">
+            <span>টাস্ক #${i}: ওয়েবসাইট ভিজিট</span>
+            <i>➔</i>
+          </div>`;
+      }
+    }
 
+    let activeTask = 0;
+    function openTask(id) {
+      activeTask = id;
+      document.getElementById('det-title').innerText = "টাস্ক #" + id;
+      navigateTo('task-details');
+      // টাস্কের ভেতরে নেটিভ অ্যাড লোড
+      document.getElementById('task-native-ad').innerHTML = '<script async="async" data-cfasync="false" src="https://pl30829859.effectivecpmnetwork.com/4beb40aebf3d21b797c6bb96ba14331f/invoke.js"><\/script><div id="container-4beb40aebf3d21b797c6bb96ba14331f"></div>';
+    }
+
+    function completeTask() {
+      window.open(dLink, "_blank");
+      setTimeout(() => {
+        db.ref('users/' + userID).update({ balance: userData.balance + 1.00, tasks: userData.tasks + 1 });
+        alert("টাস্ক সফল! ১ টাকা যোগ হয়েছে।");
+        navigateTo('tasks');
+      }, 10000); // ১০ সেকেন্ডের টাস্ক
+    }
+
+    // --- রেফার ---
+    function copyRefer() {
+      window.open(dLink, "_blank"); // রেফার কপি করলে ইনকাম
+      navigator.clipboard.writeText("RefCode: " + userID + " Link: t.me/SmartIncomeBot");
+      alert("রেফার লিঙ্ক ও কোড কপি হয়েছে!");
+    }
+
+    // --- নেভিগেশন ---
+    function navigateTo(id) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+      // Active nav highlight logic...
+    }
+
+    window.onload = sync;
   </script>
 
 </body>
