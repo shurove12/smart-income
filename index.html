@@ -30,8 +30,8 @@
             appId: "1:425448212470:web:779fba0a4b121b5fdb29d7"
         };
     </script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     
     <title>Smart Income - Task & Earn</title>
     <style>
@@ -710,58 +710,145 @@ function loadDB() {
     if (db.current) me = db.users.find(u => u.id === db.current) || null;
 }
 
-function saveDB() { localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); }
+function saveDB() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
 
-// ===== Firebase Realtime Database Multi-Device Sync =====
-async function initFirebaseApp() {
-    if (window.firebaseInitialized) return;
-    if (!window.firebase || !FIREBASE_CONFIG) return;
-    try {
-        const app = firebase.initializeApp(FIREBASE_CONFIG);
-        window.firebaseInitialized = true;
-    } catch (e) {}
+    // LocalStorage remains a fast cache; Firebase is the cross-device source.
+    // Do not block the UI on this write.
+    if (__firebaseReady && me && db.current === me.id) {
+        clearTimeout(window.__userSyncTimer);
+        window.__userSyncTimer = setTimeout(() => syncUserToFirebase(me), 50);
+    }
 }
 
-async function syncUserToFirebase() {
-    if (!window.firebaseInitialized || !window.firebase || !me || !me.id) return;
+// ===== Firebase Realtime Database — Central Cross-Browser Sync =====
+let __firebaseReady = false;
+let __firebaseListenersStarted = false;
+
+async function initFirebaseApp() {
+    if (__firebaseReady) return true;
+    if (!window.firebase || !FIREBASE_CONFIG) return false;
     try {
-        const ref = firebase.database().ref('users/' + me.id);
-        ref.set({
-            id: me.id, phone: me.phone, email: me.email, name: me.name,
-            balance: me.balance, total: me.total, today: me.today,
-            completedTasks: me.completedTasks || [],
-            taskSessions: me.taskSessions || {},
-            tx: me.tx || [],
+        if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+        __firebaseReady = true;
+        window.firebaseInitialized = true;
+        return true;
+    } catch (e) {
+        console.error('Firebase initialization failed:', e);
+        return false;
+    }
+}
+
+async function loadAllUsersFromFirebase() {
+    if (!__firebaseReady) return [];
+    try {
+        const snap = await firebase.database().ref('users').once('value');
+        const v = snap.val();
+        return v ? Object.values(v) : [];
+    } catch (e) {
+        console.warn('Firebase users read failed:', e);
+        return [];
+    }
+}
+
+async function syncUserToFirebase(user = me) {
+    if (!__firebaseReady || !user || !user.id) return false;
+    try {
+        // Full user object is synced so Admin sees the same user state.
+        // This writes only this user's record; it never replaces the users collection.
+        await firebase.database().ref('users/' + user.id).set({
+            ...JSON.parse(JSON.stringify(user)),
             lastSync: new Date().toISOString()
-        }).catch(() => {});
-    } catch (e) {}
+        });
+        return true;
+    } catch (e) {
+        console.warn('Firebase user sync failed:', e);
+        return false;
+    }
 }
 
 async function loadUserFromFirebase(userId) {
-    if (!window.firebaseInitialized || !window.firebase) return null;
+    if (!__firebaseReady || !userId) return null;
     try {
-        const snapshot = await firebase.database().ref('users/' + userId).get();
+        const snapshot = await firebase.database().ref('users/' + userId).once('value');
         return snapshot.val();
-    } catch (e) { return null; }
+    } catch (e) {
+        console.warn('Firebase user read failed:', e);
+        return null;
+    }
 }
 
-// অ্যাডমিন প্যানেল থেকে সিঙ্ক
-function syncTasksAndProjectsFromDB() {
-    if (Array.isArray(db.tasks) && db.tasks.length) {
-        const homeT = db.tasks.filter(t => t.isMain);
-        const earnT = db.tasks.filter(t => !t.isMain);
-        HOME_TASKS.length = 0; HOME_TASKS.push(...homeT);
-        EARN_TASKS.length = 0; EARN_TASKS.push(...earnT);
-        ALL_TASKS.length = 0; ALL_TASKS.push(...HOME_TASKS, ...EARN_TASKS);
+function applyRemoteUser(remote) {
+    if (!remote || !remote.id) return;
+
+    const idx = db.users.findIndex(u => u.id === remote.id);
+    if (idx >= 0) db.users[idx] = remote;
+    else db.users.push(remote);
+
+    if (db.current === remote.id) me = remote;
+    saveDB();
+
+    if (typeof renderAll === 'function') renderAll();
+}
+
+function startFirebaseRealtimeSync() {
+    if (!__firebaseReady || __firebaseListenersStarted) return;
+    __firebaseListenersStarted = true;
+
+    const r = firebase.database();
+
+    // User record: Admin -> current User in realtime.
+    if (db.current) {
+        r.ref('users/' + db.current).on('value', snap => {
+            if (snap.exists()) applyRemoteUser(snap.val());
+        });
     }
-    if (Array.isArray(db.projects) && db.projects.length) {
-        PROJECTS.length = 0; PROJECTS.push(...db.projects);
-    }
-    if (db.adConfig) {
-        if (db.adConfig.adsterraLink) DIRECT_LINKS[0] = db.adConfig.adsterraLink;
-        if (db.adConfig.monetagLink) DIRECT_LINKS[1] = db.adConfig.monetagLink;
-        if (db.adConfig.adgramBlockId) window.ADGRAM_BLOCK_ID_LIVE = db.adConfig.adgramBlockId;
-    }
+
+    // Admin -> all Users: useful for shared referral/balance data when relevant.
+    // We do NOT replace the current local user blindly unless the record matches.
+    r.ref('users').on('value', snap => {
+        const v = snap.val();
+        if (!v) return;
+        const remoteUsers = Object.values(v);
+        remoteUsers.forEach(remote => {
+            const idx = db.users.findIndex(u => u.id === remote.id);
+            if (idx >= 0) db.users[idx] = remote;
+            else if (db.current === remote.id) db.users.push(remote);
+        });
+        if (db.current) {
+            const current = remoteUsers.find(u => u.id === db.current);
+            if (current) me = current;
+        }
+        saveDB();
+        if (typeof renderAll === 'function') renderAll();
+    });
+
+    // Admin -> User: Tasks
+    r.ref('tasks').on('value', snap => {
+        if (!snap.exists()) return;
+        db.tasks = Array.isArray(snap.val()) ? snap.val() : Object.values(snap.val());
+        syncTasksAndProjectsFromDB();
+        saveDB();
+        if (typeof renderAll === 'function') renderAll();
+    });
+
+    // Admin -> User: Projects
+    r.ref('projects').on('value', snap => {
+        if (!snap.exists()) return;
+        db.projects = Array.isArray(snap.val()) ? snap.val() : Object.values(snap.val());
+        syncTasksAndProjectsFromDB();
+        saveDB();
+        if (typeof renderAll === 'function') renderAll();
+    });
+
+    // Admin -> User: Ad configuration
+    r.ref('adConfig').on('value', snap => {
+        if (!snap.exists()) return;
+        db.adConfig = snap.val();
+        syncTasksAndProjectsFromDB();
+        saveDB();
+        if (typeof renderAll === 'function') renderAll();
+    });
 }
 
 function today() { return new Date().toISOString().slice(0, 10); }
@@ -788,76 +875,95 @@ function showLoader(show, msg = 'কাজ হচ্ছে...') {
 function showRegister() { $('loginBox').classList.add('hidden'); $('regBox').classList.remove('hidden'); }
 function showLogin() { $('regBox').classList.add('hidden'); $('loginBox').classList.remove('hidden'); }
 
-function registerUser() {
+async function registerUser() {
     const name = $('rn').value.trim(), phone = $('rp').value.trim(), email = $('re').value.trim().toLowerCase();
     const pass1 = $('r1').value, pass2 = $('r2').value, ref = $('rr').value.trim().toUpperCase();
     if (!name || !phone || !email || pass1.length < 8 || pass1 !== pass2) return toast('সব তথ্য ঠিকভাবে দিন');
-    if (db.users.some(u => u.email === email || u.phone === phone)) return toast('এই email/phone আগে থেকেই আছে');
-    if (ref) {
-        const referrer = db.users.find(u => u.referral === ref && u.status === 'active');
-        if (referrer) {
-            referrer.referrals = (referrer.referrals || 0) + 1;
-            referrer.activeRef = (referrer.activeRef || 0) + 1;
-            referrer.refEarn = (referrer.refEarn || 0) + 0.50;
-            referrer.balance = (referrer.balance || 0) + 0.50;
-            referrer.tx = referrer.tx || [];
-            referrer.tx.unshift({ type: 'referral-bonus', amount: 0.50, status: 'approved', date: new Date().toLocaleString('bn-BD') });
-        }
-    }
+
     showLoader(true, 'অ্যাকাউন্ট তৈরি হচ্ছে...');
-    setTimeout(async () => {
-        const newUser = {
-            id: uid(), name, phone, email, password: pass1, referral: code(), referredBy: ref || '',
-            balance: 0, total: 0, today: 0, todayDate: today(), tx: [], spunDate: null, dailyDate: null,
-            referrals: 0, activeRef: 0, refEarn: 0, adDate: null, adViews: 0, status: 'active',
-            completedTasks: [], taskSessions: {}
-        };
-        db.users.push(newUser);
-        db.current = newUser.id;
-        me = newUser;
-        saveDB();
-        
-        // Firebase-এ নতুন user sync করুন (অন্য device access enable করার জন্য)
-        await initFirebaseApp();
-        syncUserToFirebase();
-        
+
+    // Check both local cache and central Firebase so another browser cannot create duplicates.
+    await initFirebaseApp();
+    const remoteUsers = await loadAllUsersFromFirebase();
+    const merged = [...db.users];
+    remoteUsers.forEach(u => { if (u && !merged.some(x => x.id === u.id)) merged.push(u); });
+
+    if (merged.some(u => u.email === email || u.phone === phone)) {
         showLoader(false);
-        enterApp();
-        toast('🎉 রেজিস্ট্রেশন সফল!');
-    }, 700);
+        return toast('এই email/phone আগে থেকেই আছে');
+    }
+
+    const referrer = ref ? merged.find(u => u.referral === ref && u.status === 'active') : null;
+    if (referrer) {
+        referrer.referrals = (referrer.referrals || 0) + 1;
+        referrer.activeRef = (referrer.activeRef || 0) + 1;
+        referrer.refEarn = (referrer.refEarn || 0) + 0.50;
+        referrer.balance = (referrer.balance || 0) + 0.50;
+        referrer.tx = referrer.tx || [];
+        referrer.tx.unshift({ type: 'referral-bonus', amount: 0.50, status: 'approved', date: new Date().toLocaleString('bn-BD') });
+    }
+
+    const newUser = {
+        id: uid(), name, phone, email, password: pass1, referral: code(), referredBy: ref || '',
+        balance: 0, total: 0, today: 0, todayDate: today(), tx: [], spunDate: null, dailyDate: null,
+        referrals: 0, activeRef: 0, refEarn: 0, adDate: null, adViews: 0, status: 'active',
+        completedTasks: [], taskSessions: {}
+    };
+
+    db.users = merged;
+    if (referrer) {
+        const ri = db.users.findIndex(u => u.id === referrer.id);
+        if (ri >= 0) db.users[ri] = referrer;
+    }
+    db.users.push(newUser);
+    db.current = newUser.id;
+    me = newUser;
+    saveDB();
+
+    // Central write happens here; UI stays the same.
+    await syncUserToFirebase(newUser);
+    if (referrer) await syncUserToFirebase(referrer);
+    startFirebaseRealtimeSync();
+
+    showLoader(false);
+    enterApp();
+    toast('🎉 রেজিস্ট্রেশন সফল!');
 }
 
-function loginUser() {
+async function loginUser() {
     const email = $('le').value.trim().toLowerCase(), pass = $('lp').value;
     if (!email || !pass) return toast('Email ও Password দিন');
     showLoader(true, 'লগইন হচ্ছে...');
-    setTimeout(async () => {
-        const user = db.users.find(u => u.email === email && u.password === pass && u.status === 'active');
-        if (!user) { showLoader(false); return toast('Email বা password সঠিক নয়'); }
-        if (user.todayDate !== today()) { user.today = 0; user.todayDate = today(); }
-        if (user.adDate !== today()) { user.adDate = today(); user.adViews = 0; }
-        if (!user.completedTasks) user.completedTasks = [];
-        if (!user.taskSessions) user.taskSessions = {};
-        db.current = user.id;
-        me = user;
-        saveDB();
-        
-        // Firebase থেকে আপডেটেড data pull করুন
-        await initFirebaseApp();
-        const firebaseUser = await loadUserFromFirebase(user.id);
-        if (firebaseUser && firebaseUser.lastSync) {
-            user.balance = firebaseUser.balance || user.balance;
-            user.total = firebaseUser.total || user.total;
-            user.completedTasks = firebaseUser.completedTasks || user.completedTasks;
-            user.tx = firebaseUser.tx || user.tx;
-            saveDB();
+
+    await initFirebaseApp();
+
+    // Load central users first so login works from a different browser/device.
+    const remoteUsers = await loadAllUsersFromFirebase();
+    const merged = [...db.users];
+    remoteUsers.forEach(u => {
+        if (!u) return;
+        const i = merged.findIndex(x => x.id === u.id);
+        if (i >= 0) merged[i] = u;
+        else merged.push(u);
+    });
+    db.users = merged;
+
+    setTimeout(() => {
+        const user = db.users.find(u => u.email === email && u.password === pass);
+        if (!user) {
+            showLoader(false);
+            return toast('Email বা Password ভুল');
         }
-        
-        syncUserToFirebase();
+
+        me = user;
+        db.current = user.id;
+        saveDB();
+        startFirebaseRealtimeSync();
+
         showLoader(false);
         enterApp();
-        toast('✅ লগইন সফল!');
-    }, 650);
+        toast('স্বাগতম ' + user.name);
+    }, 100);
 }
 
 function forgotPassword() {
@@ -1081,12 +1187,85 @@ function renderEarnTasks() {
 // ==========================================================
 //   প্রজেক্ট (প্রতিটি প্রজেক্টের মাঝখানে ব্যানার)
 // ==========================================================
+// ===== Project 30-second session patch (FIXED) =====
+let __projectSession = {
+    active: false,
+    projectId: null,
+    secondsLeft: 0,
+    interval: null
+};
+
+function __projectButtonText(projectId) {
+    if (__projectSession.active && __projectSession.projectId === projectId) {
+        return `⏳ ${__projectSession.secondsLeft}s`;
+    }
+    if (__projectSession.active) return '⏳ অপেক্ষা করুন';
+    return '▶️ Start';
+}
+
+function __projectFinish(id) {
+    const p = PROJECTS.find(x => x.id === id);
+    if (!p || !me) return;
+
+    me.balance = (me.balance || 0) + p.reward;
+    me.total = (me.total || 0) + p.reward;
+    me.today = (me.today || 0) + p.reward;
+    me.tx = me.tx || [];
+    me.tx.unshift({
+        type: 'project',
+        amount: p.reward,
+        status: 'completed',
+        details: p.title,
+        date: new Date().toLocaleString('bn-BD')
+    });
+
+    saveDB();
+    renderAll();
+    showLoader(false);
+    toast(`✅ ${p.title} সম্পন্ন! +৳${money(p.reward)}`);
+    showPostTaskVideoAd();
+
+    __projectSession.active = false;
+    __projectSession.projectId = null;
+    __projectSession.secondsLeft = 0;
+    if (__projectSession.interval) {
+        clearInterval(__projectSession.interval);
+        __projectSession.interval = null;
+    }
+    renderProjects();
+}
+
+function __projectTick() {
+    if (!__projectSession.active) {
+        if (__projectSession.interval) {
+            clearInterval(__projectSession.interval);
+            __projectSession.interval = null;
+        }
+        return;
+    }
+
+    __projectSession.secondsLeft--;
+    renderProjects();
+
+    if (__projectSession.secondsLeft <= 0) {
+        const id = __projectSession.projectId;
+        if (__projectSession.interval) {
+            clearInterval(__projectSession.interval);
+            __projectSession.interval = null;
+        }
+        __projectFinish(id);
+    }
+}
+
 function renderProjects() {
     const container = $('projectsList');
     if (!container) return;
-    
+
     let html = '';
     PROJECTS.forEach((p, index) => {
+        const disabled = __projectSession.active;
+        const buttonText = __projectButtonText(p.id);
+
         html += `
             <div class="project-card" style="border-left:4px solid ${p.color}">
                 <div class="info">
@@ -1094,10 +1273,13 @@ function renderProjects() {
                     <div class="desc">${p.desc}</div>
                 </div>
                 <div class="reward">+৳${money(p.reward)}</div>
-                <button class="btn" style="background:${p.color};padding:6px 14px;font-size:13px;margin-top:6px" onclick="doProject('${p.id}')">Start</button>
+                <button class="btn"
+                    style="background:${p.color};padding:6px 14px;font-size:13px;margin-top:6px;${disabled ? 'opacity:.6;cursor:not-allowed;' : ''}"
+                    ${disabled ? 'disabled' : ''}
+                    onclick="doProject('${p.id}')">${buttonText}</button>
             </div>
         `;
-        // 📌 প্রতিটি প্রজেক্টের মাঝখানে ব্যানার
+
         if (index < PROJECTS.length - 1) {
             html += `
                 <div class="banner-ad-container" style="margin:6px 0;">
@@ -1115,28 +1297,28 @@ function renderProjects() {
 function doProject(id) {
     const p = PROJECTS.find(x => x.id === id);
     if (!p) return;
-    if (me.today >= 100) return toast('আজকের earning limit শেষ');
+
+    if (__projectSession.active) {
+        return toast(`⏳ ${__projectSession.secondsLeft} সেকেন্ড বাকি`);
+    }
+
+    if (__projectSession.interval) {
+        clearInterval(__projectSession.interval);
+        __projectSession.interval = null;
+    }
+
+    if ((me.today || 0) >= 100) return toast('আজকের earning limit শেষ');
+
     openDirectAd();
-    showLoader(true, 'Project চলছে...');
-    setTimeout(() => {
-        me.balance += p.reward;
-        me.total += p.reward;
-        me.today += p.reward;
-        me.tx = me.tx || [];
-        me.tx.unshift({
-            type: 'project',
-            amount: p.reward,
-            status: 'completed',
-            details: p.title,
-            date: new Date().toLocaleString('bn-BD')
-        });
-        saveDB();
-        renderAll();
-        showLoader(false);
-        toast(`✅ ${p.title} সম্পন্ন! +৳${money(p.reward)}`);
-        // 📌 ভিডিও অ্যাড চালু করুন
-        showPostTaskVideoAd();
-    }, 1000);
+
+    __projectSession.active = true;
+    __projectSession.projectId = id;
+    __projectSession.secondsLeft = 30;
+
+    renderProjects();
+    showLoader(true, '⏳ ৩০ সেকেন্ড অপেক্ষা করুন...');
+
+    __projectSession.interval = setInterval(__projectTick, 1000);
 }
 
 // ==========================================================
@@ -1559,10 +1741,19 @@ function closeSpin() { $('spinModal').classList.remove('show'); }
 loadDB();
 syncTasksAndProjectsFromDB();
 
-console.log('✅ Smart Income - User App (Updated)');
+(async () => {
+    await initFirebaseApp();
+    startFirebaseRealtimeSync();
+
+    // Existing logged-in user is pushed in the background.
+    if (me && db.current) await syncUserToFirebase(me);
+})();
+
+console.log('✅ Smart Income - User App (Firebase Central Realtime v1.2.0)');
 console.log('✅ পপআন্ডার: শুধুমাত্র Monetag (nap5k)');
 console.log('✅ ব্যানার অ্যাড: সব পেজে যুক্ত');
 console.log('✅ ভিডিও অ্যাড: টাস্ক থেকে ব্যাক/সমাপ্তিতে চালু হবে');
+console.log('✅ প্রজেক্ট কাউন্টডাউন: FIXED - 30s থেকে 1s পর্যন্ত কাজ করবে');
 console.log('📦 Users:', db.users.length);
 
 if (db.current && me) {
