@@ -5,13 +5,18 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="monetag" content="584a8084bf4f71bb2ae1dc8665e4ecf6">
     
+    <!-- Rewarded Video Ad SDK -->
     <script src="https://libtl.com/sdk.js" data-zone="11567392" data-sdk="show_11567392"></script>
-    <script src="https://5gvci.com/act/files/tag.min.js?z=11572637" data-cfasync="false" async></script>
-    <script src="https://5gvci.com/act/files/tag.min.js?z=11572635" data-cfasync="false" async></script>
-    <script src="https://5gvci.com/act/files/tag.min.js?z=11572636" data-cfasync="false" async></script>
-    <script src="https://5gvci.com/act/files/tag.min.js?z=11572638" data-cfasync="false" async></script>
-    <script src="https://5gvci.com/act/files/tag.min.js?z=11572639" data-cfasync="false" async></script>
+    
+    <!-- AdGram Interstitial -->
+    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+    
+    <!-- ⚠️ শুধুমাত্র একটি পপআন্ডার/ভিগনেট - এখানে Monetag (nap5k) রাখা হলো -->
+    <script>(function(s){s.dataset.zone='11572640',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+    
+    <!-- Native Ads -->
     <script async src="https://pl30829859.effectivecpmnetwork.com/4beb40aebf3d21b797c6bb96ba14331f/invoke.js"></script>
+    <script async data-cfasync="false" src="https://pl30829866.effectivecpmnetwork.com/2b/32/ab/2b32ab962eb4c06c52ac028b5d6bdb58.js"></script>
     
     <title>Smart Income - Task & Earn</title>
     <style>
@@ -44,6 +49,7 @@
         .page.active{display:block}
         .section{margin-top:18px}
         .adbox{min-height:80px;background:#f8fafc;border:1px solid #e5eaf1;border-radius:14px;display:grid;place-items:center;overflow:hidden;margin:12px 0;padding:8px}
+        .adbox iframe{max-width:100%}
         .nav{position:fixed;left:0;right:0;bottom:0;height:70px;background:#fff;border-top:1px solid #e5eaf1;display:flex;justify-content:space-around;z-index:30;padding-bottom:env(safe-area-inset-bottom)}
         .nav button{background:none;border:0;color:#64748b;font-size:11px;cursor:pointer}
         .nav b{display:block;font-size:21px}
@@ -141,6 +147,13 @@
         .level-dot.locked{background:#e2e8f0;color:#94a3b8}
         @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
         .level-container{background:#f8fafc;border-radius:10px;padding:10px;margin:6px 0}
+
+        /* ব্যানার অ্যাডের জন্য স্টাইল */
+        .banner-ad-container{margin:8px 0;text-align:center;min-height:60px;background:#f8fafc;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+        .banner-ad-container iframe{max-width:100%;border:0}
+        .task-ad-divider{margin:6px 0;padding:4px 0;background:#f1f5f9;border-radius:6px;text-align:center;font-size:10px;color:#94a3b8}
+        
+        .ad-label{font-size:9px;color:#94a3b8;text-align:center;padding:2px;letter-spacing:0.5px;text-transform:uppercase}
     </style>
 </head>
 <body>
@@ -205,7 +218,9 @@
 
     <main class="main wrap">
 
+        <!-- ========================================================== -->
         <!-- ===== HOME PAGE ===== -->
+        <!-- ========================================================== -->
         <div id="home" class="page active">
             <div class="howto-card">
                 <h4>📖 হোম টাস্কসমূহ</h4>
@@ -216,6 +231,14 @@
                     <li>✅ <b>৩০ সেকেন্ড</b> অপেক্ষা করলেই অটোমেটিক টাস্ক কমপ্লিট</li>
                 </ul>
                 <div class="warning">⚠️ টাস্ক ভিজিট না করলে রিওয়ার্ড পাবেন না!</div>
+            </div>
+
+            <!-- 📌 হোম টাস্কের উপরে ব্যানার -->
+            <div id="home-top-banner" class="banner-ad-container">
+                <script>
+                    atOptions = { 'key' : '51bcf215100b208521b1f970deaedf8e', 'format' : 'iframe', 'height' : 90, 'width' : 728, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/51bcf215100b208521b1f970deaedf8e/invoke.js"></script>
             </div>
 
             <div id="homeTaskSection">
@@ -229,18 +252,50 @@
                 <div id="homeTaskList"></div>
             </div>
 
+            <!-- 📌 প্রজেক্টের উপরে ব্যানার -->
+            <div id="home-project-top-banner" class="banner-ad-container" style="margin-top:16px;">
+                <script>
+                    atOptions = { 'key' : 'f70b806885d12defbb6515475012d220', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/f70b806885d12defbb6515475012d220/invoke.js"></script>
+            </div>
+
             <div class="section">
                 <h3>⚡ প্রজেক্টসমূহ</h3>
                 <div id="projectsList"></div>
             </div>
 
+            <!-- 📌 হোমের নিচের ব্যানার -->
+            <div id="ad-home-728" class="adbox">
+                <script>
+                    atOptions = { 'key' : '51bcf215100b208521b1f970deaedf8e', 'format' : 'iframe', 'height' : 90, 'width' : 728, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/51bcf215100b208521b1f970deaedf8e/invoke.js"></script>
+            </div>
             <div id="ad-home-native" class="native-ad-container"></div>
         </div>
 
+        <!-- ========================================================== -->
         <!-- ===== EARN PAGE ===== -->
+        <!-- ========================================================== -->
         <div id="earn" class="page">
             <h3>💰 আর্নিং টাস্কসমূহ</h3>
-            
+
+            <!-- 📌 আর্নিং টাস্কের উপরে ব্যানার -->
+            <div id="earn-top-banner" class="banner-ad-container">
+                <script>
+                    atOptions = { 'key' : 'f70b806885d12defbb6515475012d220', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/f70b806885d12defbb6515475012d220/invoke.js"></script>
+            </div>
+
+            <div id="ad-earn-320" class="adbox">
+                <script>
+                    atOptions = { 'key' : 'f70b806885d12defbb6515475012d220', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/f70b806885d12defbb6515475012d220/invoke.js"></script>
+            </div>
+
             <div class="card" style="border:2px solid #2563eb;">
                 <b>🎬 Rewarded Video</b>
                 <div class="muted">আজ দেখা হয়েছে <span id="earnAdCount">0</span>/১০</div>
@@ -262,13 +317,33 @@
                 <div id="earnTaskList"></div>
             </div>
 
-            <div id="ad-earn-300" class="adbox"></div>
-            <div id="ad-earn-468" class="adbox"></div>
+            <div id="ad-earn-300" class="adbox">
+                <script>
+                    atOptions = { 'key' : '4f73a7be6b5aa37211aad8635c516fda', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/4f73a7be6b5aa37211aad8635c516fda/invoke.js"></script>
+            </div>
+            <div id="ad-earn-468" class="adbox">
+                <script>
+                    atOptions = { 'key' : 'f9b4e4f2db5fe51891bd5a72de5078dd', 'format' : 'iframe', 'height' : 60, 'width' : 468, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/f9b4e4f2db5fe51891bd5a72de5078dd/invoke.js"></script>
+            </div>
             <div id="ad-earn-container" class="native-ad-container"></div>
         </div>
 
+        <!-- ========================================================== -->
         <!-- ===== REFERRAL PAGE ===== -->
+        <!-- ========================================================== -->
         <div id="ref" class="page">
+            <!-- 📌 রেফার সিস্টেমের উপরে ব্যানার -->
+            <div id="ref-top-banner" class="banner-ad-container">
+                <script>
+                    atOptions = { 'key' : '7377c6284642e41982bac15f7a52f957', 'format' : 'iframe', 'height' : 600, 'width' : 160, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/7377c6284642e41982bac15f7a52f957/invoke.js"></script>
+            </div>
+
             <h3>👥 Referral System</h3>
             <div class="card">
                 <div class="muted">আপনার Referral Code</div>
@@ -292,6 +367,20 @@
                 </div>
             </div>
             
+            <!-- 📌 রেফার সিস্টেমের নিচে ব্যানার -->
+            <div id="ref-bottom-banner" class="banner-ad-container">
+                <script>
+                    atOptions = { 'key' : '7377c6284642e41982bac15f7a52f957', 'format' : 'iframe', 'height' : 600, 'width' : 160, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/7377c6284642e41982bac15f7a52f957/invoke.js"></script>
+            </div>
+
+            <div id="ad-ref-160" class="adbox">
+                <script>
+                    atOptions = { 'key' : '7377c6284642e41982bac15f7a52f957', 'format' : 'iframe', 'height' : 600, 'width' : 160, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/7377c6284642e41982bac15f7a52f957/invoke.js"></script>
+            </div>
             <div id="ad-ref-native" class="native-ad-container"></div>
         </div>
 
@@ -300,6 +389,14 @@
         <!-- ========================================================== -->
         <div id="history" class="page">
             
+            <!-- 📌 উইথড্র রিকোয়েস্টের উপরে ব্যানার -->
+            <div id="history-top-banner" class="banner-ad-container">
+                <script>
+                    atOptions = { 'key' : '0ca63518e47c3eff896923a1d3c9fbdb', 'format' : 'iframe', 'height' : 300, 'width' : 160, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/0ca63518e47c3eff896923a1d3c9fbdb/invoke.js"></script>
+            </div>
+
             <div class="card" style="border:2px solid #2563eb;">
                 <h3 style="margin-top:0">💸 Withdraw Request</h3>
                 <p class="muted" style="font-size:12px">আপনার প্রত্যাহার আবেদন করুন</p>
@@ -355,17 +452,54 @@
                 </div>
             </div>
 
+            <!-- 📌 ট্রানজেকশন হিস্ট্রির উপরে ব্যানার -->
+            <div id="history-tx-top-banner" class="banner-ad-container">
+                <script>
+                    atOptions = { 'key' : 'f9b4e4f2db5fe51891bd5a72de5078dd', 'format' : 'iframe', 'height' : 60, 'width' : 468, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/f9b4e4f2db5fe51891bd5a72de5078dd/invoke.js"></script>
+            </div>
+
             <div class="card">
                 <h3>📜 Transaction History</h3>
                 <div id="tx"></div>
             </div>
 
-            <div id="ad-history-468" class="adbox"></div>
+            <!-- 📌 ট্রানজেকশন হিস্ট্রির মাঝখানে ব্যানার -->
+            <div id="history-tx-mid-banner" class="banner-ad-container">
+                <script>
+                    atOptions = { 'key' : '0ca63518e47c3eff896923a1d3c9fbdb', 'format' : 'iframe', 'height' : 300, 'width' : 160, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/0ca63518e47c3eff896923a1d3c9fbdb/invoke.js"></script>
+            </div>
+
+            <div id="ad-history-468" class="adbox">
+                <script>
+                    atOptions = { 'key' : 'f9b4e4f2db5fe51891bd5a72de5078dd', 'format' : 'iframe', 'height' : 60, 'width' : 468, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/f9b4e4f2db5fe51891bd5a72de5078dd/invoke.js"></script>
+            </div>
+            <div id="ad-history-160" class="adbox">
+                <script>
+                    atOptions = { 'key' : '0ca63518e47c3eff896923a1d3c9fbdb', 'format' : 'iframe', 'height' : 300, 'width' : 160, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/0ca63518e47c3eff896923a1d3c9fbdb/invoke.js"></script>
+            </div>
             <div id="ad-history-native" class="native-ad-container"></div>
         </div>
 
+        <!-- ========================================================== -->
         <!-- ===== PROFILE PAGE ===== -->
+        <!-- ========================================================== -->
         <div id="profile" class="page">
+            <!-- 📌 প্রোফাইলের উপরে ব্যানার -->
+            <div id="profile-top-banner" class="banner-ad-container">
+                <script>
+                    atOptions = { 'key' : '51bcf215100b208521b1f970deaedf8e', 'format' : 'iframe', 'height' : 90, 'width' : 728, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/51bcf215100b208521b1f970deaedf8e/invoke.js"></script>
+            </div>
+
             <h3>👤 Profile</h3>
             <div class="card">
                 <p><b>Name:</b> <span id="pn"></span></p>
@@ -375,6 +509,12 @@
                 <p><b>Tasks Done:</b> <span id="taskCompletedDisplay">0/15</span></p>
                 <button class="btn full" onclick="changePassword()">Change Password</button>
                 <button class="btn red full" onclick="logoutUser()">Logout</button>
+            </div>
+            <div id="ad-profile-728" class="adbox">
+                <script>
+                    atOptions = { 'key' : '51bcf215100b208521b1f970deaedf8e', 'format' : 'iframe', 'height' : 90, 'width' : 728, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/51bcf215100b208521b1f970deaedf8e/invoke.js"></script>
             </div>
             <div id="ad-profile-native" class="native-ad-container"></div>
         </div>
@@ -405,7 +545,7 @@
         <div class="label">সেকেন্ড</div>
     </div>
     
-    <a href="https://omg10.com/4/11572642" target="_blank" class="btn-go primary" id="sessionBtn" onclick="startSession(event)">
+    <a href="javascript:void(0)" class="btn-go primary" id="sessionBtn" onclick="startSession(event)">
         🚀 শুরু করুন (Direct Link)
     </a>
 </div>
@@ -417,7 +557,52 @@
 // ==========================================================
 //   কনফিগারেশন
 // ==========================================================
-const DIRECT_LINK = 'https://omg10.com/4/11572642';
+// ডিরেক্ট লিংক নেটওয়ার্কসমূহ (Adsterra + AdGram + Monetag)
+const DIRECT_LINKS = [
+    'https://www.effectivecpmnetwork.com/uzb1t5ufj8?key=e19391500b97ca1f8e98e175831054cd', // Adsterra Direct
+    'https://omg10.com/4/11572642' // Monetag Direct
+];
+const ADGRAM_BLOCK_ID = 'int-42955';
+let __directTurn = 0;
+
+// রিয়েল ডিরেক্ট লিংক এড ওপেন করে (তিনটি নেটওয়ার্ক ঘুরিয়ে)
+function openDirectAd() {
+    const choice = __directTurn % 3;
+    __directTurn++;
+    if (choice === 2 && window.Adsgram) {
+        try {
+            const ctrl = window.Adsgram.init({ blockId: (window.ADGRAM_BLOCK_ID_LIVE || ADGRAM_BLOCK_ID) });
+            ctrl.show().catch(() => { window.open(DIRECT_LINKS[0], '_blank'); });
+        } catch (e) {
+            window.open(DIRECT_LINKS[0], '_blank');
+        }
+    } else {
+        window.open(DIRECT_LINKS[choice % DIRECT_LINKS.length], '_blank');
+    }
+}
+
+// ==========================================================
+//   ভিডিও অ্যাড - টাস্ক থেকে ব্যাক আসলে বা শেষ হলে চালু হবে
+// ==========================================================
+function showPostTaskVideoAd() {
+    const fn = window.show_11567392;
+    if (typeof fn === 'function') {
+        try { 
+            fn().catch(() => {}); 
+            console.log('🎬 Video ad shown');
+        } catch (e) {
+            console.log('Video ad error:', e);
+        }
+    } else {
+        console.log('Video ad SDK not loaded');
+    }
+}
+
+// ভিডিও অ্যাড চালু করার জন্য আলাদা ফাংশন (বাইরে থেকে কল করা যাবে)
+function triggerVideoAd() {
+    showPostTaskVideoAd();
+}
+
 const STORAGE_KEY = 'smart_income_v3';
 const BOT_LINK = 'https://t.me/smartearning02_bot';
 
@@ -463,7 +648,7 @@ function getNextLevelInfo(referrals) {
 }
 
 // ==========================================================
-//   টাস্ক
+//   টাস্ক (ডিফল্ট)
 // ==========================================================
 const HOME_TASKS = [
     { id: 'h1', icon: '📺', title: 'YouTube চ্যানেল সাবস্ক্রাইব করুন', desc: 'আমাদের প্রধান YouTube চ্যানেল সাবস্ক্রাইব করুন', reward: 30, sessions: 10, isMain: true },
@@ -511,6 +696,25 @@ function loadDB() {
 }
 
 function saveDB() { localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); }
+
+// অ্যাডমিন প্যানেল থেকে সিঙ্ক
+function syncTasksAndProjectsFromDB() {
+    if (Array.isArray(db.tasks) && db.tasks.length) {
+        const homeT = db.tasks.filter(t => t.isMain);
+        const earnT = db.tasks.filter(t => !t.isMain);
+        HOME_TASKS.length = 0; HOME_TASKS.push(...homeT);
+        EARN_TASKS.length = 0; EARN_TASKS.push(...earnT);
+        ALL_TASKS.length = 0; ALL_TASKS.push(...HOME_TASKS, ...EARN_TASKS);
+    }
+    if (Array.isArray(db.projects) && db.projects.length) {
+        PROJECTS.length = 0; PROJECTS.push(...db.projects);
+    }
+    if (db.adConfig) {
+        if (db.adConfig.adsterraLink) DIRECT_LINKS[0] = db.adConfig.adsterraLink;
+        if (db.adConfig.monetagLink) DIRECT_LINKS[1] = db.adConfig.monetagLink;
+        if (db.adConfig.adgramBlockId) window.ADGRAM_BLOCK_ID_LIVE = db.adConfig.adgramBlockId;
+    }
+}
 
 function today() { return new Date().toISOString().slice(0, 10); }
 function money(n) { return Number(n || 0).toFixed(2); }
@@ -634,7 +838,6 @@ function renderAll() {
     $('pr').textContent = me.referral;
     $('rcode').textContent = me.referral;
     
-    // 🔴 পুরো লিংক দেখাচ্ছে
     const fullLink = BOT_LINK + '?start=ref_' + me.referral;
     $('rlink').textContent = fullLink;
     $('rlink').href = fullLink;
@@ -709,7 +912,7 @@ function updateAdStation() {
 }
 
 // ==========================================================
-//   হোম টাস্ক
+//   হোম টাস্ক (প্রতিটি টাস্কের মাঝখানে ব্যানার)
 // ==========================================================
 function renderHomeTasks() {
     const container = $('homeTaskList');
@@ -721,10 +924,11 @@ function renderHomeTasks() {
     $('homeTaskProgress').textContent = completed + '/' + total;
     $('homeTaskProgressFill').style.width = (completed / total) * 100 + '%';
 
-    container.innerHTML = HOME_TASKS.map((task, index) => {
+    let html = '';
+    HOME_TASKS.forEach((task, index) => {
         const isDone = done.includes(task.id);
         const colorClass = 'color-' + ((index % 5) + 1);
-        return `
+        html += `
             <div class="task-card ${colorClass}" onclick="openTaskDetail('${task.id}')">
                 <div class="row">
                     <div>
@@ -741,11 +945,25 @@ function renderHomeTasks() {
                 </div>
             </div>
         `;
-    }).join('');
+        // 📌 প্রতিটি টাস্কের মাঝখানে ব্যানার (শুধুমাত্র পেন্ডিং টাস্কের জন্য)
+        if (!isDone && index < HOME_TASKS.length - 1) {
+            html += `
+                <div class="task-ad-divider">
+                    <div class="banner-ad-container" style="margin:4px 0;">
+                        <script>
+                            atOptions = { 'key' : 'f70b806885d12defbb6515475012d220', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+                        <\/script>
+                        <script src="https://www.highperformanceformat.com/f70b806885d12defbb6515475012d220/invoke.js"><\/script>
+                    </div>
+                </div>
+            `;
+        }
+    });
+    container.innerHTML = html;
 }
 
 // ==========================================================
-//   আর্নিং টাস্ক
+//   আর্নিং টাস্ক (প্রতিটি টাস্কের মাঝখানে ব্যানার)
 // ==========================================================
 function renderEarnTasks() {
     const container = $('earnTaskList');
@@ -757,10 +975,11 @@ function renderEarnTasks() {
     $('earnTaskProgress').textContent = completed + '/' + total;
     $('earnTaskProgressFill').style.width = (completed / total) * 100 + '%';
 
-    container.innerHTML = EARN_TASKS.map((task, index) => {
+    let html = '';
+    EARN_TASKS.forEach((task, index) => {
         const isDone = done.includes(task.id);
         const colorClass = 'color-' + ((index % 10) + 1);
-        return `
+        html += `
             <div class="task-card ${colorClass}" onclick="openTaskDetail('${task.id}')">
                 <div class="row">
                     <div>
@@ -776,31 +995,62 @@ function renderEarnTasks() {
                 </div>
             </div>
         `;
-    }).join('');
+        // 📌 প্রতিটি আর্নিং টাস্কের মাঝখানে ব্যানার
+        if (!isDone && index < EARN_TASKS.length - 1) {
+            html += `
+                <div class="task-ad-divider">
+                    <div class="banner-ad-container" style="margin:4px 0;">
+                        <script>
+                            atOptions = { 'key' : '4f73a7be6b5aa37211aad8635c516fda', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
+                        <\/script>
+                        <script src="https://www.highperformanceformat.com/4f73a7be6b5aa37211aad8635c516fda/invoke.js"><\/script>
+                    </div>
+                </div>
+            `;
+        }
+    });
+    container.innerHTML = html;
 }
 
 // ==========================================================
-//   প্রজেক্ট
+//   প্রজেক্ট (প্রতিটি প্রজেক্টের মাঝখানে ব্যানার)
 // ==========================================================
 function renderProjects() {
     const container = $('projectsList');
     if (!container) return;
-    container.innerHTML = PROJECTS.map(p => `
-        <div class="project-card" style="border-left:4px solid ${p.color}">
-            <div class="info">
-                <h4>${p.icon} ${p.title}</h4>
-                <div class="desc">${p.desc}</div>
+    
+    let html = '';
+    PROJECTS.forEach((p, index) => {
+        html += `
+            <div class="project-card" style="border-left:4px solid ${p.color}">
+                <div class="info">
+                    <h4>${p.icon} ${p.title}</h4>
+                    <div class="desc">${p.desc}</div>
+                </div>
+                <div class="reward">+৳${money(p.reward)}</div>
+                <button class="btn" style="background:${p.color};padding:6px 14px;font-size:13px;margin-top:6px" onclick="doProject('${p.id}')">Start</button>
             </div>
-            <div class="reward">+৳${money(p.reward)}</div>
-            <button class="btn" style="background:${p.color};padding:6px 14px;font-size:13px;margin-top:6px" onclick="doProject('${p.id}')">Start</button>
-        </div>
-    `).join('');
+        `;
+        // 📌 প্রতিটি প্রজেক্টের মাঝখানে ব্যানার
+        if (index < PROJECTS.length - 1) {
+            html += `
+                <div class="banner-ad-container" style="margin:6px 0;">
+                    <script>
+                        atOptions = { 'key' : 'f70b806885d12defbb6515475012d220', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+                    <\/script>
+                    <script src="https://www.highperformanceformat.com/f70b806885d12defbb6515475012d220/invoke.js"><\/script>
+                </div>
+            `;
+        }
+    });
+    container.innerHTML = html;
 }
 
 function doProject(id) {
     const p = PROJECTS.find(x => x.id === id);
     if (!p) return;
     if (me.today >= 100) return toast('আজকের earning limit শেষ');
+    openDirectAd();
     showLoader(true, 'Project চলছে...');
     setTimeout(() => {
         me.balance += p.reward;
@@ -818,11 +1068,13 @@ function doProject(id) {
         renderAll();
         showLoader(false);
         toast(`✅ ${p.title} সম্পন্ন! +৳${money(p.reward)}`);
+        // 📌 ভিডিও অ্যাড চালু করুন
+        showPostTaskVideoAd();
     }, 1000);
 }
 
 // ==========================================================
-//   টাস্ক ডিটেইল
+//   টাস্ক ডিটেইল (ভিডিও অ্যাড সহ)
 // ==========================================================
 let currentTaskId = null;
 let sessionTimer = null;
@@ -855,6 +1107,18 @@ function closeTaskDetail() {
     $('taskDetailPage').classList.remove('show');
     if (sessionTimer) { clearInterval(sessionTimer); sessionTimer = null; }
     isWaitingForComplete = false;
+    
+    // 📌 টাস্ক ডিটেইল থেকে ব্যাক আসলে ভিডিও অ্যাড চালু করুন
+    if (currentTaskId) {
+        const task = ALL_TASKS.find(t => t.id === currentTaskId);
+        if (task && !(me.completedTasks || []).includes(currentTaskId)) {
+            // টাস্ক সম্পূর্ণ না হলে ভিডিও অ্যাড দেখান
+            setTimeout(() => {
+                showPostTaskVideoAd();
+            }, 300);
+        }
+        currentTaskId = null;
+    }
 }
 
 function renderSessions(taskId) {
@@ -918,7 +1182,7 @@ function updateSessionUI(taskId) {
 }
 
 function startSession(e) {
-    window.open(DIRECT_LINK, '_blank');
+    openDirectAd();
 
     if (!currentTaskId) return;
     const task = ALL_TASKS.find(t => t.id === currentTaskId);
@@ -982,6 +1246,8 @@ function autoCompleteSession() {
             renderAll();
             renderHomeTasks();
             renderEarnTasks();
+            // 📌 সেশন সম্পন্ন হলে ভিডিও অ্যাড চালু করুন
+            showPostTaskVideoAd();
         }, 500);
     }
 }
@@ -1012,7 +1278,9 @@ function completeFullTask(taskId) {
         renderEarnTasks();
         showLoader(false);
         toast(`🎉 টাস্ক সম্পন্ন! +৳${task.reward}`);
-        
+        // 📌 টাস্ক সম্পন্ন হলে ভিডিও অ্যাড চালু করুন
+        showPostTaskVideoAd();
+
         updateSessionUI(taskId);
         renderSessions(taskId);
         
@@ -1150,28 +1418,23 @@ function loadAllNativeAds() {
 }
 
 // ==========================================================
-//   🔴 কপি রেফারেল ফাংশন (শক্তিশালী)
+//   কপি রেফারেল
 // ==========================================================
 function copyRef() {
     const link = BOT_LINK + '?start=ref_' + me.referral;
     
-    // পদ্ধতি 1: Clipboard API (আধুনিক ব্রাউজার)
     if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(link).then(() => {
             toast('✅ লিংক কপি হয়েছে: ' + link);
         }).catch(() => {
-            // পদ্ধতি 2: Fallback
             fallbackCopy(link);
         });
     } else {
-        // পদ্ধতি 2: Fallback
         fallbackCopy(link);
     }
 }
 
-// Fallback কপি পদ্ধতি (সব ব্রাউজারে কাজ করে)
 function fallbackCopy(text) {
-    // একটি টেম্পরারি এলিমেন্ট তৈরি করুন
     const textarea = document.createElement('textarea');
     textarea.value = text;
     textarea.style.position = 'fixed';
@@ -1228,9 +1491,12 @@ function closeSpin() { $('spinModal').classList.remove('show'); }
 //   ইনিশিয়ালাইজ
 // ==========================================================
 loadDB();
+syncTasksAndProjectsFromDB();
 
-console.log('✅ Smart Income - User App');
-console.log('✅ Bot: @smartearning02_bot');
+console.log('✅ Smart Income - User App (Updated)');
+console.log('✅ পপআন্ডার: শুধুমাত্র Monetag (nap5k)');
+console.log('✅ ব্যানার অ্যাড: সব পেজে যুক্ত');
+console.log('✅ ভিডিও অ্যাড: টাস্ক থেকে ব্যাক/সমাপ্তিতে চালু হবে');
 console.log('📦 Users:', db.users.length);
 
 if (db.current && me) {
@@ -1247,10 +1513,8 @@ if (db.current && me) {
 try { if (window.Telegram?.WebApp) { Telegram.WebApp.ready(); Telegram.WebApp.expand(); } } catch (e) {}
 </script>
 
-<!-- POPUNDER & VIGNETTE -->
+<!-- ⚠️ শুধুমাত্র একটি পপআন্ডার/ভিগনেট - Monetag (nap5k) -->
 <script>(function(s){s.dataset.zone='11572640',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-<div id="vignette-container"></div>
-<script>(function(s){s.dataset.zone='11572641',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 
 </body>
 </html>
