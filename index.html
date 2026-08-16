@@ -18,6 +18,21 @@
     <script async src="https://pl30829859.effectivecpmnetwork.com/4beb40aebf3d21b797c6bb96ba14331f/invoke.js"></script>
     <script async data-cfasync="false" src="https://pl30829866.effectivecpmnetwork.com/2b/32/ab/2b32ab962eb4c06c52ac028b5d6bdb58.js"></script>
     
+    <!-- Firebase Config & SDK -->
+    <script>
+        const FIREBASE_CONFIG = {
+            apiKey: "AIzaSyB4bgSusVPVrzWRs9gGGX48D2IDsKuJE_o",
+            authDomain: "smart-earning-63e85.firebaseapp.com",
+            databaseURL: "https://smart-earning-63e85-default-rtdb.firebaseio.com",
+            projectId: "smart-earning-63e85",
+            storageBucket: "smart-earning-63e85.firebasestorage.app",
+            messagingSenderId: "425448212470",
+            appId: "1:425448212470:web:779fba0a4b121b5fdb29d7"
+        };
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js"></script>
+    
     <title>Smart Income - Task & Earn</title>
     <style>
         *{box-sizing:border-box;margin:0;padding:0}
@@ -697,6 +712,39 @@ function loadDB() {
 
 function saveDB() { localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); }
 
+// ===== Firebase Realtime Database Multi-Device Sync =====
+async function initFirebaseApp() {
+    if (window.firebaseInitialized) return;
+    if (!window.firebase || !FIREBASE_CONFIG) return;
+    try {
+        const app = firebase.initializeApp(FIREBASE_CONFIG);
+        window.firebaseInitialized = true;
+    } catch (e) {}
+}
+
+async function syncUserToFirebase() {
+    if (!window.firebaseInitialized || !window.firebase || !me || !me.id) return;
+    try {
+        const ref = firebase.database().ref('users/' + me.id);
+        ref.set({
+            id: me.id, phone: me.phone, email: me.email, name: me.name,
+            balance: me.balance, total: me.total, today: me.today,
+            completedTasks: me.completedTasks || [],
+            taskSessions: me.taskSessions || {},
+            tx: me.tx || [],
+            lastSync: new Date().toISOString()
+        }).catch(() => {});
+    } catch (e) {}
+}
+
+async function loadUserFromFirebase(userId) {
+    if (!window.firebaseInitialized || !window.firebase) return null;
+    try {
+        const snapshot = await firebase.database().ref('users/' + userId).get();
+        return snapshot.val();
+    } catch (e) { return null; }
+}
+
 // অ্যাডমিন প্যানেল থেকে সিঙ্ক
 function syncTasksAndProjectsFromDB() {
     if (Array.isArray(db.tasks) && db.tasks.length) {
@@ -757,7 +805,7 @@ function registerUser() {
         }
     }
     showLoader(true, 'অ্যাকাউন্ট তৈরি হচ্ছে...');
-    setTimeout(() => {
+    setTimeout(async () => {
         const newUser = {
             id: uid(), name, phone, email, password: pass1, referral: code(), referredBy: ref || '',
             balance: 0, total: 0, today: 0, todayDate: today(), tx: [], spunDate: null, dailyDate: null,
@@ -768,6 +816,11 @@ function registerUser() {
         db.current = newUser.id;
         me = newUser;
         saveDB();
+        
+        // Firebase-এ নতুন user sync করুন (অন্য device access enable করার জন্য)
+        await initFirebaseApp();
+        syncUserToFirebase();
+        
         showLoader(false);
         enterApp();
         toast('🎉 রেজিস্ট্রেশন সফল!');
@@ -778,7 +831,7 @@ function loginUser() {
     const email = $('le').value.trim().toLowerCase(), pass = $('lp').value;
     if (!email || !pass) return toast('Email ও Password দিন');
     showLoader(true, 'লগইন হচ্ছে...');
-    setTimeout(() => {
+    setTimeout(async () => {
         const user = db.users.find(u => u.email === email && u.password === pass && u.status === 'active');
         if (!user) { showLoader(false); return toast('Email বা password সঠিক নয়'); }
         if (user.todayDate !== today()) { user.today = 0; user.todayDate = today(); }
@@ -788,6 +841,19 @@ function loginUser() {
         db.current = user.id;
         me = user;
         saveDB();
+        
+        // Firebase থেকে আপডেটেড data pull করুন
+        await initFirebaseApp();
+        const firebaseUser = await loadUserFromFirebase(user.id);
+        if (firebaseUser && firebaseUser.lastSync) {
+            user.balance = firebaseUser.balance || user.balance;
+            user.total = firebaseUser.total || user.total;
+            user.completedTasks = firebaseUser.completedTasks || user.completedTasks;
+            user.tx = firebaseUser.tx || user.tx;
+            saveDB();
+        }
+        
+        syncUserToFirebase();
         showLoader(false);
         enterApp();
         toast('✅ লগইন সফল!');
