@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="monetag" content="584a8084bf4f71bb2ae1dc8665e4ecf6">
     
-    <!-- ✅ Telegram WebApp SDK - এটাই সবচেয়ে গুরুত্বপূর্ণ -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    
     <!-- Rewarded Video Ad SDK -->
     <script src="https://libtl.com/sdk.js" data-zone="11567392" data-sdk="show_11567392"></script>
     
@@ -166,7 +163,7 @@
         @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
         .level-container{background:#f8fafc;border-radius:10px;padding:10px;margin:6px 0}
 
-        .banner-ad-container{margin:8px 0;text-align:center;min-height:60px;background:#f8fafc;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+        .banner-ad-container{margin:12px 0;text-align:center;min-height:60px;background:#f8fafc;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center}
         .banner-ad-container iframe{max-width:100%;border:0}
         .task-ad-divider{margin:6px 0;padding:4px 0;background:#f1f5f9;border-radius:6px;text-align:center;font-size:10px;color:#94a3b8}
         .ad-label{font-size:9px;color:#94a3b8;text-align:center;padding:2px;letter-spacing:0.5px;text-transform:uppercase}
@@ -212,7 +209,7 @@
         <h2 style="text-align:center;margin:5px 0;color:#facc15;">Smart Cash</h2>
         <p style="text-align:center;color:#94a3b8;font-size:13px;">Earn Smart, Cash Fast</p>
 
-        <!-- ✅ Telegram Status -->
+        <!-- Telegram Status -->
         <div id="telegramStatus" style="text-align:center;padding:8px;border-radius:8px;margin-bottom:10px;font-size:12px;display:none;"></div>
 
         <div id="loginBox">
@@ -613,7 +610,7 @@
     </div>
     
     <a href="javascript:void(0)" class="btn-go primary" id="sessionBtn" onclick="startSession(event)">
-        🚀 শুরু করুন (Direct Link)
+        ▶️ শুরু করুন
     </a>
 </div>
 
@@ -622,322 +619,81 @@
 
 <script>
 // ==========================================================
-//   🔧 FIXED: Telegram WebApp Integration
-// ==========================================================
-
-// ✅ Telegram User ID পাওয়ার ফাংশন (আপডেটেড)
-function getTelegramUserId() {
-    try {
-        // 1. Telegram WebApp থেকে চেক
-        if (window.Telegram && window.Telegram.WebApp) {
-            const tg = window.Telegram.WebApp;
-            tg.ready();
-            const user = tg.initDataUnsafe?.user;
-            if (user && user.id) {
-                const id = String(user.id);
-                localStorage.setItem('telegram_user_id', id);
-                localStorage.setItem('telegram_username', user.username || user.first_name || '');
-                return id;
-            }
-        }
-        
-        // 2. localStorage থেকে চেক
-        const savedId = localStorage.getItem('telegram_user_id');
-        if (savedId) {
-            return savedId;
-        }
-        
-        // 3. URL থেকে চেক (কিছু ক্ষেত্রে)
-        const urlParams = new URLSearchParams(window.location.search);
-        const tgId = urlParams.get('tg_id');
-        if (tgId) {
-            localStorage.setItem('telegram_user_id', tgId);
-            return tgId;
-        }
-        
-        return '';
-    } catch (e) {
-        console.error('Error getting Telegram ID:', e);
-        return '';
-    }
-}
-
-// ✅ Telegram স্ট্যাটাস চেক ও দেখানো
-function checkTelegramStatus() {
-    const statusEl = document.getElementById('telegramStatus');
-    const userId = getTelegramUserId();
-    
-    if (userId) {
-        statusEl.style.display = 'block';
-        statusEl.style.background = '#d1fae5';
-        statusEl.style.color = '#065f46';
-        statusEl.innerHTML = `✅ Telegram সংযুক্ত! User ID: ${userId}`;
-        return true;
-    } else {
-        statusEl.style.display = 'block';
-        statusEl.style.background = '#fee2e2';
-        statusEl.style.color = '#991b1b';
-        statusEl.innerHTML = '⚠️ Telegram থেকে অ্যাপটি খুলুন। User ID পাওয়া যায়নি।';
-        return false;
-    }
-}
-
-// ==========================================================
-//   🔧 FIXED: Registration Function
-// ==========================================================
-async function registerUser() {
-    const name = document.getElementById('rn').value.trim();
-    const phone = document.getElementById('rp').value.trim();
-    const email = document.getElementById('re').value.trim().toLowerCase();
-    const pass1 = document.getElementById('r1').value;
-    const pass2 = document.getElementById('r2').value;
-    const ref = document.getElementById('rr').value.trim().toUpperCase();
-    
-    // ✅ ভ্যালিডেশন
-    if (!name) { toast('👤 আপনার নাম দিন'); return; }
-    if (!phone || phone.length < 10) { toast('📱 সঠিক মোবাইল নম্বর দিন'); return; }
-    if (!email || !email.includes('@')) { toast('📧 সঠিক ইমেইল দিন'); return; }
-    if (pass1.length < 8) { toast('🔑 পাসওয়ার্ড কমপক্ষে ৮ অক্ষর'); return; }
-    if (pass1 !== pass2) { toast('🔑 পাসওয়ার্ড মেলেনি'); return; }
-    
-    showLoader(true, 'অ্যাকাউন্ট তৈরি হচ্ছে...');
-    
-    // ✅ Telegram ID চেক (সবচেয়ে গুরুত্বপূর্ণ)
-    const telegramUserId = getTelegramUserId();
-    console.log('📱 Telegram ID:', telegramUserId);
-    
-    if (!telegramUserId) {
-        showLoader(false);
-        toast('⚠️ অনুগ্রহ করে টেলিগ্রাম অ্যাপ থেকে খুলুন!');
-        return;
-    }
-    
-    try {
-        // ✅ Firebase Initialize
-        await initFirebaseApp();
-        
-        // ✅ ইউজার চেক
-        const remoteUsers = await loadAllUsersFromFirebase();
-        const merged = [...db.users];
-        remoteUsers.forEach(u => { 
-            if (u && !merged.some(x => x.id === u.id)) merged.push(u); 
-        });
-        db.users = merged;
-        
-        // ✅ চেক: এই ইমেইল বা ফোন আগে আছে?
-        if (merged.some(u => u.email === email)) {
-            showLoader(false);
-            toast('⚠️ এই ইমেইল আগে থেকেই আছে!');
-            return;
-        }
-        if (merged.some(u => u.phone === phone)) {
-            showLoader(false);
-            toast('⚠️ এই ফোন নম্বর আগে থেকেই আছে!');
-            return;
-        }
-        
-        // ✅ চেক: এই Telegram ID আগে আছে?
-        if (merged.some(u => u.telegramUserId && String(u.telegramUserId) === String(telegramUserId))) {
-            showLoader(false);
-            toast('⚠️ এই Telegram ID দিয়ে আগে অ্যাকাউন্ট আছে!');
-            return;
-        }
-        
-        // ✅ রেফারেল চেক
-        const referrer = ref ? merged.find(u => u.referral === ref && u.status === 'active') : null;
-        if (referrer) {
-            referrer.referrals = (referrer.referrals || 0) + 1;
-            referrer.activeRef = (referrer.activeRef || 0) + 1;
-            referrer.refEarn = (referrer.refEarn || 0) + 0.50;
-            referrer.balance = (referrer.balance || 0) + 0.50;
-            referrer.tx = referrer.tx || [];
-            referrer.tx.unshift({ 
-                type: 'referral-bonus', 
-                amount: 0.50, 
-                status: 'approved', 
-                date: new Date().toLocaleString('bn-BD') 
-            });
-        }
-        
-        // ✅ নতুন ইউজার তৈরি
-        const newUser = {
-            id: 'u_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
-            name,
-            phone,
-            email,
-            password: pass1,
-            referral: 'SC' + Math.random().toString(36).slice(2, 10).toUpperCase(),
-            referredBy: ref || '',
-            telegramUserId: String(telegramUserId),
-            balance: 0,
-            total: 0,
-            today: 0,
-            todayDate: new Date().toISOString().slice(0, 10),
-            tx: [],
-            referrals: 0,
-            activeRef: 0,
-            refEarn: 0,
-            status: 'active',
-            completedTasks: [],
-            taskSessions: {},
-            notifications: [],
-            dailyBonusDate: null,
-            createdAt: new Date().toISOString()
-        };
-        
-        // ✅ সংরক্ষণ
-        db.users = merged;
-        if (referrer) {
-            const ri = db.users.findIndex(u => u.id === referrer.id);
-            if (ri >= 0) db.users[ri] = referrer;
-        }
-        db.users.push(newUser);
-        db.current = newUser.id;
-        me = newUser;
-        saveDB();
-        
-        // ✅ Firebase Sync
-        await syncUserToFirebase(newUser);
-        if (referrer) await syncUserToFirebase(referrer);
-        startFirebaseRealtimeSync();
-        
-        showLoader(false);
-        enterApp();
-        toast('🎉 রেজিস্ট্রেশন সফল! স্বাগতম ' + name);
-        
-    } catch (error) {
-        console.error('Registration error:', error);
-        showLoader(false);
-        toast('❌ রেজিস্ট্রেশন ব্যর্থ! আবার চেষ্টা করুন।');
-    }
-}
-
-// ==========================================================
-//   🔧 FIXED: Login Function
-// ==========================================================
-async function loginUser() {
-    const email = document.getElementById('le').value.trim().toLowerCase();
-    const pass = document.getElementById('lp').value;
-    
-    if (!email || !pass) {
-        toast('📧 ইমেইল ও পাসওয়ার্ড দিন');
-        return;
-    }
-    
-    showLoader(true, 'লগইন হচ্ছে...');
-    
-    try {
-        await initFirebaseApp();
-        const remoteUsers = await loadAllUsersFromFirebase();
-        const merged = [...db.users];
-        remoteUsers.forEach(u => {
-            if (!u) return;
-            const i = merged.findIndex(x => x.id === u.id);
-            if (i >= 0) merged[i] = u;
-            else merged.push(u);
-        });
-        db.users = merged;
-        
-        // ✅ ইউজার খুঁজি
-        const user = db.users.find(u => u.email === email && u.password === pass);
-        
-        if (!user) {
-            showLoader(false);
-            toast('❌ ইমেইল বা পাসওয়ার্ড ভুল!');
-            return;
-        }
-        
-        // ✅ চেক: ইউজার ব্লক?
-        if (user.status === 'blocked' || user.status === 'inactive') {
-            showLoader(false);
-            toast('⛔ এই অ্যাকাউন্ট ব্লক করা হয়েছে!');
-            return;
-        }
-        
-        // ✅ Telegram ID চেক
-        const telegramUserId = getTelegramUserId();
-        if (!telegramUserId) {
-            showLoader(false);
-            toast('⚠️ Telegram থেকে অ্যাপটি খুলুন!');
-            return;
-        }
-        
-        // ✅ চেক: এই Telegram ID কি মিলছে?
-        if (user.telegramUserId && String(user.telegramUserId) !== String(telegramUserId)) {
-            showLoader(false);
-            toast('⚠️ এই অ্যাকাউন্ট অন্য Telegram ID দিয়ে তৈরি!');
-            return;
-        }
-        
-        // ✅ লগইন সফল
-        me = user;
-        db.current = user.id;
-        saveDB();
-        startFirebaseRealtimeSync();
-        
-        showLoader(false);
-        enterApp();
-        toast('👋 স্বাগতম ' + user.name + '!');
-        
-    } catch (error) {
-        console.error('Login error:', error);
-        showLoader(false);
-        toast('❌ লগইন ব্যর্থ! আবার চেষ্টা করুন।');
-    }
-}
-
-// ==========================================================
-//   🔧 FIXED: Page Load - Check Telegram Status
-// ==========================================================
-document.addEventListener('DOMContentLoaded', function() {
-    // ✅ Telegram WebApp চেক
-    if (window.Telegram && window.Telegram.WebApp) {
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
-        
-        const user = tg.initDataUnsafe?.user;
-        if (user) {
-            localStorage.setItem('telegram_user_id', String(user.id));
-            localStorage.setItem('telegram_username', user.username || user.first_name || '');
-            console.log('✅ Telegram User:', user.id, user.first_name);
-        }
-    }
-    
-    // ✅ স্ট্যাটাস দেখাও
-    checkTelegramStatus();
-});
-
-// ==========================================================
-//   🔧 REST: কনফিগারেশন (আগের মতো)
+//   🔧 আপডেটেড: DIRECT_LINKS (তোমার দেওয়া ৩টি লিংক)
 // ==========================================================
 const DIRECT_LINKS = [
-    'https://www.effectivecpmnetwork.com/uzb1t5ufj8?key=e19391500b97ca1f8e98e175831054cd',
-    'https://omg10.com/4/11572642'
+    'https://partner.adsgram.ai/units/int-43256/',      // ✅ AdGram (তোমার দেওয়া)
+    'https://www.effectivecpmnetwork.com/uzb1t5ufj8?key=e19391500b97ca1f8e98e175831054cd', // Adsterra
+    'https://omg10.com/4/11572642'                      // Monetag
 ];
-const ADGRAM_BLOCK_ID = 'int-42955';
+
+// ==========================================================
+//   🔧 আপডেটেড: DEFAULT_AD_CONFIG
+// ==========================================================
+const DEFAULT_AD_CONFIG = {
+    popunderEnabled: true,
+    vignetteEnabled: true,
+    videoAdEnabled: true,
+    adsterraLink: 'https://www.effectivecpmnetwork.com/uzb1t5ufj8?key=e19391500b97ca1f8e98e175831054cd',
+    monetagLink: 'https://omg10.com/4/11572642',
+    adgramBlockId: 'int-43256', // ✅ তোমার দেওয়া নতুন ID
+    rewardedZone: '11567392',
+    zone728: '51bcf215100b208521b1f970deaedf8e',
+    zone320: 'f70b806885d12defbb6515475012d220',
+    zone300: '4f73a7be6b5aa37211aad8635c516fda',
+    zone468: 'f9b4e4f2db5fe51891bd5a72de5078dd',
+    zone160: '7377c6284642e41982bac15f7a52f957',
+    zone160x300: '0ca63518e47c3eff896923a1d3c9fbdb'
+};
+
+const ADGRAM_BLOCK_ID = 'int-43256';
 let __directTurn = 0;
 
+// ==========================================================
+//   🔧 আপডেটেড: openDirectAd() - র‍্যান্ডম লিংক
+// ==========================================================
 function openDirectAd() {
-    const choice = __directTurn % 3;
-    __directTurn++;
-    if (choice === 2 && window.Adsgram) {
+    // চেক করো popunder Enabled কিনা
+    if (window.__popunderEnabled === false) {
+        console.log('⛔ Popunder disabled by admin');
+        return;
+    }
+    
+    // র‍্যান্ডমভাবে ৩টি লিংক থেকে দেখাবে
+    const choice = Math.floor(Math.random() * DIRECT_LINKS.length);
+    
+    // AdGram Interstitial (যদি choice 0 হয়)
+    if (choice === 0 && window.Adsgram) {
         try {
-            const ctrl = window.Adsgram.init({ blockId: (window.ADGRAM_BLOCK_ID_LIVE || ADGRAM_BLOCK_ID) });
-            ctrl.show().catch(() => { window.open(DIRECT_LINKS[0], '_blank'); });
+            const blockId = db.adConfig?.adgramBlockId || 'int-43256';
+            const ctrl = window.Adsgram.init({ blockId: blockId });
+            ctrl.show().catch(() => { 
+                window.open(DIRECT_LINKS[0], '_blank'); 
+            });
         } catch (e) {
             window.open(DIRECT_LINKS[0], '_blank');
         }
     } else {
-        window.open(DIRECT_LINKS[choice % DIRECT_LINKS.length], '_blank');
+        window.open(DIRECT_LINKS[choice], '_blank');
     }
 }
 
 function showPostTaskVideoAd() {
     const fn = window.show_11567392;
     if (typeof fn === 'function') {
-        try { fn().catch(() => {}); } catch (e) {}
+        try { 
+            fn().catch(() => {}); 
+            console.log('🎬 Video ad shown');
+        } catch (e) {
+            console.log('Video ad error:', e);
+        }
+    } else {
+        console.log('Video ad SDK not loaded');
     }
+}
+
+function triggerVideoAd() {
+    showPostTaskVideoAd();
 }
 
 const STORAGE_KEY = 'smart_income_v3';
@@ -955,14 +711,222 @@ const ACCOUNT_BLOCK_MESSAGE = '⛔ আপনার অ্যাকাউন্�
 function getDeviceId() {
     let id = localStorage.getItem(DEVICE_ID_KEY);
     if (!id) {
-        try { id = crypto.randomUUID ? crypto.randomUUID() : null; } catch (e) {}
-        if (!id) id = 'dev_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
+        try {
+            id = (crypto.randomUUID ? crypto.randomUUID() : null);
+        } catch (e) { id = null; }
+        if (!id) {
+            id = 'dev_' + Date.now().toString(36) + '_' +
+                 Math.random().toString(36).slice(2) +
+                 Math.random().toString(36).slice(2);
+        }
         localStorage.setItem(DEVICE_ID_KEY, id);
     }
     return id;
 }
 
-function deviceIdForDb() { return getDeviceId(); }
+function deviceIdForDb() {
+    return getDeviceId();
+}
+
+function getTelegramUserId() {
+    try {
+        if (window.Telegram && window.Telegram.WebApp) {
+            const tg = window.Telegram.WebApp;
+            tg.ready();
+            const user = tg.initDataUnsafe?.user;
+            if (user && user.id) {
+                const id = String(user.id);
+                localStorage.setItem('telegram_user_id', id);
+                localStorage.setItem('telegram_username', user.username || user.first_name || '');
+                return id;
+            }
+        }
+        const savedId = localStorage.getItem('telegram_user_id');
+        if (savedId) {
+            return savedId;
+        }
+        const urlParams = new URLSearchParams(window.location.search);
+        const tgId = urlParams.get('tg_id');
+        if (tgId) {
+            localStorage.setItem('telegram_user_id', tgId);
+            return tgId;
+        }
+        return '';
+    } catch (e) {
+        console.error('Error getting Telegram ID:', e);
+        return '';
+    }
+}
+
+function saveTelegramUserId(id) {
+    if (id) localStorage.setItem(TELEGRAM_ID_KEY, String(id));
+}
+
+function clearTelegramSessionId() {
+    localStorage.removeItem(TELEGRAM_ID_KEY);
+}
+
+function showAccountBlocked() {
+    let page = document.getElementById('accountBlockedPage');
+    if (!page) {
+        page = document.createElement('section');
+        page.id = 'accountBlockedPage';
+        page.style.cssText = [
+            'position:fixed','inset:0','z-index:10001','background:#0f172a',
+            'display:flex','align-items:center','justify-content:center',
+            'padding:20px','font-family:system-ui,-apple-system,Segoe UI,sans-serif'
+        ].join(';');
+        page.innerHTML = `
+            <div style="width:100%;max-width:430px;background:#fff;border-radius:22px;
+                        padding:28px 20px;text-align:center;border:3px solid #ef4444;
+                        box-shadow:0 15px 50px #0008;">
+                <div style="font-size:56px;margin-bottom:8px;">⛔</div>
+                <h2 style="margin:0 0 10px;color:#991b1b;">অ্যাকাউন্ট ব্লক করা হয়েছে</h2>
+                <p style="margin:0;color:#475569;line-height:1.7;font-size:14px;">${ACCOUNT_BLOCK_MESSAGE}</p>
+                <button onclick="logoutUser()" style="margin-top:18px;width:100%;border:0;border-radius:12px;padding:12px 20px;background:#ef4444;color:#fff;font-weight:800;cursor:pointer;">🚪 লগ আউট</button>
+            </div>`;
+        document.body.appendChild(page);
+    }
+    page.style.display = 'flex';
+    document.getElementById('auth')?.classList.add('hidden');
+    document.getElementById('app')?.classList.add('hidden');
+}
+
+function hideAccountBlocked() {
+    const page = document.getElementById('accountBlockedPage');
+    if (page) page.style.display = 'none';
+}
+
+function enforceUserStatus(user) {
+    if (!user) return false;
+    if (user.status === 'blocked' || user.status === 'inactive') {
+        showAccountBlocked();
+        return false;
+    }
+    hideAccountBlocked();
+    return true;
+}
+
+function showAccessBlocked() {
+    let page = document.getElementById('accessBlockPage');
+    if (!page) {
+        page = document.createElement('section');
+        page.id = 'accessBlockPage';
+        page.style.cssText = [
+            'position:fixed','inset:0','z-index:10000','background:#0f172a',
+            'display:flex','align-items:center','justify-content:center',
+            'padding:20px','font-family:system-ui,-apple-system,Segoe UI,sans-serif'
+        ].join(';');
+        page.innerHTML = `
+            <div style="width:100%;max-width:430px;background:#fff;border-radius:22px;
+                        padding:28px 20px;text-align:center;border:3px solid #facc15;
+                        box-shadow:0 15px 50px #0008;">
+                <div style="font-size:56px;margin-bottom:8px;">⚠️</div>
+                <h2 style="margin:0 0 10px;color:#0f172a;">অ্যাক্সেস ব্লক করা হয়েছে</h2>
+                <p style="margin:0;color:#475569;line-height:1.7;font-size:14px;">
+                    ${ACCESS_BLOCK_MESSAGE}
+                </p>
+                <button onclick="location.reload()" style="margin-top:18px;width:100%;border:0;
+                    border-radius:12px;padding:12px 20px;background:#facc15;
+                    color:#0f172a;font-weight:800;cursor:pointer;">🔄 আবার চেষ্টা করুন</button>
+                <button onclick="logoutUser()" style="margin-top:10px;width:100%;border:0;
+                    border-radius:12px;padding:12px 20px;background:#ef4444;
+                    color:#fff;font-weight:800;cursor:pointer;">🚪 লগ আউট</button>
+            </div>`;
+        document.body.appendChild(page);
+    }
+    page.style.display = 'flex';
+    document.getElementById('auth')?.classList.add('hidden');
+    document.getElementById('app')?.classList.add('hidden');
+}
+
+function hideAccessBlocked() {
+    const page = document.getElementById('accessBlockPage');
+    if (page) page.style.display = 'none';
+}
+
+function createAdBlockBait() {
+    const bait = document.createElement('div');
+    bait.className = 'adsbox ad ads advertisement ad-banner ad-container';
+    bait.id = '__smart_cash_ad_bait';
+    bait.setAttribute('aria-hidden', 'true');
+    bait.style.cssText = 'position:absolute!important;left:-10000px!important;top:-10000px!important;width:1px!important;height:1px!important;overflow:hidden!important;';
+    document.body.appendChild(bait);
+    return bait;
+}
+
+function testImageEndpoint(url, timeout = 2500) {
+    return new Promise(resolve => {
+        let done = false;
+        const img = new Image();
+        const finish = ok => {
+            if (done) return;
+            done = true;
+            clearTimeout(timer);
+            img.onload = img.onerror = null;
+            resolve(ok);
+        };
+        const timer = setTimeout(() => finish(false), timeout);
+        img.onload = () => finish(true);
+        img.onerror = () => finish(false);
+        img.src = url + (url.includes('?') ? '&' : '?') + 'cb=' + Date.now();
+    });
+}
+
+async function runAccessGuard() {
+    if (sessionStorage.getItem(ACCESS_GUARD_KEY) === 'blocked') {
+        showAccessBlocked();
+        return false;
+    }
+
+    const bait = createAdBlockBait();
+    await new Promise(r => setTimeout(r, 120));
+
+    const style = getComputedStyle(bait);
+    const baitBlocked = !document.body.contains(bait) ||
+        style.display === 'none' ||
+        style.visibility === 'hidden' ||
+        Number(style.width) === 0 ||
+        Number(style.height) === 0;
+
+    const endpointOK = await testImageEndpoint(
+        'https://pl30829859.effectivecpmnetwork.com/favicon.ico', 2200
+    );
+
+    bait.remove();
+
+    if (baitBlocked || !endpointOK) {
+        sessionStorage.setItem(ACCESS_GUARD_KEY, 'blocked');
+        showAccessBlocked();
+        return false;
+    }
+
+    hideAccessBlocked();
+    return true;
+}
+
+async function ensureDeviceAvailable(deviceId) {
+    if (!__firebaseReady) return true;
+    try {
+        const snap = await firebase.database().ref('deviceRegistry/' + encodeURIComponent(deviceId)).once('value');
+        return !snap.exists();
+    } catch (e) {
+        console.warn('Device registry check failed:', e);
+        return true;
+    }
+}
+
+async function claimDevice(deviceId, userId) {
+    if (!__firebaseReady) return true;
+    try {
+        const ref = firebase.database().ref('deviceRegistry/' + encodeURIComponent(deviceId));
+        const result = await ref.transaction(current => current === null ? userId : current);
+        return result.committed && result.snapshot.val() === userId;
+    } catch (e) {
+        console.warn('Device registry claim failed:', e);
+        return false;
+    }
+}
 
 // ==========================================================
 //   10 WITHDRAWAL LEVELS
@@ -985,8 +949,9 @@ const MIN_WITHDRAW = 20;
 function getWithdrawalLevel(referrals) {
     let level = 0;
     for (let i = 0; i < WITHDRAWAL_LEVELS.length; i++) {
-        if (referrals >= WITHDRAWAL_LEVELS[i].referralsNeeded) level = i + 1;
-        else break;
+        if (referrals >= WITHDRAWAL_LEVELS[i].referralsNeeded) {
+            level = i + 1;
+        } else break;
     }
     return level;
 }
@@ -994,7 +959,13 @@ function getWithdrawalLevel(referrals) {
 function getNextLevelInfo(referrals) {
     for (let i = 0; i < WITHDRAWAL_LEVELS.length; i++) {
         if (referrals < WITHDRAWAL_LEVELS[i].referralsNeeded) {
-            return { level: i + 1, needed: WITHDRAWAL_LEVELS[i].referralsNeeded, maxWithdraw: WITHDRAWAL_LEVELS[i].maxWithdraw, progress: referrals, total: WITHDRAWAL_LEVELS[i].referralsNeeded };
+            return {
+                level: i + 1,
+                needed: WITHDRAWAL_LEVELS[i].referralsNeeded,
+                maxWithdraw: WITHDRAWAL_LEVELS[i].maxWithdraw,
+                progress: referrals,
+                total: WITHDRAWAL_LEVELS[i].referralsNeeded
+            };
         }
     }
     return { level: 10, needed: 100, maxWithdraw: 50, progress: 100, total: 100 };
@@ -1056,7 +1027,7 @@ function saveDB() {
     }
 }
 
-// ===== Firebase Realtime Database =====
+// ===== Firebase Realtime Database — Central Cross-Browser Sync =====
 let __firebaseReady = false;
 let __firebaseListenersStarted = false;
 
@@ -1069,7 +1040,7 @@ async function initFirebaseApp() {
         window.firebaseInitialized = true;
         return true;
     } catch (e) {
-        console.error('Firebase init error:', e);
+        console.error('Firebase initialization failed:', e);
         return false;
     }
 }
@@ -1081,7 +1052,7 @@ async function loadAllUsersFromFirebase() {
         const v = snap.val();
         return v ? Object.values(v) : [];
     } catch (e) {
-        console.warn('Firebase read error:', e);
+        console.warn('Firebase users read failed:', e);
         return [];
     }
 }
@@ -1095,22 +1066,57 @@ async function syncUserToFirebase(user = me) {
         });
         return true;
     } catch (e) {
-        console.warn('Firebase sync error:', e);
+        console.warn('Firebase user sync failed:', e);
         return false;
     }
 }
 
+function applyRemoteUser(remote) {
+    if (!remote || !remote.id) return;
+    const idx = db.users.findIndex(u => u.id === remote.id);
+    if (idx >= 0) db.users[idx] = remote;
+    else db.users.push(remote);
+    if (db.current === remote.id) {
+        me = remote;
+        if (!enforceUserStatus(remote)) return;
+    }
+    saveDB();
+    if (typeof renderAll === 'function') renderAll();
+}
+
+function checkTelegramStatus() {
+    const statusEl = document.getElementById('telegramStatus');
+    const userId = getTelegramUserId();
+    
+    if (userId) {
+        statusEl.style.display = 'block';
+        statusEl.style.background = '#d1fae5';
+        statusEl.style.color = '#065f46';
+        statusEl.innerHTML = `✅ Telegram সংযুক্ত! User ID: ${userId}`;
+        return true;
+    } else {
+        statusEl.style.display = 'block';
+        statusEl.style.background = '#fee2e2';
+        statusEl.style.color = '#991b1b';
+        statusEl.innerHTML = '⚠️ Telegram থেকে অ্যাপটি খুলুন। User ID পাওয়া যায়নি।';
+        return false;
+    }
+}
+
+// ==========================================================
+//   🔧 আপডেটেড: startFirebaseRealtimeSync() - adConfig listener যোগ
+// ==========================================================
 function startFirebaseRealtimeSync() {
     if (!__firebaseReady || __firebaseListenersStarted) return;
     __firebaseListenersStarted = true;
     const r = firebase.database();
-    
+
     if (db.current) {
         r.ref('users/' + db.current).on('value', snap => {
             if (snap.exists()) applyRemoteUser(snap.val());
         });
     }
-    
+
     r.ref('users').on('value', snap => {
         const v = snap.val();
         if (!v) return;
@@ -1122,34 +1128,131 @@ function startFirebaseRealtimeSync() {
         });
         if (db.current) {
             const current = remoteUsers.find(u => u.id === db.current);
-            if (current) { me = current; }
+            if (current) {
+                me = current;
+                if (!enforceUserStatus(current)) return;
+            }
         }
         saveDB();
         if (typeof renderAll === 'function') renderAll();
     });
+
+    r.ref('tasks').on('value', snap => {
+        if (!snap.exists()) return;
+        db.tasks = Array.isArray(snap.val()) ? snap.val() : Object.values(snap.val());
+        syncTasksAndProjectsFromDB();
+        saveDB();
+        if (typeof renderAll === 'function') renderAll();
+    });
+
+    r.ref('projects').on('value', snap => {
+        if (!snap.exists()) return;
+        db.projects = Array.isArray(snap.val()) ? snap.val() : Object.values(snap.val());
+        syncTasksAndProjectsFromDB();
+        saveDB();
+        if (typeof renderAll === 'function') renderAll();
+    });
+
+    // ✅ adConfig listener (এডমিন থেকে কন্ট্রোল)
+    r.ref('adConfig').on('value', snap => {
+        if (!snap.exists()) {
+            db.adConfig = { ...DEFAULT_AD_CONFIG };
+            updateAdSettings();
+            return;
+        }
+        db.adConfig = snap.val();
+        updateAdSettings();
+        reloadBannerAds(); // ব্যানার রিলোড
+    });
+
+    r.ref('notifications').on('value', snap => {
+        if (!snap.exists()) return;
+        const notiData = snap.val();
+        if (notiData && notiData.text) {
+            showNotification(notiData.text);
+        }
+    });
 }
 
-function applyRemoteUser(remote) {
-    if (!remote || !remote.id) return;
-    const idx = db.users.findIndex(u => u.id === remote.id);
-    if (idx >= 0) db.users[idx] = remote;
-    else db.users.push(remote);
-    if (db.current === remote.id) {
-        me = remote;
-    }
-    saveDB();
-    if (typeof renderAll === 'function') renderAll();
+// ==========================================================
+//   🔧 আপডেটেড: অ্যাড সেটিংস ফাংশন
+// ==========================================================
+function updateAdSettings() {
+    const config = db.adConfig || DEFAULT_AD_CONFIG;
+    
+    // Popunder
+    window.__popunderEnabled = config.popunderEnabled !== false;
+    
+    // Vignette
+    window.__vignetteEnabled = config.vignetteEnabled !== false;
+    
+    // Video Ad
+    window.__videoAdEnabled = config.videoAdEnabled !== false;
+    
+    // Direct Links আপডেট (যদি এডমিন থেকে পরিবর্তন করে)
+    if (config.adsterraLink) DIRECT_LINKS[1] = config.adsterraLink;
+    if (config.monetagLink) DIRECT_LINKS[2] = config.monetagLink;
+    
+    console.log('✅ অ্যাড সেটিংস আপডেট:', {
+        popunder: window.__popunderEnabled,
+        vignette: window.__vignetteEnabled,
+        videoAd: window.__videoAdEnabled
+    });
 }
+
+// ==========================================================
+//   🔧 আপডেটেড: ব্যানার রিলোড ফাংশন
+// ==========================================================
+function reloadBannerAds() {
+    document.querySelectorAll('.banner-ad-container').forEach((container, index) => {
+        try {
+            const zoneKey = db.adConfig?.zone320 || 'f70b806885d12defbb6515475012d220';
+            // শুধু মাত্র প্রজেক্টের ব্যানারগুলো রিলোড করবে
+            if (container.id && container.id.startsWith('project_banner_')) {
+                container.innerHTML = `
+                    <div id="banner_reload_${index}"></div>
+                    <script>
+                        (function() {
+                            try {
+                                var atOptions = { 
+                                    'key' : '${zoneKey}', 
+                                    'format' : 'iframe', 
+                                    'height' : 50, 
+                                    'width' : 320, 
+                                    'params' : {} 
+                                };
+                                document.write('<scr' + 'ipt src="https://www.highperformanceformat.com/' + atOptions.key + '/invoke.js"><\/scr' + 'ipt>');
+                            } catch(e) {
+                                console.log('Ad reload error:', e);
+                            }
+                        })();
+                    <\/script>
+                `;
+            }
+        } catch(e) {
+            console.log('Banner reload error:', e);
+        }
+    });
+}
+
+// প্রতি 60 সেকেন্ড পর পর ব্যানার রিলোড
+setInterval(() => {
+    if (document.querySelector('.page.active')) {
+        reloadBannerAds();
+    }
+}, 60000);
 
 function today() { return new Date().toISOString().slice(0, 10); }
 function money(n) { return Number(n || 0).toFixed(2); }
+function uid() { return 'u_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+function code() { return 'SC' + Math.random().toString(36).slice(2, 10).toUpperCase(); }
 
 function toast(msg) {
     const el = $('toast');
     el.textContent = msg;
     el.style.display = 'block';
     clearTimeout(el._timer);
-    el._timer = setTimeout(() => el.style.display = 'none', 4000);
+    el._timer = setTimeout(() => el.style.display = 'none', 3000);
 }
 
 function showLoader(show, msg = 'কাজ হচ্ছে...') {
@@ -1164,7 +1267,9 @@ function showNotification(text) {
     textEl.textContent = text;
     bar.style.display = 'flex';
     clearTimeout(window._notiTimer);
-    window._notiTimer = setTimeout(() => { bar.style.display = 'none'; }, 10000);
+    window._notiTimer = setTimeout(() => {
+        bar.style.display = 'none';
+    }, 10000);
 }
 
 function closeNotification() {
@@ -1173,10 +1278,156 @@ function closeNotification() {
 }
 
 // ==========================================================
-//   AUTH UI
+//   AUTH
 // ==========================================================
 function showRegister() { $('loginBox').classList.add('hidden'); $('regBox').classList.remove('hidden'); }
 function showLogin() { $('regBox').classList.add('hidden'); $('loginBox').classList.remove('hidden'); }
+
+async function registerUser() {
+    const name = $('rn').value.trim(), phone = $('rp').value.trim(), email = $('re').value.trim().toLowerCase();
+    const pass1 = $('r1').value, pass2 = $('r2').value, ref = $('rr').value.trim().toUpperCase();
+    if (!name || !phone || !email || pass1.length < 8 || pass1 !== pass2) return toast('সব তথ্য ঠিকভাবে দিন');
+
+    showLoader(true, 'অ্যাকাউন্ট তৈরি হচ্ছে...');
+    
+    const telegramUserId = getTelegramUserId();
+    if (!telegramUserId) {
+        showLoader(false);
+        return toast('⚠️ Telegram থেকে অ্যাপটি খুলুন!');
+    }
+    
+    await initFirebaseApp();
+    const remoteUsers = await loadAllUsersFromFirebase();
+    const merged = [...db.users];
+    remoteUsers.forEach(u => { if (u && !merged.some(x => x.id === u.id)) merged.push(u); });
+
+    const currentDeviceId = deviceIdForDb();
+
+    if (merged.some(u => u.email === email || u.phone === phone)) {
+        showLoader(false);
+        return toast('এই email/phone আগে থেকেই আছে');
+    }
+
+    if (merged.some(u => u.telegramUserId && String(u.telegramUserId) === String(telegramUserId))) {
+        showLoader(false);
+        return toast('⚠️ এই Telegram ID দিয়ে ইতিমধ্যে অ্যাকাউন্ট আছে!');
+    }
+
+    if (merged.some(u => u.deviceId && u.deviceId === currentDeviceId)) {
+        showLoader(false);
+        return toast('⚠️ এই ডিভাইসে ইতিমধ্যে একটি অ্যাকাউন্ট রয়েছে।');
+    }
+
+    if (!(await ensureDeviceAvailable(currentDeviceId))) {
+        showLoader(false);
+        return toast('⚠️ এই ডিভাইসে ইতিমধ্যে একটি অ্যাকাউন্ট নিবন্ধিত আছে।');
+    }
+
+    const referrer = ref ? merged.find(u => u.referral === ref && u.status === 'active') : null;
+    if (referrer) {
+        referrer.referrals = (referrer.referrals || 0) + 1;
+        referrer.activeRef = (referrer.activeRef || 0) + 1;
+        referrer.refEarn = (referrer.refEarn || 0) + 0.50;
+        referrer.balance = (referrer.balance || 0) + 0.50;
+        referrer.tx = referrer.tx || [];
+        referrer.tx.unshift({ type: 'referral-bonus', amount: 0.50, status: 'approved', date: new Date().toLocaleString('bn-BD') });
+    }
+
+    const newUser = {
+        id: uid(), name, phone, email, password: pass1, referral: code(), referredBy: ref || '',
+        deviceId: currentDeviceId, telegramUserId: String(telegramUserId),
+        balance: 0, total: 0, today: 0, todayDate: today(), tx: [], spunDate: null, dailyDate: null,
+        referrals: 0, activeRef: 0, refEarn: 0, adDate: null, adViews: 0, status: 'active',
+        completedTasks: [], taskSessions: {}, notifications: [], dailyBonusDate: null
+    };
+
+    db.users = merged;
+    if (referrer) {
+        const ri = db.users.findIndex(u => u.id === referrer.id);
+        if (ri >= 0) db.users[ri] = referrer;
+    }
+    db.users.push(newUser);
+
+    if (!(await claimDevice(currentDeviceId, newUser.id))) {
+        db.users = db.users.filter(u => u.id !== newUser.id);
+        showLoader(false);
+        return toast('⚠️ এই ডিভাইসে ইতিমধ্যে একটি অ্যাকাউন্ট রয়েছে।');
+    }
+
+    db.current = newUser.id;
+    me = newUser;
+    saveDB();
+
+    await syncUserToFirebase(newUser);
+    if (referrer) await syncUserToFirebase(referrer);
+    startFirebaseRealtimeSync();
+
+    showLoader(false);
+    enterApp();
+    toast('🎉 রেজিস্ট্রেশন সফল!');
+}
+
+async function loginUser() {
+    const email = $('le').value.trim().toLowerCase(), pass = $('lp').value;
+    if (!email || !pass) return toast('Email ও Password দিন');
+    showLoader(true, 'লগইন হচ্ছে...');
+
+    await initFirebaseApp();
+    const remoteUsers = await loadAllUsersFromFirebase();
+    const merged = [...db.users];
+    remoteUsers.forEach(u => {
+        if (!u) return;
+        const i = merged.findIndex(x => x.id === u.id);
+        if (i >= 0) merged[i] = u;
+        else merged.push(u);
+    });
+    db.users = merged;
+
+    setTimeout(async () => {
+        const user = db.users.find(u => u.email === email && u.password === pass);
+        if (!user) {
+            showLoader(false);
+            return toast('Email বা Password ভুল');
+        }
+
+        if (!enforceUserStatus(user)) {
+            showLoader(false);
+            return;
+        }
+
+        const currentDeviceId = deviceIdForDb();
+        const telegramUserId = getTelegramUserId();
+        if (!telegramUserId) {
+            showLoader(false);
+            return toast('⚠️ Telegram থেকে অ্যাপটি খুলুন!');
+        }
+        saveTelegramUserId(telegramUserId);
+
+        if (!user.deviceId) {
+            user.deviceId = currentDeviceId;
+            await claimDevice(currentDeviceId, user.id);
+            await syncUserToFirebase(user);
+        } else if (user.deviceId !== currentDeviceId) {
+            showLoader(false);
+            return toast('⚠️ এই অ্যাকাউন্টটি অন্য ডিভাইসে নিবন্ধিত।');
+        }
+
+        me = user;
+        db.current = user.id;
+        saveDB();
+        startFirebaseRealtimeSync();
+
+        const accessOK = await runAccessGuard();
+        if (!accessOK) {
+            showLoader(false);
+            return;
+        }
+
+        showLoader(false);
+        enterApp();
+        toast('স্বাগতম ' + user.name + ' 💵 Smart Cash-এ');
+    }, 100);
+}
 
 function forgotPassword() {
     const email = prompt('আপনার account email দিন');
@@ -1186,18 +1437,20 @@ function forgotPassword() {
 }
 
 function enterApp() {
-    if (!me) return;
-    
-    // ডেইলি বোনাস
+    if (!me || !enforceUserStatus(me)) return;
     if (me.dailyBonusDate !== today()) {
         me.dailyBonusDate = today();
         me.balance = (me.balance || 0) + 1;
         me.tx = me.tx || [];
-        me.tx.unshift({ type: 'daily-bonus', amount: 1, status: 'completed', date: new Date().toLocaleString('bn-BD') });
+        me.tx.unshift({
+            type: 'daily-bonus',
+            amount: 1,
+            status: 'completed',
+            date: new Date().toLocaleString('bn-BD')
+        });
         saveDB();
         toast('🎁 ডেইলি বোনাস: +৳১');
     }
-    
     $('auth').classList.add('hidden');
     $('app').classList.remove('hidden');
     renderAll();
@@ -1206,13 +1459,21 @@ function enterApp() {
     renderProjects();
     renderLevels();
     renderLeaderboard();
+    if (me.notifications && me.notifications.length > 0) {
+        const lastNoti = me.notifications[0];
+        if (lastNoti && !lastNoti.read) {
+            showNotification(lastNoti.text);
+            lastNoti.read = true;
+            saveDB();
+        }
+    }
     setTimeout(loadAllNativeAds, 1000);
 }
 
 function logoutUser() {
     db.current = null;
     me = null;
-    localStorage.removeItem(TELEGRAM_ID_KEY);
+    clearTelegramSessionId();
     sessionStorage.removeItem(ACCESS_GUARD_KEY);
     saveDB();
     location.reload();
@@ -1432,7 +1693,7 @@ function renderEarnTasks() {
 }
 
 // ==========================================================
-//   প্রজেক্ট
+//   🔧 আপডেটেড: প্রজেক্ট (বাটন টেক্সট পরিবর্তন + ব্যানার ঠিক করা)
 // ==========================================================
 let __projectSession = {
     active: false,
@@ -1446,7 +1707,7 @@ function __projectButtonText(projectId) {
         return `⏳ ${__projectSession.secondsLeft}s`;
     }
     if (__projectSession.active) return '⏳ অপেক্ষা করুন';
-    return '▶️ Start';
+    return '▶️ Start'; // ✅ Direct Link টেক্সট সরানো হয়েছে
 }
 
 function __projectFinish(id) {
@@ -1503,6 +1764,7 @@ function __projectTick() {
     }
 }
 
+// ✅ আপডেটেড renderProjects() - ব্যানার অ্যাড ঠিক করা
 function renderProjects() {
     const container = $('projectsList');
     if (!container) return;
@@ -1526,13 +1788,28 @@ function renderProjects() {
             </div>
         `;
 
+        // ✅ প্রজেক্টের মাঝখানে ব্যানার অ্যাড
         if (index < PROJECTS.length - 1) {
+            const zoneKey = db.adConfig?.zone320 || 'f70b806885d12defbb6515475012d220';
             html += `
-                <div class="banner-ad-container" style="margin:6px 0;">
+                <div class="banner-ad-container" id="project_banner_${index}" style="margin:12px 0;min-height:60px;background:#f8fafc;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;">
+                    <div id="banner_${index}"></div>
                     <script>
-                        atOptions = { 'key' : 'f70b806885d12defbb6515475012d220', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+                        (function() {
+                            try {
+                                var atOptions = { 
+                                    'key' : '${zoneKey}', 
+                                    'format' : 'iframe', 
+                                    'height' : 50, 
+                                    'width' : 320, 
+                                    'params' : {} 
+                                };
+                                document.write('<scr' + 'ipt src="https://www.highperformanceformat.com/' + atOptions.key + '/invoke.js"><\/scr' + 'ipt>');
+                            } catch(e) {
+                                console.log('Ad load error:', e);
+                            }
+                        })();
                     <\/script>
-                    <script src="https://www.highperformanceformat.com/f70b806885d12defbb6515475012d220/invoke.js"><\/script>
                 </div>
             `;
         }
@@ -1555,6 +1832,7 @@ function doProject(id) {
 
     if ((me.today || 0) >= 100) return toast('আজকের earning limit শেষ');
 
+    // Direct Link খোলা
     openDirectAd();
 
     __projectSession.active = true;
@@ -1640,6 +1918,7 @@ function renderSessions(taskId) {
     $('detailProgress').textContent = 'অগ্রগতি: ' + completed.length + '/' + task.sessions;
 }
 
+// ✅ আপডেটেড updateSessionUI() - Direct Link টেক্সট সরানো
 function updateSessionUI(taskId) {
     const task = ALL_TASKS.find(t => t.id === taskId);
     if (!task) return;
@@ -1665,7 +1944,7 @@ function updateSessionUI(taskId) {
     $('sessionTimer').textContent = '30';
     $('sessionTimer').className = 'time';
     $('timerLabel').textContent = '⏱️ অপেক্ষা করুন';
-    $('sessionBtn').textContent = '🚀 শুরু করুন (Direct Link)';
+    $('sessionBtn').textContent = '▶️ শুরু করুন'; // ✅ Direct Link টেক্সট সরানো
     $('sessionBtn').className = 'btn-go primary';
     $('sessionBtn').style.pointerEvents = 'auto';
     clearInterval(sessionTimer);
@@ -1673,8 +1952,11 @@ function updateSessionUI(taskId) {
     isWaitingForComplete = false;
 }
 
+// ✅ আপডেটেড startSession() - Direct Link যোগ
 function startSession(e) {
-    openDirectAd();
+    // Direct Link খোলা (র‍্যান্ডম)
+    const choice = Math.floor(Math.random() * DIRECT_LINKS.length);
+    window.open(DIRECT_LINKS[choice], '_blank');
 
     if (!currentTaskId) return;
     const task = ALL_TASKS.find(t => t.id === currentTaskId);
@@ -1840,23 +2122,35 @@ function submitWithdraw() {
 }
 
 // ==========================================================
-//   REWARDED AD
+//   🔧 আপডেটেড: REWARDED AD
 // ==========================================================
 async function watchDailyAd() {
+    // চেক করো Video Ad Enabled কিনা
+    if (window.__videoAdEnabled === false) {
+        toast('⛔ Rewarded Video বন্ধ আছে');
+        return;
+    }
+    
     if (me.adDate !== today()) { me.adDate = today(); me.adViews = 0; }
     if ((me.adViews || 0) >= 10) { toast('আজকের ১০টি Rewarded Ad শেষ'); return; }
-    let fn = window.show_11567392;
+    
+    const zoneId = db.adConfig?.rewardedZone || '11567392';
+    let fn = window['show_' + zoneId];
+    
     if (typeof fn !== 'function') {
         toast('Ad SDK লোড হচ্ছে...');
         const s = document.createElement('script');
         s.src = 'https://libtl.com/sdk.js';
-        s.dataset.zone = '11567392';
-        s.dataset.sdk = 'show_11567392';
+        s.dataset.zone = zoneId;
+        s.dataset.sdk = 'show_' + zoneId;
         document.head.appendChild(s);
-        setTimeout(() => { if (typeof window.show_11567392 === 'function') watchDailyAd();
-            else toast('SDK লোড হয়নি'); }, 2000);
+        setTimeout(() => { 
+            if (typeof window['show_' + zoneId] === 'function') watchDailyAd();
+            else toast('SDK লোড হয়নি'); 
+        }, 2000);
         return;
     }
+    
     const eid = 'ad_' + me.id + '_' + Date.now() + '_' + (me.adViews + 1);
     try {
         showLoader(true, 'Rewarded Ad লোড হচ্ছে...');
@@ -2017,36 +2311,53 @@ function syncTasksAndProjectsFromDB() {
 loadDB();
 syncTasksAndProjectsFromDB();
 
+// ✅ Telegram স্ট্যাটাস চেক
+checkTelegramStatus();
+
 (async () => {
     await initFirebaseApp();
     startFirebaseRealtimeSync();
 
-    // ✅ চেক: আগে থেকে লগইন থাকলে
     if (!me || !db.current) {
         $('auth').classList.remove('hidden');
         return;
     }
 
-    // ✅ Telegram ID চেক
     const tgId = getTelegramUserId();
     if (me.telegramUserId && tgId && String(me.telegramUserId) !== String(tgId)) {
         db.current = null;
         me = null;
-        localStorage.removeItem(TELEGRAM_ID_KEY);
+        clearTelegramSessionId();
         saveDB();
         $('auth').classList.remove('hidden');
         toast('⚠️ এই অ্যাকাউন্ট অন্য Telegram ID দিয়ে তৈরি!');
         return;
     }
 
-    // ✅ সব ঠিক থাকলে অ্যাপ খুলুন
+    if (!me.deviceId) {
+        me.deviceId = deviceIdForDb();
+        await syncUserToFirebase(me);
+    } else if (me.deviceId !== deviceIdForDb()) {
+        db.current = null;
+        me = null;
+        clearTelegramSessionId();
+        saveDB();
+        $('auth').classList.remove('hidden');
+        toast('⚠️ এই অ্যাকাউন্টটি এই ডিভাইসের জন্য অনুমোদিত নয়।');
+        return;
+    } else {
+        await syncUserToFirebase(me);
+    }
+
+    const accessOK = await runAccessGuard();
+    if (!accessOK) return;
+
     enterApp();
 })();
 
-console.log('✅ Smart Cash — স্মার্ট ক্যাশ v2.1.2 (Fixed)');
-console.log('✅ ফিক্স: রেজিস্ট্রেশন ও লগইন সমস্যা সমাধান');
+console.log('✅ Smart Cash — স্মার্ট ক্যাশ v2.1.2 (আপডেটেড)');
+console.log('✅ আপডেট: ৩টি Direct Link, ব্যানার অ্যাড ঠিক করা, Direct Link টেক্সট সরানো, অ্যাডমিন কন্ট্রোল');
 
-// ✅ Auth পেজ দেখান যদি লগইন না থাকে
 if (!db.current || !me) {
     $('auth').classList.remove('hidden');
 } else {
