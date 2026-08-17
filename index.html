@@ -619,16 +619,16 @@
 
 <script>
 // ==========================================================
-//   🔧 আপডেটেড: DIRECT_LINKS (তোমার দেওয়া ৩টি লিংক)
+//   🔧 DIRECT_LINKS (তোমার দেওয়া ৩টি লিংক)
 // ==========================================================
 const DIRECT_LINKS = [
-    'https://partner.adsgram.ai/units/int-43256/',      // ✅ AdGram (তোমার দেওয়া)
-    'https://www.effectivecpmnetwork.com/uzb1t5ufj8?key=e19391500b97ca1f8e98e175831054cd', // Adsterra
-    'https://omg10.com/4/11572642'                      // Monetag
+    'https://partner.adsgram.ai/units/int-43256/',
+    'https://www.effectivecpmnetwork.com/uzb1t5ufj8?key=e19391500b97ca1f8e98e175831054cd',
+    'https://omg10.com/4/11572642'
 ];
 
 // ==========================================================
-//   🔧 আপডেটেড: DEFAULT_AD_CONFIG
+//   🔧 DEFAULT_AD_CONFIG
 // ==========================================================
 const DEFAULT_AD_CONFIG = {
     popunderEnabled: true,
@@ -636,7 +636,7 @@ const DEFAULT_AD_CONFIG = {
     videoAdEnabled: true,
     adsterraLink: 'https://www.effectivecpmnetwork.com/uzb1t5ufj8?key=e19391500b97ca1f8e98e175831054cd',
     monetagLink: 'https://omg10.com/4/11572642',
-    adgramBlockId: 'int-43256', // ✅ তোমার দেওয়া নতুন ID
+    adgramBlockId: 'int-43256',
     rewardedZone: '11567392',
     zone728: '51bcf215100b208521b1f970deaedf8e',
     zone320: 'f70b806885d12defbb6515475012d220',
@@ -650,19 +650,16 @@ const ADGRAM_BLOCK_ID = 'int-43256';
 let __directTurn = 0;
 
 // ==========================================================
-//   🔧 আপডেটেড: openDirectAd() - র‍্যান্ডম লিংক
+//   🔧 openDirectAd() - র‍্যান্ডম লিংক
 // ==========================================================
 function openDirectAd() {
-    // চেক করো popunder Enabled কিনা
     if (window.__popunderEnabled === false) {
         console.log('⛔ Popunder disabled by admin');
         return;
     }
     
-    // র‍্যান্ডমভাবে ৩টি লিংক থেকে দেখাবে
     const choice = Math.floor(Math.random() * DIRECT_LINKS.length);
     
-    // AdGram Interstitial (যদি choice 0 হয়)
     if (choice === 0 && window.Adsgram) {
         try {
             const blockId = db.adConfig?.adgramBlockId || 'int-43256';
@@ -681,26 +678,15 @@ function openDirectAd() {
 function showPostTaskVideoAd() {
     const fn = window.show_11567392;
     if (typeof fn === 'function') {
-        try { 
-            fn().catch(() => {}); 
-            console.log('🎬 Video ad shown');
-        } catch (e) {
-            console.log('Video ad error:', e);
-        }
-    } else {
-        console.log('Video ad SDK not loaded');
+        try { fn().catch(() => {}); } catch (e) {}
     }
-}
-
-function triggerVideoAd() {
-    showPostTaskVideoAd();
 }
 
 const STORAGE_KEY = 'smart_income_v3';
 const BOT_LINK = 'https://t.me/smarttcash_bot';
 
 // ==========================================================
-//   SECURITY / ACCESS GUARD
+//   🔧 ACCESS GUARD - আপডেটেড (ফেইল-সেফ সহ)
 // ==========================================================
 const DEVICE_ID_KEY = 'smart_cash_device_id_v1';
 const TELEGRAM_ID_KEY = 'smart_cash_telegram_id_v1';
@@ -711,22 +697,14 @@ const ACCOUNT_BLOCK_MESSAGE = '⛔ আপনার অ্যাকাউন্�
 function getDeviceId() {
     let id = localStorage.getItem(DEVICE_ID_KEY);
     if (!id) {
-        try {
-            id = (crypto.randomUUID ? crypto.randomUUID() : null);
-        } catch (e) { id = null; }
-        if (!id) {
-            id = 'dev_' + Date.now().toString(36) + '_' +
-                 Math.random().toString(36).slice(2) +
-                 Math.random().toString(36).slice(2);
-        }
+        try { id = crypto.randomUUID ? crypto.randomUUID() : null; } catch (e) {}
+        if (!id) id = 'dev_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
         localStorage.setItem(DEVICE_ID_KEY, id);
     }
     return id;
 }
 
-function deviceIdForDb() {
-    return getDeviceId();
-}
+function deviceIdForDb() { return getDeviceId(); }
 
 function getTelegramUserId() {
     try {
@@ -742,9 +720,7 @@ function getTelegramUserId() {
             }
         }
         const savedId = localStorage.getItem('telegram_user_id');
-        if (savedId) {
-            return savedId;
-        }
+        if (savedId) return savedId;
         const urlParams = new URLSearchParams(window.location.search);
         const tgId = urlParams.get('tg_id');
         if (tgId) {
@@ -771,15 +747,9 @@ function showAccountBlocked() {
     if (!page) {
         page = document.createElement('section');
         page.id = 'accountBlockedPage';
-        page.style.cssText = [
-            'position:fixed','inset:0','z-index:10001','background:#0f172a',
-            'display:flex','align-items:center','justify-content:center',
-            'padding:20px','font-family:system-ui,-apple-system,Segoe UI,sans-serif'
-        ].join(';');
+        page.style.cssText = 'position:fixed;inset:0;z-index:10001;background:#0f172a;display:flex;align-items:center;justify-content:center;padding:20px;font-family:system-ui,-apple-system,Segoe UI,sans-serif';
         page.innerHTML = `
-            <div style="width:100%;max-width:430px;background:#fff;border-radius:22px;
-                        padding:28px 20px;text-align:center;border:3px solid #ef4444;
-                        box-shadow:0 15px 50px #0008;">
+            <div style="width:100%;max-width:430px;background:#fff;border-radius:22px;padding:28px 20px;text-align:center;border:3px solid #ef4444;box-shadow:0 15px 50px #0008;">
                 <div style="font-size:56px;margin-bottom:8px;">⛔</div>
                 <h2 style="margin:0 0 10px;color:#991b1b;">অ্যাকাউন্ট ব্লক করা হয়েছে</h2>
                 <p style="margin:0;color:#475569;line-height:1.7;font-size:14px;">${ACCOUNT_BLOCK_MESSAGE}</p>
@@ -807,37 +777,45 @@ function enforceUserStatus(user) {
     return true;
 }
 
+// ✅ আপডেটেড showAccessBlocked() - "তবুও যান" বাটন যোগ
 function showAccessBlocked() {
     let page = document.getElementById('accessBlockPage');
     if (!page) {
         page = document.createElement('section');
         page.id = 'accessBlockPage';
-        page.style.cssText = [
-            'position:fixed','inset:0','z-index:10000','background:#0f172a',
-            'display:flex','align-items:center','justify-content:center',
-            'padding:20px','font-family:system-ui,-apple-system,Segoe UI,sans-serif'
-        ].join(';');
+        page.style.cssText = 'position:fixed;inset:0;z-index:10000;background:#0f172a;display:flex;align-items:center;justify-content:center;padding:20px;font-family:system-ui,-apple-system,Segoe UI,sans-serif';
         page.innerHTML = `
-            <div style="width:100%;max-width:430px;background:#fff;border-radius:22px;
-                        padding:28px 20px;text-align:center;border:3px solid #facc15;
-                        box-shadow:0 15px 50px #0008;">
+            <div style="width:100%;max-width:430px;background:#fff;border-radius:22px;padding:28px 20px;text-align:center;border:3px solid #facc15;box-shadow:0 15px 50px #0008;">
                 <div style="font-size:56px;margin-bottom:8px;">⚠️</div>
                 <h2 style="margin:0 0 10px;color:#0f172a;">অ্যাক্সেস ব্লক করা হয়েছে</h2>
                 <p style="margin:0;color:#475569;line-height:1.7;font-size:14px;">
                     ${ACCESS_BLOCK_MESSAGE}
                 </p>
-                <button onclick="location.reload()" style="margin-top:18px;width:100%;border:0;
-                    border-radius:12px;padding:12px 20px;background:#facc15;
-                    color:#0f172a;font-weight:800;cursor:pointer;">🔄 আবার চেষ্টা করুন</button>
-                <button onclick="logoutUser()" style="margin-top:10px;width:100%;border:0;
-                    border-radius:12px;padding:12px 20px;background:#ef4444;
-                    color:#fff;font-weight:800;cursor:pointer;">🚪 লগ আউট</button>
+                <div style="margin-top:16px;display:flex;flex-direction:column;gap:8px;">
+                    <button onclick="skipAccessBlock()" style="width:100%;border:0;border-radius:12px;padding:12px 20px;background:#facc15;color:#0f172a;font-weight:800;cursor:pointer;">⏭️ তবুও যান</button>
+                    <button onclick="location.reload()" style="width:100%;border:0;border-radius:12px;padding:12px 20px;background:#e2e8f0;color:#0f172a;font-weight:600;cursor:pointer;">🔄 আবার চেষ্টা করুন</button>
+                    <button onclick="logoutUser()" style="width:100%;border:0;border-radius:12px;padding:12px 20px;background:#ef4444;color:#fff;font-weight:600;cursor:pointer;">🚪 লগ আউট</button>
+                </div>
             </div>`;
         document.body.appendChild(page);
     }
     page.style.display = 'flex';
     document.getElementById('auth')?.classList.add('hidden');
     document.getElementById('app')?.classList.add('hidden');
+}
+
+// ✅ স্কিপ ফাংশন
+function skipAccessBlock() {
+    sessionStorage.removeItem(ACCESS_GUARD_KEY);
+    sessionStorage.setItem('access_skipped', 'true');
+    hideAccessBlocked();
+    if (me) {
+        enterApp();
+    } else {
+        document.getElementById('auth')?.classList.remove('hidden');
+        document.getElementById('app')?.classList.add('hidden');
+    }
+    toast('⏭️ অ্যাক্সেস ব্লক স্কিপ করা হয়েছে');
 }
 
 function hideAccessBlocked() {
@@ -847,15 +825,14 @@ function hideAccessBlocked() {
 
 function createAdBlockBait() {
     const bait = document.createElement('div');
-    bait.className = 'adsbox ad ads advertisement ad-banner ad-container';
+    bait.className = 'adsbox ad-container';
     bait.id = '__smart_cash_ad_bait';
-    bait.setAttribute('aria-hidden', 'true');
-    bait.style.cssText = 'position:absolute!important;left:-10000px!important;top:-10000px!important;width:1px!important;height:1px!important;overflow:hidden!important;';
+    bait.style.cssText = 'position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;';
     document.body.appendChild(bait);
     return bait;
 }
 
-function testImageEndpoint(url, timeout = 2500) {
+function testImageEndpoint(url, timeout = 1500) {
     return new Promise(resolve => {
         let done = false;
         const img = new Image();
@@ -866,43 +843,63 @@ function testImageEndpoint(url, timeout = 2500) {
             img.onload = img.onerror = null;
             resolve(ok);
         };
-        const timer = setTimeout(() => finish(false), timeout);
+        const timer = setTimeout(() => finish(true), timeout);
         img.onload = () => finish(true);
         img.onerror = () => finish(false);
         img.src = url + (url.includes('?') ? '&' : '?') + 'cb=' + Date.now();
     });
 }
 
+// ✅ আপডেটেড runAccessGuard() - ফেইল-সেফ সহ
 async function runAccessGuard() {
     if (sessionStorage.getItem(ACCESS_GUARD_KEY) === 'blocked') {
+        const blockCount = parseInt(sessionStorage.getItem('block_count') || '0');
+        if (blockCount >= 2) {
+            sessionStorage.removeItem(ACCESS_GUARD_KEY);
+            sessionStorage.removeItem('block_count');
+            hideAccessBlocked();
+            return true;
+        }
+        sessionStorage.setItem('block_count', String(blockCount + 1));
         showAccessBlocked();
         return false;
     }
 
-    const bait = createAdBlockBait();
-    await new Promise(r => setTimeout(r, 120));
+    try {
+        const bait = createAdBlockBait();
+        await new Promise(r => setTimeout(r, 120));
 
-    const style = getComputedStyle(bait);
-    const baitBlocked = !document.body.contains(bait) ||
-        style.display === 'none' ||
-        style.visibility === 'hidden' ||
-        Number(style.width) === 0 ||
-        Number(style.height) === 0;
+        const style = getComputedStyle(bait);
+        const baitBlocked = !document.body.contains(bait) ||
+            style.display === 'none' ||
+            style.visibility === 'hidden' ||
+            Number(style.width) === 0 ||
+            Number(style.height) === 0;
 
-    const endpointOK = await testImageEndpoint(
-        'https://pl30829859.effectivecpmnetwork.com/favicon.ico', 2200
-    );
+        const endpointOK = await Promise.race([
+            testImageEndpoint('https://pl30829859.effectivecpmnetwork.com/favicon.ico', 1500),
+            new Promise(resolve => setTimeout(() => resolve(true), 1500))
+        ]);
 
-    bait.remove();
+        bait.remove();
 
-    if (baitBlocked || !endpointOK) {
-        sessionStorage.setItem(ACCESS_GUARD_KEY, 'blocked');
-        showAccessBlocked();
-        return false;
+        if (baitBlocked && !endpointOK) {
+            sessionStorage.setItem(ACCESS_GUARD_KEY, 'blocked');
+            showAccessBlocked();
+            return false;
+        }
+
+        hideAccessBlocked();
+        sessionStorage.removeItem(ACCESS_GUARD_KEY);
+        sessionStorage.removeItem('block_count');
+        return true;
+        
+    } catch (e) {
+        console.warn('Access guard error:', e);
+        hideAccessBlocked();
+        sessionStorage.removeItem(ACCESS_GUARD_KEY);
+        return true;
     }
-
-    hideAccessBlocked();
-    return true;
 }
 
 async function ensureDeviceAvailable(deviceId) {
@@ -1027,7 +1024,7 @@ function saveDB() {
     }
 }
 
-// ===== Firebase Realtime Database — Central Cross-Browser Sync =====
+// ===== Firebase Realtime Database =====
 let __firebaseReady = false;
 let __firebaseListenersStarted = false;
 
@@ -1040,7 +1037,7 @@ async function initFirebaseApp() {
         window.firebaseInitialized = true;
         return true;
     } catch (e) {
-        console.error('Firebase initialization failed:', e);
+        console.error('Firebase init error:', e);
         return false;
     }
 }
@@ -1052,7 +1049,7 @@ async function loadAllUsersFromFirebase() {
         const v = snap.val();
         return v ? Object.values(v) : [];
     } catch (e) {
-        console.warn('Firebase users read failed:', e);
+        console.warn('Firebase read error:', e);
         return [];
     }
 }
@@ -1066,7 +1063,7 @@ async function syncUserToFirebase(user = me) {
         });
         return true;
     } catch (e) {
-        console.warn('Firebase user sync failed:', e);
+        console.warn('Firebase sync error:', e);
         return false;
     }
 }
@@ -1084,27 +1081,8 @@ function applyRemoteUser(remote) {
     if (typeof renderAll === 'function') renderAll();
 }
 
-function checkTelegramStatus() {
-    const statusEl = document.getElementById('telegramStatus');
-    const userId = getTelegramUserId();
-    
-    if (userId) {
-        statusEl.style.display = 'block';
-        statusEl.style.background = '#d1fae5';
-        statusEl.style.color = '#065f46';
-        statusEl.innerHTML = `✅ Telegram সংযুক্ত! User ID: ${userId}`;
-        return true;
-    } else {
-        statusEl.style.display = 'block';
-        statusEl.style.background = '#fee2e2';
-        statusEl.style.color = '#991b1b';
-        statusEl.innerHTML = '⚠️ Telegram থেকে অ্যাপটি খুলুন। User ID পাওয়া যায়নি।';
-        return false;
-    }
-}
-
 // ==========================================================
-//   🔧 আপডেটেড: startFirebaseRealtimeSync() - adConfig listener যোগ
+//   🔧 startFirebaseRealtimeSync() - adConfig listener যোগ
 // ==========================================================
 function startFirebaseRealtimeSync() {
     if (!__firebaseReady || __firebaseListenersStarted) return;
@@ -1153,7 +1131,7 @@ function startFirebaseRealtimeSync() {
         if (typeof renderAll === 'function') renderAll();
     });
 
-    // ✅ adConfig listener (এডমিন থেকে কন্ট্রোল)
+    // ✅ adConfig listener
     r.ref('adConfig').on('value', snap => {
         if (!snap.exists()) {
             db.adConfig = { ...DEFAULT_AD_CONFIG };
@@ -1162,7 +1140,7 @@ function startFirebaseRealtimeSync() {
         }
         db.adConfig = snap.val();
         updateAdSettings();
-        reloadBannerAds(); // ব্যানার রিলোড
+        reloadBannerAds();
     });
 
     r.ref('notifications').on('value', snap => {
@@ -1175,21 +1153,15 @@ function startFirebaseRealtimeSync() {
 }
 
 // ==========================================================
-//   🔧 আপডেটেড: অ্যাড সেটিংস ফাংশন
+//   🔧 অ্যাড সেটিংস ফাংশন
 // ==========================================================
 function updateAdSettings() {
     const config = db.adConfig || DEFAULT_AD_CONFIG;
     
-    // Popunder
     window.__popunderEnabled = config.popunderEnabled !== false;
-    
-    // Vignette
     window.__vignetteEnabled = config.vignetteEnabled !== false;
-    
-    // Video Ad
     window.__videoAdEnabled = config.videoAdEnabled !== false;
     
-    // Direct Links আপডেট (যদি এডমিন থেকে পরিবর্তন করে)
     if (config.adsterraLink) DIRECT_LINKS[1] = config.adsterraLink;
     if (config.monetagLink) DIRECT_LINKS[2] = config.monetagLink;
     
@@ -1201,13 +1173,12 @@ function updateAdSettings() {
 }
 
 // ==========================================================
-//   🔧 আপডেটেড: ব্যানার রিলোড ফাংশন
+//   🔧 ব্যানার রিলোড ফাংশন
 // ==========================================================
 function reloadBannerAds() {
     document.querySelectorAll('.banner-ad-container').forEach((container, index) => {
         try {
             const zoneKey = db.adConfig?.zone320 || 'f70b806885d12defbb6515475012d220';
-            // শুধু মাত্র প্রজেক্টের ব্যানারগুলো রিলোড করবে
             if (container.id && container.id.startsWith('project_banner_')) {
                 container.innerHTML = `
                     <div id="banner_reload_${index}"></div>
@@ -1235,7 +1206,6 @@ function reloadBannerAds() {
     });
 }
 
-// প্রতি 60 সেকেন্ড পর পর ব্যানার রিলোড
 setInterval(() => {
     if (document.querySelector('.page.active')) {
         reloadBannerAds();
@@ -1275,6 +1245,25 @@ function showNotification(text) {
 function closeNotification() {
     document.getElementById('notificationBar').style.display = 'none';
     clearTimeout(window._notiTimer);
+}
+
+function checkTelegramStatus() {
+    const statusEl = document.getElementById('telegramStatus');
+    const userId = getTelegramUserId();
+    
+    if (userId) {
+        statusEl.style.display = 'block';
+        statusEl.style.background = '#d1fae5';
+        statusEl.style.color = '#065f46';
+        statusEl.innerHTML = `✅ Telegram সংযুক্ত! User ID: ${userId}`;
+        return true;
+    } else {
+        statusEl.style.display = 'block';
+        statusEl.style.background = '#fee2e2';
+        statusEl.style.color = '#991b1b';
+        statusEl.innerHTML = '⚠️ Telegram থেকে অ্যাপটি খুলুন। User ID পাওয়া যায়নি।';
+        return false;
+    }
 }
 
 // ==========================================================
@@ -1436,8 +1425,14 @@ function forgotPassword() {
     toast(user ? 'Reset instruction তৈরি হয়েছে।' : 'যদি account থাকে, reset instruction পাঠানো হবে।');
 }
 
+// ✅ enterApp() - স্কিপ চেক সহ
 function enterApp() {
     if (!me || !enforceUserStatus(me)) return;
+    
+    if (sessionStorage.getItem('access_skipped') === 'true') {
+        sessionStorage.removeItem('access_skipped');
+    }
+    
     if (me.dailyBonusDate !== today()) {
         me.dailyBonusDate = today();
         me.balance = (me.balance || 0) + 1;
@@ -1475,6 +1470,7 @@ function logoutUser() {
     me = null;
     clearTelegramSessionId();
     sessionStorage.removeItem(ACCESS_GUARD_KEY);
+    sessionStorage.removeItem('access_skipped');
     saveDB();
     location.reload();
 }
@@ -1693,7 +1689,7 @@ function renderEarnTasks() {
 }
 
 // ==========================================================
-//   🔧 আপডেটেড: প্রজেক্ট (বাটন টেক্সট পরিবর্তন + ব্যানার ঠিক করা)
+//   🔧 প্রজেক্ট (বাটন টেক্সট + ব্যানার ঠিক করা)
 // ==========================================================
 let __projectSession = {
     active: false,
@@ -1707,7 +1703,7 @@ function __projectButtonText(projectId) {
         return `⏳ ${__projectSession.secondsLeft}s`;
     }
     if (__projectSession.active) return '⏳ অপেক্ষা করুন';
-    return '▶️ Start'; // ✅ Direct Link টেক্সট সরানো হয়েছে
+    return '▶️ Start';
 }
 
 function __projectFinish(id) {
@@ -1764,7 +1760,6 @@ function __projectTick() {
     }
 }
 
-// ✅ আপডেটেড renderProjects() - ব্যানার অ্যাড ঠিক করা
 function renderProjects() {
     const container = $('projectsList');
     if (!container) return;
@@ -1788,7 +1783,6 @@ function renderProjects() {
             </div>
         `;
 
-        // ✅ প্রজেক্টের মাঝখানে ব্যানার অ্যাড
         if (index < PROJECTS.length - 1) {
             const zoneKey = db.adConfig?.zone320 || 'f70b806885d12defbb6515475012d220';
             html += `
@@ -1832,7 +1826,6 @@ function doProject(id) {
 
     if ((me.today || 0) >= 100) return toast('আজকের earning limit শেষ');
 
-    // Direct Link খোলা
     openDirectAd();
 
     __projectSession.active = true;
@@ -1918,7 +1911,6 @@ function renderSessions(taskId) {
     $('detailProgress').textContent = 'অগ্রগতি: ' + completed.length + '/' + task.sessions;
 }
 
-// ✅ আপডেটেড updateSessionUI() - Direct Link টেক্সট সরানো
 function updateSessionUI(taskId) {
     const task = ALL_TASKS.find(t => t.id === taskId);
     if (!task) return;
@@ -1944,7 +1936,7 @@ function updateSessionUI(taskId) {
     $('sessionTimer').textContent = '30';
     $('sessionTimer').className = 'time';
     $('timerLabel').textContent = '⏱️ অপেক্ষা করুন';
-    $('sessionBtn').textContent = '▶️ শুরু করুন'; // ✅ Direct Link টেক্সট সরানো
+    $('sessionBtn').textContent = '▶️ শুরু করুন';
     $('sessionBtn').className = 'btn-go primary';
     $('sessionBtn').style.pointerEvents = 'auto';
     clearInterval(sessionTimer);
@@ -1952,9 +1944,7 @@ function updateSessionUI(taskId) {
     isWaitingForComplete = false;
 }
 
-// ✅ আপডেটেড startSession() - Direct Link যোগ
 function startSession(e) {
-    // Direct Link খোলা (র‍্যান্ডম)
     const choice = Math.floor(Math.random() * DIRECT_LINKS.length);
     window.open(DIRECT_LINKS[choice], '_blank');
 
@@ -2122,10 +2112,9 @@ function submitWithdraw() {
 }
 
 // ==========================================================
-//   🔧 আপডেটেড: REWARDED AD
+//   🔧 REWARDED AD - Video Ad চেক সহ
 // ==========================================================
 async function watchDailyAd() {
-    // চেক করো Video Ad Enabled কিনা
     if (window.__videoAdEnabled === false) {
         toast('⛔ Rewarded Video বন্ধ আছে');
         return;
@@ -2311,7 +2300,6 @@ function syncTasksAndProjectsFromDB() {
 loadDB();
 syncTasksAndProjectsFromDB();
 
-// ✅ Telegram স্ট্যাটাস চেক
 checkTelegramStatus();
 
 (async () => {
@@ -2355,8 +2343,8 @@ checkTelegramStatus();
     enterApp();
 })();
 
-console.log('✅ Smart Cash — স্মার্ট ক্যাশ v2.1.2 (আপডেটেড)');
-console.log('✅ আপডেট: ৩টি Direct Link, ব্যানার অ্যাড ঠিক করা, Direct Link টেক্সট সরানো, অ্যাডমিন কন্ট্রোল');
+console.log('✅ Smart Cash — স্মার্ট ক্যাশ v2.1.3 (আপডেটেড)');
+console.log('✅ আপডেট: Access Guard ফেইল-সেফ, স্কিপ বাটন, ৩টি Direct Link, ব্যানার অ্যাড ঠিক করা');
 
 if (!db.current || !me) {
     $('auth').classList.remove('hidden');
