@@ -660,7 +660,226 @@ function triggerVideoAd() {
 }
 
 const STORAGE_KEY = 'smart_income_v3';
-const BOT_LINK = 'https://t.me/smartearning02_bot';
+const BOT_LINK = 'https://t.me/smarttcash_bot';
+
+// ==========================================================
+//   SECURITY / ACCESS GUARD v2.1.0
+//   Note: Browser JS cannot reliably inspect the user's DNS
+//   resolver itself. We therefore use conservative client-side
+//   ad-block/network endpoint checks instead of claiming a
+//   true DNS lookup.
+// ==========================================================
+const DEVICE_ID_KEY = 'smart_cash_device_id_v1';
+const TELEGRAM_ID_KEY = 'smart_cash_telegram_id_v1';
+const ACCESS_GUARD_KEY = 'smart_cash_access_guard_v1';
+const ACCESS_BLOCK_MESSAGE = '⚠️ আপনার DNS বা AdBlocker চালু আছে। অ্যাপ ব্যবহার করতে দয়া করে DNS/AdBlocker বন্ধ করুন।';
+const ACCOUNT_BLOCK_MESSAGE = '⛔ আপনার অ্যাকাউন্টটি অ্যাডমিন দ্বারা ব্লক করা হয়েছে। অ্যাক্সেস পেতে অ্যাডমিনের সাথে যোগাযোগ করুন।';
+
+function getDeviceId() {
+    let id = localStorage.getItem(DEVICE_ID_KEY);
+    if (!id) {
+        try {
+            id = (crypto.randomUUID ? crypto.randomUUID() : null);
+        } catch (e) { id = null; }
+        if (!id) {
+            id = 'dev_' + Date.now().toString(36) + '_' +
+                 Math.random().toString(36).slice(2) +
+                 Math.random().toString(36).slice(2);
+        }
+        localStorage.setItem(DEVICE_ID_KEY, id);
+    }
+    return id;
+}
+
+function deviceIdForDb() {
+    return getDeviceId();
+}
+
+function getTelegramUserId() {
+    // Telegram ID is read only from the current Telegram WebApp session.
+    // It is never restored from localStorage while the user is logged out.
+    try {
+        const tg = window.Telegram?.WebApp;
+        const id = tg?.initDataUnsafe?.user?.id;
+        return id ? String(id) : '';
+    } catch (e) {
+        return '';
+    }
+}
+
+function saveTelegramUserId(id) {
+    if (id) localStorage.setItem(TELEGRAM_ID_KEY, String(id));
+}
+
+function clearTelegramSessionId() {
+    localStorage.removeItem(TELEGRAM_ID_KEY);
+}
+
+function showAccountBlocked() {
+    let page = document.getElementById('accountBlockedPage');
+    if (!page) {
+        page = document.createElement('section');
+        page.id = 'accountBlockedPage';
+        page.style.cssText = [
+            'position:fixed','inset:0','z-index:10001','background:#0f172a',
+            'display:flex','align-items:center','justify-content:center',
+            'padding:20px','font-family:system-ui,-apple-system,Segoe UI,sans-serif'
+        ].join(';');
+        page.innerHTML = `
+            <div style="width:100%;max-width:430px;background:#fff;border-radius:22px;
+                        padding:28px 20px;text-align:center;border:3px solid #ef4444;
+                        box-shadow:0 15px 50px #0008;">
+                <div style="font-size:56px;margin-bottom:8px;">⛔</div>
+                <h2 style="margin:0 0 10px;color:#991b1b;">অ্যাকাউন্ট ব্লক করা হয়েছে</h2>
+                <p style="margin:0;color:#475569;line-height:1.7;font-size:14px;">${ACCOUNT_BLOCK_MESSAGE}</p>
+                <button onclick="logoutUser()" style="margin-top:18px;width:100%;border:0;border-radius:12px;padding:12px 20px;background:#ef4444;color:#fff;font-weight:800;cursor:pointer;">🚪 লগ আউট</button>
+            </div>`;
+        document.body.appendChild(page);
+    }
+    page.style.display = 'flex';
+    document.getElementById('auth')?.classList.add('hidden');
+    document.getElementById('app')?.classList.add('hidden');
+}
+
+function hideAccountBlocked() {
+    const page = document.getElementById('accountBlockedPage');
+    if (page) page.style.display = 'none';
+}
+
+function enforceUserStatus(user) {
+    if (!user) return false;
+    if (user.status === 'blocked' || user.status === 'inactive') {
+        showAccountBlocked();
+        return false;
+    }
+    hideAccountBlocked();
+    return true;
+}
+
+function showAccessBlocked() {
+    let page = document.getElementById('accessBlockPage');
+    if (!page) {
+        page = document.createElement('section');
+        page.id = 'accessBlockPage';
+        page.style.cssText = [
+            'position:fixed','inset:0','z-index:10000','background:#0f172a',
+            'display:flex','align-items:center','justify-content:center',
+            'padding:20px','font-family:system-ui,-apple-system,Segoe UI,sans-serif'
+        ].join(';');
+        page.innerHTML = `
+            <div style="width:100%;max-width:430px;background:#fff;border-radius:22px;
+                        padding:28px 20px;text-align:center;border:3px solid #facc15;
+                        box-shadow:0 15px 50px #0008;">
+                <div style="font-size:56px;margin-bottom:8px;">⚠️</div>
+                <h2 style="margin:0 0 10px;color:#0f172a;">অ্যাক্সেস ব্লক করা হয়েছে</h2>
+                <p style="margin:0;color:#475569;line-height:1.7;font-size:14px;">
+                    ${ACCESS_BLOCK_MESSAGE}
+                </p>
+                <button onclick="location.reload()" style="margin-top:18px;width:100%;border:0;
+                    border-radius:12px;padding:12px 20px;background:#facc15;
+                    color:#0f172a;font-weight:800;cursor:pointer;">🔄 আবার চেষ্টা করুন</button>
+                <button onclick="logoutUser()" style="margin-top:10px;width:100%;border:0;
+                    border-radius:12px;padding:12px 20px;background:#ef4444;
+                    color:#fff;font-weight:800;cursor:pointer;">🚪 লগ আউট</button>
+            </div>`;
+        document.body.appendChild(page);
+    }
+    page.style.display = 'flex';
+    document.getElementById('auth')?.classList.add('hidden');
+    document.getElementById('app')?.classList.add('hidden');
+}
+
+function hideAccessBlocked() {
+    const page = document.getElementById('accessBlockPage');
+    if (page) page.style.display = 'none';
+}
+
+function createAdBlockBait() {
+    const bait = document.createElement('div');
+    bait.className = 'adsbox ad ads advertisement ad-banner ad-container';
+    bait.id = '__smart_cash_ad_bait';
+    bait.setAttribute('aria-hidden', 'true');
+    bait.style.cssText = 'position:absolute!important;left:-10000px!important;top:-10000px!important;width:1px!important;height:1px!important;overflow:hidden!important;';
+    document.body.appendChild(bait);
+    return bait;
+}
+
+function testImageEndpoint(url, timeout = 2500) {
+    return new Promise(resolve => {
+        let done = false;
+        const img = new Image();
+        const finish = ok => {
+            if (done) return;
+            done = true;
+            clearTimeout(timer);
+            img.onload = img.onerror = null;
+            resolve(ok);
+        };
+        const timer = setTimeout(() => finish(false), timeout);
+        img.onload = () => finish(true);
+        img.onerror = () => finish(false);
+        img.src = url + (url.includes('?') ? '&' : '?') + 'cb=' + Date.now();
+    });
+}
+
+async function runAccessGuard() {
+    if (sessionStorage.getItem(ACCESS_GUARD_KEY) === 'blocked') {
+        showAccessBlocked();
+        return false;
+    }
+
+    const bait = createAdBlockBait();
+    await new Promise(r => setTimeout(r, 120));
+
+    const style = getComputedStyle(bait);
+    const baitBlocked = !document.body.contains(bait) ||
+        style.display === 'none' ||
+        style.visibility === 'hidden' ||
+        Number(style.width) === 0 ||
+        Number(style.height) === 0;
+
+    // A small, non-destructive network check. This does NOT reveal
+    // the DNS resolver; it only detects when a known ad endpoint
+    // is unavailable/blocked from the browser.
+    const endpointOK = await testImageEndpoint(
+        'https://pl30829859.effectivecpmnetwork.com/favicon.ico', 2200
+    );
+
+    bait.remove();
+
+    if (baitBlocked || !endpointOK) {
+        sessionStorage.setItem(ACCESS_GUARD_KEY, 'blocked');
+        showAccessBlocked();
+        return false;
+    }
+
+    hideAccessBlocked();
+    return true;
+}
+
+async function ensureDeviceAvailable(deviceId) {
+    if (!__firebaseReady) return true;
+    try {
+        const snap = await firebase.database().ref('deviceRegistry/' + encodeURIComponent(deviceId)).once('value');
+        return !snap.exists();
+    } catch (e) {
+        console.warn('Device registry check failed:', e);
+        // Do not lock legitimate users out when Firebase is temporarily unavailable.
+        return true;
+    }
+}
+
+async function claimDevice(deviceId, userId) {
+    if (!__firebaseReady) return true;
+    try {
+        const ref = firebase.database().ref('deviceRegistry/' + encodeURIComponent(deviceId));
+        const result = await ref.transaction(current => current === null ? userId : current);
+        return result.committed && result.snapshot.val() === userId;
+    } catch (e) {
+        console.warn('Device registry claim failed:', e);
+        return false;
+    }
+}
 
 // ==========================================================
 //   10 WITHDRAWAL LEVELS
@@ -810,7 +1029,10 @@ function applyRemoteUser(remote) {
     const idx = db.users.findIndex(u => u.id === remote.id);
     if (idx >= 0) db.users[idx] = remote;
     else db.users.push(remote);
-    if (db.current === remote.id) me = remote;
+    if (db.current === remote.id) {
+        me = remote;
+        if (!enforceUserStatus(remote)) return;
+    }
     saveDB();
     if (typeof renderAll === 'function') renderAll();
 }
@@ -837,7 +1059,10 @@ function startFirebaseRealtimeSync() {
         });
         if (db.current) {
             const current = remoteUsers.find(u => u.id === db.current);
-            if (current) me = current;
+            if (current) {
+                me = current;
+                if (!enforceUserStatus(current)) return;
+            }
         }
         saveDB();
         if (typeof renderAll === 'function') renderAll();
@@ -928,9 +1153,33 @@ async function registerUser() {
     const merged = [...db.users];
     remoteUsers.forEach(u => { if (u && !merged.some(x => x.id === u.id)) merged.push(u); });
 
+    const currentDeviceId = deviceIdForDb();
+    const telegramUserId = getTelegramUserId();
+    if (!telegramUserId) {
+        showLoader(false);
+        return toast('⚠️ Telegram থেকে অ্যাপটি খুলে রেজিস্ট্রেশন করুন। Telegram ID পাওয়া যায়নি।');
+    }
+    saveTelegramUserId(telegramUserId);
+
     if (merged.some(u => u.email === email || u.phone === phone)) {
         showLoader(false);
         return toast('এই email/phone আগে থেকেই আছে');
+    }
+
+    // একই device থেকে দ্বিতীয় account তৈরি বন্ধ
+    if (merged.some(u => u.telegramUserId && String(u.telegramUserId) === String(telegramUserId))) {
+        showLoader(false);
+        return toast('⚠️ এই Telegram ID দিয়ে ইতিমধ্যে একটি অ্যাকাউন্ট তৈরি করা হয়েছে।');
+    }
+
+    if (merged.some(u => u.deviceId && u.deviceId === currentDeviceId)) {
+        showLoader(false);
+        return toast('⚠️ এই ডিভাইসে ইতিমধ্যে একটি অ্যাকাউন্ট রয়েছে। এক ডিভাইসে এক অ্যাকাউন্টই ব্যবহার করা যাবে।');
+    }
+
+    if (!(await ensureDeviceAvailable(currentDeviceId))) {
+        showLoader(false);
+        return toast('⚠️ এই ডিভাইসে ইতিমধ্যে একটি অ্যাকাউন্ট নিবন্ধিত আছে।');
     }
 
     const referrer = ref ? merged.find(u => u.referral === ref && u.status === 'active') : null;
@@ -945,6 +1194,7 @@ async function registerUser() {
 
     const newUser = {
         id: uid(), name, phone, email, password: pass1, referral: code(), referredBy: ref || '',
+        deviceId: currentDeviceId, telegramUserId: String(telegramUserId),
         balance: 0, total: 0, today: 0, todayDate: today(), tx: [], spunDate: null, dailyDate: null,
         referrals: 0, activeRef: 0, refEarn: 0, adDate: null, adViews: 0, status: 'active',
         completedTasks: [], taskSessions: {}, notifications: [], dailyBonusDate: null
@@ -956,6 +1206,14 @@ async function registerUser() {
         if (ri >= 0) db.users[ri] = referrer;
     }
     db.users.push(newUser);
+
+    // Firebase-এ device ID claim করে তারপর account active করা
+    if (!(await claimDevice(currentDeviceId, newUser.id))) {
+        db.users = db.users.filter(u => u.id !== newUser.id);
+        showLoader(false);
+        return toast('⚠️ এই ডিভাইসে ইতিমধ্যে একটি অ্যাকাউন্ট রয়েছে।');
+    }
+
     db.current = newUser.id;
     me = newUser;
     saveDB();
@@ -985,16 +1243,49 @@ async function loginUser() {
     });
     db.users = merged;
 
-    setTimeout(() => {
+    setTimeout(async () => {
         const user = db.users.find(u => u.email === email && u.password === pass);
         if (!user) {
             showLoader(false);
             return toast('Email বা Password ভুল');
         }
+
+        if (!enforceUserStatus(user)) {
+            showLoader(false);
+            return;
+        }
+
+        const currentDeviceId = deviceIdForDb();
+        const telegramUserId = getTelegramUserId();
+        if (!telegramUserId) {
+            showLoader(false);
+            return toast('⚠️ Telegram থেকে অ্যাপটি খুলে লগইন করুন। Telegram ID পাওয়া যায়নি।');
+        }
+        saveTelegramUserId(telegramUserId);
+
+        // Permanent Telegram ownership stays on the account record. The local
+        // Telegram session key is cleared on logout and is restored only after login.
+        if (!user.deviceId) {
+            user.deviceId = currentDeviceId;
+            await claimDevice(currentDeviceId, user.id);
+            await syncUserToFirebase(user);
+        } else if (user.deviceId !== currentDeviceId) {
+            showLoader(false);
+            return toast('⚠️ এই অ্যাকাউন্টটি অন্য একটি ডিভাইসে নিবন্ধিত। একই অ্যাকাউন্ট অন্য ডিভাইসে ব্যবহার করা যাবে না।');
+        }
+
         me = user;
         db.current = user.id;
         saveDB();
         startFirebaseRealtimeSync();
+
+        // Check the network/ad-block guard only for this logged-in account.
+        const accessOK = await runAccessGuard();
+        if (!accessOK) {
+            showLoader(false);
+            return;
+        }
+
         showLoader(false);
         enterApp();
         toast('স্বাগতম ' + user.name + ' 💵 Smart Cash-এ');
@@ -1009,7 +1300,7 @@ function forgotPassword() {
 }
 
 function enterApp() {
-    if (!me) return;
+    if (!me || !enforceUserStatus(me)) return;
     // ডেইলি বোনাস চেক
     if (me.dailyBonusDate !== today()) {
         me.dailyBonusDate = today();
@@ -1043,7 +1334,14 @@ function enterApp() {
     setTimeout(loadAllNativeAds, 1000);
 }
 
-function logoutUser() { db.current = null; saveDB(); location.reload(); }
+function logoutUser() {
+    db.current = null;
+    me = null;
+    clearTelegramSessionId();
+    sessionStorage.removeItem(ACCESS_GUARD_KEY);
+    saveDB();
+    location.reload();
+}
 
 // ==========================================================
 //   রেন্ডার
@@ -1847,23 +2145,62 @@ syncTasksAndProjectsFromDB();
 (async () => {
     await initFirebaseApp();
     startFirebaseRealtimeSync();
-    if (me && db.current) await syncUserToFirebase(me);
+
+    // Access Guard is account-session specific. A logged-out visitor sees only
+    // the normal login/register screen; the DNS/AdBlock warning is not shown
+    // globally to every account.
+    if (!me || !db.current) return;
+
+    $('auth')?.classList.add('hidden');
+
+    if (!enforceUserStatus(me)) {
+        return;
+    }
+
+    const tgId = getTelegramUserId();
+    if (me.telegramUserId && (!tgId || String(me.telegramUserId) !== String(tgId))) {
+        db.current = null;
+        me = null;
+        clearTelegramSessionId();
+        saveDB();
+        $('auth')?.classList.remove('hidden');
+        toast('⚠️ এই অ্যাকাউন্টটি বর্তমান Telegram ID-এর সঙ্গে মেলেনি। Telegram থেকে আবার লগইন করুন।');
+        return;
+    }
+
+    if (!me.deviceId) {
+        me.deviceId = deviceIdForDb();
+        await syncUserToFirebase(me);
+    } else if (me.deviceId !== deviceIdForDb()) {
+        db.current = null;
+        me = null;
+        clearTelegramSessionId();
+        saveDB();
+        $('auth')?.classList.remove('hidden');
+        toast('⚠️ এই অ্যাকাউন্টটি এই ডিভাইসের জন্য অনুমোদিত নয়।');
+        return;
+    } else {
+        await syncUserToFirebase(me);
+    }
+
+    const accessOK = await runAccessGuard();
+    if (!accessOK) return;
+
+    // Only after all session/account checks pass is the user app opened.
+    enterApp();
 })();
 
-console.log('✅ Smart Cash — স্মার্ট ক্যাশ v2.0');
+console.log('✅ Smart Cash — স্মার্ট ক্যাশ v2.1.1');
 console.log('✅ আপডেট: নতুন থিম, লিডারবোর্ড, ডেইলি বোনাস');
+console.log('✅ আপডেট v2.1.1: Account-specific Block/Access Guard + Logout Session Reset + Telegram Session Binding');
 console.log('✅ পপআন্ডার: Monetag (nap5k)');
 console.log('✅ ব্যানার অ্যাড: সব পেজে যুক্ত');
 
-if (db.current && me) {
-    if (me.todayDate !== today()) { me.today = 0; me.todayDate = today(); }
-    if (me.adDate !== today()) { me.adDate = today(); me.adViews = 0; }
-    if (!me.completedTasks) me.completedTasks = [];
-    if (!me.taskSessions) me.taskSessions = {};
-    saveDB();
-    enterApp();
-} else {
+if (!db.current || !me) {
     $('auth').classList.remove('hidden');
+} else {
+    // Existing sessions are validated asynchronously above before enterApp().
+    $('auth').classList.add('hidden');
 }
 
 try { if (window.Telegram?.WebApp) { Telegram.WebApp.ready(); Telegram.WebApp.expand(); } } catch (e) {}
