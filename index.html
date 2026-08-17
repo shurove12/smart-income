@@ -190,6 +190,20 @@
         .leaderboard-item .rank{font-weight:700;color:#facc15;width:30px}
         .leaderboard-item .name{flex:1;font-weight:600}
         .leaderboard-item .amount{color:#10b981;font-weight:700}
+        
+        /* মোবাইল নেটওয়ার্কের জন্য মেসেজ */
+        #mobileNetworkWarning {
+            display: none;
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 10px;
+            padding: 10px 14px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            color: #78350f;
+            text-align: center;
+        }
+        #mobileNetworkWarning .icon { font-size: 20px; }
     </style>
 </head>
 <body>
@@ -262,6 +276,12 @@
             <span class="noti-icon">📢</span>
             <span class="noti-text" id="notificationText">নোটিফিকেশন বার্তা</span>
             <button class="noti-close" onclick="closeNotification()">✕</button>
+        </div>
+
+        <!-- ===== মোবাইল নেটওয়ার্ক সতর্কতা ===== -->
+        <div id="mobileNetworkWarning">
+            <span class="icon">📶</span> 
+            <span id="mobileNetworkText">মোবাইল নেটওয়ার্ক ব্যবহার করছেন। অ্যাপ ঠিকমতো কাজ করছে!</span>
         </div>
 
         <!-- ========================================================== -->
@@ -565,7 +585,7 @@
 
 <script>
 // ==========================================================
-//   🔧 DIRECT_LINKS - ঠিক করা (শুধু AdGram ID)
+//   🔧 DIRECT_LINKS
 // ==========================================================
 const ADGRAM_BLOCK_ID = 'int-43256';
 
@@ -596,7 +616,7 @@ const DEFAULT_AD_CONFIG = {
 let __directTurn = 0;
 
 // ==========================================================
-//   🔧 openDirectAd() - AdGram Interstitial ব্যবহার
+//   🔧 openDirectAd() - AdGram Interstitial
 // ==========================================================
 function openDirectAd() {
     if (window.__popunderEnabled === false) {
@@ -633,7 +653,7 @@ const STORAGE_KEY = 'smart_income_v3';
 const BOT_LINK = 'https://t.me/smarttcash_bot';
 
 // ==========================================================
-//   🔧 ACCESS GUARD - আপডেটেড
+//   🔧 ACCESS GUARD - মোবাইল ফ্রেন্ডলি
 // ==========================================================
 const DEVICE_ID_KEY = 'smart_cash_device_id_v1';
 const TELEGRAM_ID_KEY = 'smart_cash_telegram_id_v1';
@@ -777,7 +797,7 @@ function createAdBlockBait() {
     return bait;
 }
 
-function testImageEndpoint(url, timeout = 1500) {
+function testImageEndpoint(url, timeout = 5000) { // ✅ মোবাইলের জন্য টাইমআউট বাড়ানো
     return new Promise(resolve => {
         let done = false;
         const img = new Image();
@@ -795,7 +815,41 @@ function testImageEndpoint(url, timeout = 1500) {
     });
 }
 
+// ✅ মোবাইল নেটওয়ার্ক ডিটেক্ট
+function isMobileNetwork() {
+    try {
+        const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        if (conn) {
+            // যদি wifi না হয় তাহলে মোবাইল নেটওয়ার্ক
+            return conn.type !== 'wifi' && conn.type !== 'ethernet';
+        }
+    } catch (e) {}
+    // User Agent দিয়ে চেক
+    return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+}
+
+// ✅ মোবাইল নেটওয়ার্ক ওয়ার্নিং দেখানো
+function showMobileNetworkWarning() {
+    const warningEl = document.getElementById('mobileNetworkWarning');
+    if (isMobileNetwork()) {
+        warningEl.style.display = 'block';
+        document.getElementById('mobileNetworkText').textContent = 
+            '📱 মোবাইল নেটওয়ার্ক ব্যবহার করছেন। অ্যাপ ঠিকমতো কাজ করছে!';
+    } else {
+        warningEl.style.display = 'none';
+    }
+}
+
+// ✅ আপডেটেড runAccessGuard() - মোবাইল ফ্রেন্ডলি
 async function runAccessGuard() {
+    // ✅ মোবাইল নেটওয়ার্ক হলে Access Guard স্কিপ
+    if (isMobileNetwork()) {
+        console.log('📱 Mobile network detected - skipping access guard');
+        hideAccessBlocked();
+        sessionStorage.removeItem(ACCESS_GUARD_KEY);
+        return true;
+    }
+    
     if (sessionStorage.getItem(ACCESS_GUARD_KEY) === 'blocked') {
         const blockCount = parseInt(sessionStorage.getItem('block_count') || '0');
         if (blockCount >= 2) {
@@ -811,7 +865,7 @@ async function runAccessGuard() {
 
     try {
         const bait = createAdBlockBait();
-        await new Promise(r => setTimeout(r, 120));
+        await new Promise(r => setTimeout(r, 200));
 
         const style = getComputedStyle(bait);
         const baitBlocked = !document.body.contains(bait) ||
@@ -821,8 +875,8 @@ async function runAccessGuard() {
             Number(style.height) === 0;
 
         const endpointOK = await Promise.race([
-            testImageEndpoint('https://pl30829859.effectivecpmnetwork.com/favicon.ico', 1500),
-            new Promise(resolve => setTimeout(() => resolve(true), 1500))
+            testImageEndpoint('https://pl30829859.effectivecpmnetwork.com/favicon.ico', 5000),
+            new Promise(resolve => setTimeout(() => resolve(true), 5000))
         ]);
 
         bait.remove();
@@ -975,15 +1029,32 @@ let __firebaseListenersStarted = false;
 async function initFirebaseApp() {
     if (__firebaseReady) return true;
     if (!window.firebase || !FIREBASE_CONFIG) return false;
-    try {
-        if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
-        __firebaseReady = true;
-        window.firebaseInitialized = true;
-        return true;
-    } catch (e) {
-        console.error('Firebase init error:', e);
-        return false;
+    
+    let retries = 0;
+    const maxRetries = 5;
+    
+    while (retries < maxRetries) {
+        try {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(FIREBASE_CONFIG);
+                // Firebase সংযোগ চেক
+                firebase.database().ref('.info/connected').on('value', snap => {
+                    if (snap.val() === true) {
+                        console.log('✅ Firebase connected');
+                    }
+                });
+            }
+            __firebaseReady = true;
+            window.firebaseInitialized = true;
+            return true;
+        } catch (e) {
+            retries++;
+            console.warn(`Firebase init retry ${retries}/${maxRetries}:`, e);
+            await new Promise(r => setTimeout(r, 2000 * retries));
+        }
     }
+    console.error('Firebase initialization failed after max retries');
+    return false;
 }
 
 async function loadAllUsersFromFirebase() {
@@ -1121,7 +1192,6 @@ function updateAdSettings() {
 function reloadBannerAds() {
     document.querySelectorAll('.banner-ad-container').forEach((container) => {
         try {
-            // শুধু প্রজেক্টের ব্যানার রিলোড
             if (container.id && container.id.startsWith('project_banner_')) {
                 const iframe = container.querySelector('iframe');
                 if (iframe) {
@@ -1359,6 +1429,9 @@ function enterApp() {
     if (sessionStorage.getItem('access_skipped') === 'true') {
         sessionStorage.removeItem('access_skipped');
     }
+    
+    // ✅ মোবাইল নেটওয়ার্ক ওয়ার্নিং দেখাও
+    showMobileNetworkWarning();
     
     if (me.dailyBonusDate !== today()) {
         me.dailyBonusDate = today();
@@ -1610,7 +1683,7 @@ function renderEarnTasks() {
 }
 
 // ==========================================================
-//   🔧 প্রজেক্ট (বাটন টেক্সট + ব্যানার ঠিক করা)
+//   🔧 প্রজেক্ট
 // ==========================================================
 let __projectSession = {
     active: false,
@@ -1739,7 +1812,6 @@ function doProject(id) {
 
     if ((me.today || 0) >= 100) return toast('আজকের earning limit শেষ');
 
-    // Ad দেখাও
     openDirectAd();
 
     __projectSession.active = true;
@@ -1859,7 +1931,6 @@ function updateSessionUI(taskId) {
 }
 
 function startSession(e) {
-    // AdGram Interstitial দেখাও
     if (window.Adsgram) {
         try {
             const blockId = db.adConfig?.adgramBlockId || ADGRAM_BLOCK_ID;
@@ -2273,8 +2344,8 @@ checkTelegramStatus();
     enterApp();
 })();
 
-console.log('✅ Smart Cash — স্মার্ট ক্যাশ v2.1.4 (চূড়ান্ত)');
-console.log('✅ সব আপডেট সম্পন্ন: AdGram int-43256, কাউন্টার 30→1, প্রজেক্ট ব্যানার iframe');
+console.log('✅ Smart Cash — স্মার্ট ক্যাশ v2.1.5 (মোবাইল ফিক্স)');
+console.log('✅ আপডেট: মোবাইল নেটওয়ার্ক সাপোর্ট, Access Guard স্কিপ, টাইমআউট বাড়ানো');
 
 if (!db.current || !me) {
     $('auth').classList.remove('hidden');
