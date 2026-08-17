@@ -11,7 +11,7 @@
     <!-- AdGram Interstitial -->
     <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
     
-    <!-- ⚠️ শুধুমাত্র একটি পপআন্ডার/ভিগনেট - এখানে Monetag (nap5k) রাখা হলো -->
+    <!-- Monetag Popunder -->
     <script>(function(s){s.dataset.zone='11572640',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
     
     <!-- Native Ads -->
@@ -169,6 +169,24 @@
         .task-ad-divider{margin:6px 0;padding:4px 0;background:#f1f5f9;border-radius:6px;text-align:center;font-size:10px;color:#94a3b8}
         
         .ad-label{font-size:9px;color:#94a3b8;text-align:center;padding:2px;letter-spacing:0.5px;text-transform:uppercase}
+
+        /* নোটিফিকেশন বার */
+        #notificationBar {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: #fff;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            display: none;
+            font-size: 14px;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        #notificationBar .noti-icon { font-size: 20px; }
+        #notificationBar .noti-text { flex: 1; }
+        #notificationBar .noti-close { background: none; border: 0; color: #94a3b8; font-size: 18px; cursor: pointer; padding: 0 4px; }
+        #notificationBar .noti-close:hover { color: #fff; }
     </style>
 </head>
 <body>
@@ -233,6 +251,13 @@
 
     <main class="main wrap">
 
+        <!-- ===== নোটিফিকেশন বার ===== -->
+        <div id="notificationBar">
+            <span class="noti-icon">📢</span>
+            <span class="noti-text" id="notificationText">নোটিফিকেশন বার্তা</span>
+            <button class="noti-close" onclick="closeNotification()">✕</button>
+        </div>
+
         <!-- ========================================================== -->
         <!-- ===== HOME PAGE ===== -->
         <!-- ========================================================== -->
@@ -248,7 +273,7 @@
                 <div class="warning">⚠️ টাস্ক ভিজিট না করলে রিওয়ার্ড পাবেন না!</div>
             </div>
 
-            <!-- 📌 হোম টাস্কের উপরে ব্যানার -->
+            <!-- হোম টাস্কের উপরে ব্যানার -->
             <div id="home-top-banner" class="banner-ad-container">
                 <script>
                     atOptions = { 'key' : '51bcf215100b208521b1f970deaedf8e', 'format' : 'iframe', 'height' : 90, 'width' : 728, 'params' : {} };
@@ -267,7 +292,7 @@
                 <div id="homeTaskList"></div>
             </div>
 
-            <!-- 📌 প্রজেক্টের উপরে ব্যানার -->
+            <!-- প্রজেক্টের উপরে ব্যানার -->
             <div id="home-project-top-banner" class="banner-ad-container" style="margin-top:16px;">
                 <script>
                     atOptions = { 'key' : 'f70b806885d12defbb6515475012d220', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
@@ -280,7 +305,7 @@
                 <div id="projectsList"></div>
             </div>
 
-            <!-- 📌 হোমের নিচের ব্যানার -->
+            <!-- হোমের নিচের ব্যানার -->
             <div id="ad-home-728" class="adbox">
                 <script>
                     atOptions = { 'key' : '51bcf215100b208521b1f970deaedf8e', 'format' : 'iframe', 'height' : 90, 'width' : 728, 'params' : {} };
@@ -296,7 +321,7 @@
         <div id="earn" class="page">
             <h3>💰 আর্নিং টাস্কসমূহ</h3>
 
-            <!-- 📌 আর্নিং টাস্কের উপরে ব্যানার -->
+            <!-- আর্নিং টাস্কের উপরে ব্যানার -->
             <div id="earn-top-banner" class="banner-ad-container">
                 <script>
                     atOptions = { 'key' : 'f70b806885d12defbb6515475012d220', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
@@ -351,7 +376,7 @@
         <!-- ===== REFERRAL PAGE ===== -->
         <!-- ========================================================== -->
         <div id="ref" class="page">
-            <!-- 📌 রেফার সিস্টেমের উপরে ব্যানার -->
+            <!-- রেফার সিস্টেমের উপরে ব্যানার -->
             <div id="ref-top-banner" class="banner-ad-container">
                 <script>
                     atOptions = { 'key' : '7377c6284642e41982bac15f7a52f957', 'format' : 'iframe', 'height' : 600, 'width' : 160, 'params' : {} };
@@ -382,7 +407,7 @@
                 </div>
             </div>
             
-            <!-- 📌 রেফার সিস্টেমের নিচে ব্যানার -->
+            <!-- রেফার সিস্টেমের নিচে ব্যানার -->
             <div id="ref-bottom-banner" class="banner-ad-container">
                 <script>
                     atOptions = { 'key' : '7377c6284642e41982bac15f7a52f957', 'format' : 'iframe', 'height' : 600, 'width' : 160, 'params' : {} };
@@ -404,7 +429,7 @@
         <!-- ========================================================== -->
         <div id="history" class="page">
             
-            <!-- 📌 উইথড্র রিকোয়েস্টের উপরে ব্যানার -->
+            <!-- উইথড্র রিকোয়েস্টের উপরে ব্যানার -->
             <div id="history-top-banner" class="banner-ad-container">
                 <script>
                     atOptions = { 'key' : '0ca63518e47c3eff896923a1d3c9fbdb', 'format' : 'iframe', 'height' : 300, 'width' : 160, 'params' : {} };
@@ -420,7 +445,7 @@
                     <div class="level-info">
                         <div class="level-num" id="wdLevelDisplay">Level 1</div>
                         <div class="level-label" id="wdLevelLabel">১০টি রেফারেল প্রয়োজন</div>
-                        <div style="font-size:12px;color:#166534;margin-top:4px">সর্বোচ্চ প্রত্যাহার: <b id="wdMaxDisplay">৳10</b></div>
+                        <div style="font-size:12px;color:#166534;margin-top:4px">সর্বোচ্চ প্রত্যাহার: <b id="wdMaxDisplay">৳50</b></div>
                     </div>
                     
                     <div class="form-group">
@@ -449,8 +474,8 @@
                     
                     <div class="form-group">
                         <label>💰 প্রত্যাহার টাকা</label>
-                        <input id="wdAmount" type="number" placeholder="যেমন: 10" oninput="calculateWithdraw()" />
-                        <div class="muted" style="font-size:12px;margin-top:4px">ন্যূনতম ৳১০ • সর্বোচ্চ: <span id="wdMaxDisplay2">৳10</span></div>
+                        <input id="wdAmount" type="number" placeholder="যেমন: 20" oninput="calculateWithdraw()" />
+                        <div class="muted" style="font-size:12px;margin-top:4px">ন্যূনতম ৳২০ • সর্বোচ্চ: <span id="wdMaxDisplay2">৳50</span></div>
                     </div>
                     
                     <div class="summary">
@@ -467,7 +492,7 @@
                 </div>
             </div>
 
-            <!-- 📌 ট্রানজেকশন হিস্ট্রির উপরে ব্যানার -->
+            <!-- ট্রানজেকশন হিস্ট্রির উপরে ব্যানার -->
             <div id="history-tx-top-banner" class="banner-ad-container">
                 <script>
                     atOptions = { 'key' : 'f9b4e4f2db5fe51891bd5a72de5078dd', 'format' : 'iframe', 'height' : 60, 'width' : 468, 'params' : {} };
@@ -480,7 +505,7 @@
                 <div id="tx"></div>
             </div>
 
-            <!-- 📌 ট্রানজেকশন হিস্ট্রির মাঝখানে ব্যানার -->
+            <!-- ট্রানজেকশন হিস্ট্রির মাঝখানে ব্যানার -->
             <div id="history-tx-mid-banner" class="banner-ad-container">
                 <script>
                     atOptions = { 'key' : '0ca63518e47c3eff896923a1d3c9fbdb', 'format' : 'iframe', 'height' : 300, 'width' : 160, 'params' : {} };
@@ -507,7 +532,7 @@
         <!-- ===== PROFILE PAGE ===== -->
         <!-- ========================================================== -->
         <div id="profile" class="page">
-            <!-- 📌 প্রোফাইলের উপরে ব্যানার -->
+            <!-- প্রোফাইলের উপরে ব্যানার -->
             <div id="profile-top-banner" class="banner-ad-container">
                 <script>
                     atOptions = { 'key' : '51bcf215100b208521b1f970deaedf8e', 'format' : 'iframe', 'height' : 90, 'width' : 728, 'params' : {} };
@@ -622,20 +647,22 @@ const STORAGE_KEY = 'smart_income_v3';
 const BOT_LINK = 'https://t.me/smartearning02_bot';
 
 // ==========================================================
-//   10 WITHDRAWAL LEVELS
+//   10 WITHDRAWAL LEVELS - আপডেটেড (Min 20, Max 50)
 // ==========================================================
 const WITHDRAWAL_LEVELS = [
-    { level: 1, referralsNeeded: 10, maxWithdraw: 10 },
-    { level: 2, referralsNeeded: 20, maxWithdraw: 20 },
-    { level: 3, referralsNeeded: 30, maxWithdraw: 30 },
-    { level: 4, referralsNeeded: 40, maxWithdraw: 40 },
+    { level: 1, referralsNeeded: 10, maxWithdraw: 50 },
+    { level: 2, referralsNeeded: 20, maxWithdraw: 50 },
+    { level: 3, referralsNeeded: 30, maxWithdraw: 50 },
+    { level: 4, referralsNeeded: 40, maxWithdraw: 50 },
     { level: 5, referralsNeeded: 50, maxWithdraw: 50 },
-    { level: 6, referralsNeeded: 60, maxWithdraw: 60 },
-    { level: 7, referralsNeeded: 70, maxWithdraw: 70 },
-    { level: 8, referralsNeeded: 80, maxWithdraw: 80 },
-    { level: 9, referralsNeeded: 90, maxWithdraw: 90 },
-    { level: 10, referralsNeeded: 100, maxWithdraw: 100 }
+    { level: 6, referralsNeeded: 60, maxWithdraw: 50 },
+    { level: 7, referralsNeeded: 70, maxWithdraw: 50 },
+    { level: 8, referralsNeeded: 80, maxWithdraw: 50 },
+    { level: 9, referralsNeeded: 90, maxWithdraw: 50 },
+    { level: 10, referralsNeeded: 100, maxWithdraw: 50 }
 ];
+
+const MIN_WITHDRAW = 20;
 
 function getWithdrawalLevel(referrals) {
     let level = 0;
@@ -659,7 +686,7 @@ function getNextLevelInfo(referrals) {
             };
         }
     }
-    return { level: 10, needed: 100, maxWithdraw: 100, progress: 100, total: 100 };
+    return { level: 10, needed: 100, maxWithdraw: 50, progress: 100, total: 100 };
 }
 
 // ==========================================================
@@ -849,6 +876,15 @@ function startFirebaseRealtimeSync() {
         saveDB();
         if (typeof renderAll === 'function') renderAll();
     });
+
+    // Admin -> User: Notifications
+    r.ref('notifications').on('value', snap => {
+        if (!snap.exists()) return;
+        const notiData = snap.val();
+        if (notiData && notiData.text) {
+            showNotification(notiData.text);
+        }
+    });
 }
 
 function today() { return new Date().toISOString().slice(0, 10); }
@@ -867,6 +903,25 @@ function toast(msg) {
 function showLoader(show, msg = 'কাজ হচ্ছে...') {
     $('lt').textContent = msg;
     $('loader').classList.toggle('show', show);
+}
+
+// ===== নোটিফিকেশন ফাংশন =====
+function showNotification(text) {
+    if (!text) return;
+    const bar = document.getElementById('notificationBar');
+    const textEl = document.getElementById('notificationText');
+    textEl.textContent = text;
+    bar.style.display = 'flex';
+    // 10 সেকেন্ড পর অটো ক্লোজ
+    clearTimeout(window._notiTimer);
+    window._notiTimer = setTimeout(() => {
+        bar.style.display = 'none';
+    }, 10000);
+}
+
+function closeNotification() {
+    document.getElementById('notificationBar').style.display = 'none';
+    clearTimeout(window._notiTimer);
 }
 
 // ==========================================================
@@ -907,7 +962,7 @@ async function registerUser() {
         id: uid(), name, phone, email, password: pass1, referral: code(), referredBy: ref || '',
         balance: 0, total: 0, today: 0, todayDate: today(), tx: [], spunDate: null, dailyDate: null,
         referrals: 0, activeRef: 0, refEarn: 0, adDate: null, adViews: 0, status: 'active',
-        completedTasks: [], taskSessions: {}
+        completedTasks: [], taskSessions: {}, notifications: []
     };
 
     db.users = merged;
@@ -982,6 +1037,15 @@ function enterApp() {
     renderEarnTasks();
     renderProjects();
     renderLevels();
+    // চেক করুন কোন নোটিফিকেশন আছে কিনা
+    if (me.notifications && me.notifications.length > 0) {
+        const lastNoti = me.notifications[0];
+        if (lastNoti && !lastNoti.read) {
+            showNotification(lastNoti.text);
+            lastNoti.read = true;
+            saveDB();
+        }
+    }
     setTimeout(loadAllNativeAds, 1000);
 }
 
@@ -995,7 +1059,7 @@ function renderAll() {
     const completed = me.completedTasks || [];
     const total = ALL_TASKS.length;
     const level = getWithdrawalLevel(me.referrals || 0);
-    const maxW = level > 0 ? WITHDRAWAL_LEVELS[level-1].maxWithdraw : 0;
+    const maxW = level > 0 ? WITHDRAWAL_LEVELS[level-1].maxWithdraw : 50;
     
     $('name').textContent = me.name;
     $('level').textContent = 'Level ' + level;
@@ -1048,7 +1112,7 @@ function renderLevels() {
     html += '</div>';
     
     if (isMaxLevel) {
-        html += `<div class="level-container" style="background:#d1fae5;color:#065f46;font-weight:700;text-align:center">✅ সর্বোচ্চ লেভেল অর্জিত! প্রত্যাহার ৳১০০ পর্যন্ত</div>`;
+        html += `<div class="level-container" style="background:#d1fae5;color:#065f46;font-weight:700;text-align:center">✅ সর্বোচ্চ লেভেল অর্জিত! প্রত্যাহার ৳৫০ পর্যন্ত</div>`;
     } else {
         html += `<div class="level-container">পরবর্তী লেভেলের জন্য প্রয়োজন ${nextInfo.needed - nextInfo.progress} টি রেফারেল</div>`;
     }
@@ -1117,7 +1181,7 @@ function renderHomeTasks() {
                 </div>
             </div>
         `;
-        // 📌 প্রতিটি টাস্কের মাঝখানে ব্যানার (শুধুমাত্র পেন্ডিং টাস্কের জন্য)
+        // প্রতিটি টাস্কের মাঝখানে ব্যানার (শুধুমাত্র পেন্ডিং টাস্কের জন্য)
         if (!isDone && index < HOME_TASKS.length - 1) {
             html += `
                 <div class="task-ad-divider">
@@ -1167,7 +1231,7 @@ function renderEarnTasks() {
                 </div>
             </div>
         `;
-        // 📌 প্রতিটি আর্নিং টাস্কের মাঝখানে ব্যানার
+        // প্রতিটি আর্নিং টাস্কের মাঝখানে ব্যানার
         if (!isDone && index < EARN_TASKS.length - 1) {
             html += `
                 <div class="task-ad-divider">
@@ -1187,7 +1251,6 @@ function renderEarnTasks() {
 // ==========================================================
 //   প্রজেক্ট (প্রতিটি প্রজেক্টের মাঝখানে ব্যানার)
 // ==========================================================
-// ===== Project 30-second session patch (FIXED) =====
 let __projectSession = {
     active: false,
     projectId: null,
@@ -1356,7 +1419,7 @@ function closeTaskDetail() {
     if (sessionTimer) { clearInterval(sessionTimer); sessionTimer = null; }
     isWaitingForComplete = false;
     
-    // 📌 টাস্ক ডিটেইল থেকে ব্যাক আসলে ভিডিও অ্যাড চালু করুন
+    // টাস্ক ডিটেইল থেকে ব্যাক আসলে ভিডিও অ্যাড চালু করুন
     if (currentTaskId) {
         const task = ALL_TASKS.find(t => t.id === currentTaskId);
         if (task && !(me.completedTasks || []).includes(currentTaskId)) {
@@ -1494,7 +1557,7 @@ function autoCompleteSession() {
             renderAll();
             renderHomeTasks();
             renderEarnTasks();
-            // 📌 সেশন সম্পন্ন হলে ভিডিও অ্যাড চালু করুন
+            // সেশন সম্পন্ন হলে ভিডিও অ্যাড চালু করুন
             showPostTaskVideoAd();
         }, 500);
     }
@@ -1526,7 +1589,7 @@ function completeFullTask(taskId) {
         renderEarnTasks();
         showLoader(false);
         toast(`🎉 টাস্ক সম্পন্ন! +৳${task.reward}`);
-        // 📌 টাস্ক সম্পন্ন হলে ভিডিও অ্যাড চালু করুন
+        // টাস্ক সম্পন্ন হলে ভিডিও অ্যাড চালু করুন
         showPostTaskVideoAd();
 
         updateSessionUI(taskId);
@@ -1539,7 +1602,7 @@ function completeFullTask(taskId) {
 }
 
 // ==========================================================
-//   WITHDRAW
+//   WITHDRAW (আপডেটেড: Min 20, Max 50)
 // ==========================================================
 function calculateWithdraw() {
     const amt = parseFloat(document.getElementById('wdAmount').value) || 0;
@@ -1557,13 +1620,13 @@ function submitWithdraw() {
     const account = document.getElementById('wdAccount').value.trim();
     const amount = parseFloat(document.getElementById('wdAmount').value);
     const level = getWithdrawalLevel(me.referrals || 0);
-    const maxW = level > 0 ? WITHDRAWAL_LEVELS[level-1].maxWithdraw : 0;
+    const maxW = level > 0 ? WITHDRAWAL_LEVELS[level-1].maxWithdraw : 50;
 
     if (!name) return toast('👤 আপনার নাম দিন');
     if (!phone || phone.length < 10) return toast('📱 সঠিক মোবাইল নম্বর দিন');
     if (!method) return toast('🏦 পেমেন্ট মেথড সিলেক্ট করুন');
     if (!account) return toast('🔢 একাউন্ট নম্বর দিন');
-    if (!amount || amount < 10) return toast('💰 ন্যূনতম ৳১০ প্রত্যাহার');
+    if (!amount || amount < MIN_WITHDRAW) return toast(`💰 ন্যূনতম ৳${MIN_WITHDRAW} প্রত্যাহার`);
     if (level < 1) return toast('১০টি রেফারেল প্রয়োজন!');
     if (amount > maxW) return toast(`সর্বোচ্চ ৳${maxW} প্রত্যাহার করতে পারবেন!`);
 
@@ -1736,6 +1799,45 @@ function openSpin() { $('spinModal').classList.add('show'); }
 function closeSpin() { $('spinModal').classList.remove('show'); }
 
 // ==========================================================
+//   টাস্ক ও প্রজেক্ট ডাটাবেসে রাখা
+// ==========================================================
+function syncTasksAndProjectsFromDB() {
+    // User app tasks are defined in ALL_TASKS and PROJECTS constants
+    // This function ensures db has the latest from Firebase
+    if (db.tasks && db.tasks.length > 0) {
+        // Merge with local tasks
+        db.tasks.forEach(t => {
+            const existing = ALL_TASKS.find(x => x.id === t.id);
+            if (existing) {
+                existing.title = t.title || existing.title;
+                existing.desc = t.desc || existing.desc;
+                existing.reward = t.reward || existing.reward;
+                existing.sessions = t.sessions || existing.sessions;
+                existing.icon = t.icon || existing.icon;
+                existing.isMain = t.isMain !== undefined ? t.isMain : existing.isMain;
+            } else {
+                // New task from admin
+                ALL_TASKS.push(t);
+            }
+        });
+    }
+    if (db.projects && db.projects.length > 0) {
+        db.projects.forEach(p => {
+            const existing = PROJECTS.find(x => x.id === p.id);
+            if (existing) {
+                existing.title = p.title || existing.title;
+                existing.desc = p.desc || existing.desc;
+                existing.reward = p.reward || existing.reward;
+                existing.color = p.color || existing.color;
+                existing.icon = p.icon || existing.icon;
+            } else {
+                PROJECTS.push(p);
+            }
+        });
+    }
+}
+
+// ==========================================================
 //   ইনিশিয়ালাইজ
 // ==========================================================
 loadDB();
@@ -1750,10 +1852,10 @@ syncTasksAndProjectsFromDB();
 })();
 
 console.log('✅ Smart Income - User App (Firebase Central Realtime v1.2.0)');
-console.log('✅ পপআন্ডার: শুধুমাত্র Monetag (nap5k)');
+console.log('✅ আপডেট: নোটিফিকেশন বার, Min Withdraw ২০, Max ৫০');
+console.log('✅ পপআন্ডার: Monetag (nap5k)');
 console.log('✅ ব্যানার অ্যাড: সব পেজে যুক্ত');
 console.log('✅ ভিডিও অ্যাড: টাস্ক থেকে ব্যাক/সমাপ্তিতে চালু হবে');
-console.log('✅ প্রজেক্ট কাউন্টডাউন: FIXED - 30s থেকে 1s পর্যন্ত কাজ করবে');
 console.log('📦 Users:', db.users.length);
 
 if (db.current && me) {
@@ -1770,7 +1872,7 @@ if (db.current && me) {
 try { if (window.Telegram?.WebApp) { Telegram.WebApp.ready(); Telegram.WebApp.expand(); } } catch (e) {}
 </script>
 
-<!-- ⚠️ শুধুমাত্র একটি পপআন্ডার/ভিগনেট - Monetag (nap5k) -->
+<!-- Monetag Popunder -->
 <script>(function(s){s.dataset.zone='11572640',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 
 </body>
