@@ -201,7 +201,7 @@
             font-size: 13px;
             cursor: pointer;
             transition: 0.2s;
-            min-width: 120px;
+            min-width: 140px;
         }
         .project-btn:hover { transform: scale(0.97); opacity: 0.9; }
         .project-btn:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -1618,7 +1618,7 @@ function getRemainingTime(taskId) {
 }
 
 // ==========================================================
-//   হোম টাস্ক
+//   হোম টাস্ক (মাঝখানের অ্যাড সরানো)
 // ==========================================================
 function renderHomeTasks() {
     const container = $('homeTaskList');
@@ -1671,25 +1671,13 @@ function renderHomeTasks() {
                 ${isDone && !canDo ? `<div style="font-size:11px;color:#f59e0b;margin-top:4px;">⏳ ${remainingHours} ঘন্টা বাকি</div>` : ''}
             </div>
         `;
-        
-        if (!isDone && index < HOME_TASKS.length - 1) {
-            html += `
-                <div class="task-ad-divider">
-                    <div class="banner-ad-container" style="margin:4px 0;">
-                        <script>
-                            atOptions = { 'key' : 'f70b806885d12defbb6515475012d220', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
-                        <\/script>
-                        <script src="https://www.highperformanceformat.com/f70b806885d12defbb6515475012d220/invoke.js"><\/script>
-                    </div>
-                </div>
-            `;
-        }
+        // ❌ মাঝখানের অ্যাড সরানো হয়েছে
     });
     container.innerHTML = html;
 }
 
 // ==========================================================
-//   আর্নিং টাস্ক
+//   আর্নিং টাস্ক (মাঝখানের অ্যাড সরানো)
 // ==========================================================
 function renderEarnTasks() {
     const container = $('earnTaskList');
@@ -1741,25 +1729,13 @@ function renderEarnTasks() {
                 ${isDone && !canDo ? `<div style="font-size:11px;color:#f59e0b;margin-top:4px;">⏳ ${remainingHours} ঘন্টা বাকি</div>` : ''}
             </div>
         `;
-        
-        if (!isDone && index < EARN_TASKS.length - 1) {
-            html += `
-                <div class="task-ad-divider">
-                    <div class="banner-ad-container" style="margin:4px 0;">
-                        <script>
-                            atOptions = { 'key' : '4f73a7be6b5aa37211aad8635c516fda', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
-                        <\/script>
-                        <script src="https://www.highperformanceformat.com/4f73a7be6b5aa37211aad8635c516fda/invoke.js"><\/script>
-                    </div>
-                </div>
-            `;
-        }
+        // ❌ মাঝখানের অ্যাড সরানো হয়েছে
     });
     container.innerHTML = html;
 }
 
 // ==========================================================
-//   🔧 প্রজেক্ট (৩০ সেকেন্ড কাউন্টার শো করাবে)
+//   🔧 প্রজেক্ট (৩০ সেকেন্ড কাউন্টার শো করাবে + মাঝখানের অ্যাড সরানো)
 // ==========================================================
 let __projectSession = {
     active: false,
@@ -1773,7 +1749,7 @@ function __projectButtonText(projectId) {
         return `⏳ ${__projectSession.secondsLeft}s`;
     }
     if (__projectSession.active) return '⏳ অন্য প্রজেক্ট চলছে';
-    return '▶️ শুরু করুন (৩০s)';
+    return '▶️ ভিতরে প্রবেশ করাবে';
 }
 
 function __projectFinish(id) {
@@ -1854,6 +1830,7 @@ function renderProjects() {
                 </button>
             </div>
         `;
+        // ❌ মাঝখানের অ্যাড সরানো হয়েছে
     });
     container.innerHTML = html;
 }
@@ -1882,9 +1859,10 @@ function doProject(id) {
     renderProjects();
     showLoader(true, '⏳ ৩০ সেকেন্ড অপেক্ষা করুন...');
 
+    // ✅ কাউন্টার শুরু - প্রতি সেকেন্ডে আপডেট হবে
     __projectSession.interval = setInterval(() => {
         __projectSession.secondsLeft--;
-        renderProjects();
+        renderProjects(); // ← বাটনে কাউন্ট দেখাবে
         
         if (__projectSession.secondsLeft <= 0) {
             clearInterval(__projectSession.interval);
@@ -1915,7 +1893,6 @@ function openTaskDetail(taskId) {
     
     if ((me.completedTasks || []).includes(taskId) && canDoTask(taskId)) {
         // ২৪ ঘন্টা পার হয়ে গেছে, আবার করতে পারবে
-        // কমপ্লিটেড লিস্ট থেকে রিমুভ করি
         me.completedTasks = me.completedTasks.filter(id => id !== taskId);
         if (me.taskSessions) delete me.taskSessions[taskId];
         saveDB();
@@ -2031,7 +2008,7 @@ function startSession(e) {
     timerLabel.textContent = '⏳ সেশন চলছে...';
 
     let timeLeft = 30;
-    timerEl.textContent = timeLeft;
+    timerEl.textContent = timeLeft; // ← 30 দেখাবে
 
     renderSessions(currentTaskId);
     isWaitingForComplete = true;
@@ -2039,7 +2016,8 @@ function startSession(e) {
     if (sessionTimer) clearInterval(sessionTimer);
     sessionTimer = setInterval(() => {
         timeLeft--;
-        timerEl.textContent = timeLeft;
+        timerEl.textContent = timeLeft; // ← 29,28...1 দেখাবে
+        
         if (timeLeft <= 0) {
             clearInterval(sessionTimer);
             sessionTimer = null;
@@ -2414,8 +2392,8 @@ checkTelegramStatus();
     enterApp();
 })();
 
-console.log('✅ Smart Cash — স্মার্ট ক্যাশ v2.3.0 (সব আপডেট সহ)');
-console.log('✅ ৭টি আপডেট: কাউন্টার, লিংক রোটেশন, ২৪ঘন্টা, নোটিশ, প্রজেক্ট অ্যাড সরানো, স্পেস কমানো');
+console.log('✅ Smart Cash — স্মার্ট ক্যাশ v2.3.0 (সব ৮টি আপডেট সহ)');
+console.log('✅ ৮টি আপডেট: কাউন্টার, লিংক রোটেশন, ২৪ঘন্টা, নোটিশ, প্রজেক্ট অ্যাড সরানো, স্পেস কমানো, হোম/আর্নিং অ্যাড সরানো');
 
 if (!db.current || !me) {
     $('auth').classList.remove('hidden');
