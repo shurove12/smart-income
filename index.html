@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="monetag" content="584a8084bf4f71bb2ae1dc8665e4ecf6">
+    <meta name="monetag" content="584a8084bf4f71bb2ae1dc8665eec4f6">
     
-    <!-- ✅ Rewarded Video Ad SDK (আপডেট) -->
+    <!-- ✅ Rewarded Video Ad SDK -->
     <script src='//libtl.com/sdk.js' data-zone='11602031' data-sdk='show_11602031'></script>
     
     <!-- AdGram Interstitial -->
@@ -207,6 +207,104 @@
         }
         .project-btn:hover { transform: scale(0.97); opacity: 0.9; }
         .project-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .project-queue-status {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin: 8px 0;
+            border: 2px solid #facc15;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .project-queue-status .title { font-weight: 700; font-size: 14px; color: #0f172a; }
+        .project-queue-status .progress { font-size: 13px; color: #64748b; }
+        .project-queue-status .next-btn { 
+            background: #facc15; 
+            border: 0; 
+            border-radius: 10px; 
+            padding: 8px 16px; 
+            font-weight: 700; 
+            font-size: 13px; 
+            cursor: pointer; 
+            transition: 0.2s;
+        }
+        .project-queue-status .next-btn:hover { transform: scale(0.97); opacity: 0.9; }
+        .project-queue-status .next-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .manual-tg-box {
+            margin-top: 15px;
+            padding: 15px;
+            background: #1e293b;
+            border-radius: 12px;
+            border: 2px solid #facc15;
+        }
+        .manual-tg-box label {
+            color: #facc15;
+            font-size: 14px;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .manual-tg-box .sub-text {
+            color: #94a3b8;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+        .manual-tg-box .input-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .manual-tg-box .input-row input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid #facc15;
+            background: #0f172a;
+            color: #fff;
+            font-size: 14px;
+            min-width: 150px;
+        }
+        .manual-tg-box .input-row button {
+            background: #facc15;
+            border: 0;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-weight: 700;
+            color: #0f172a;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .manual-tg-box .help-box {
+            margin-top: 10px;
+            padding: 10px;
+            background: #0f172a;
+            border-radius: 8px;
+            border: 1px solid #334155;
+        }
+        .manual-tg-box .help-box p {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+        .manual-tg-box .help-box b { color: #facc15; }
+        .manual-tg-box .help-box a {
+            color: #facc15;
+            text-decoration: underline;
+        }
+        .manual-tg-box .tip-box {
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: #fef3c7;
+            border-radius: 6px;
+            border: 1px solid #f59e0b;
+            text-align: center;
+            font-size: 11px;
+            color: #78350f;
+        }
     </style>
 </head>
 <body>
@@ -221,12 +319,48 @@
 <!-- ===== TELEGRAM CHECK ===== -->
 <!-- ========================================================== -->
 <section id="telegramCheck" class="auth" style="display:none;">
-    <div class="card" style="border-color:#facc15;">
+    <div class="card" style="border-color:#facc15;max-width:450px;">
         <div class="logo">📱</div>
-        <h2 style="text-align:center;margin:5px 0;color:#facc15;">Telegram Required</h2>
-        <p style="text-align:center;color:#94a3b8;font-size:13px;">দয়া করে Telegram অ্যাপ থেকে Smart Cash খুলুন</p>
-        <button class="btn full" onclick="checkTelegramAgain()">🔄 পুনরায় চেষ্টা করুন</button>
-        <div style="margin-top:10px;font-size:12px;color:#64748b;text-align:center;">
+        <h2 style="text-align:center;margin:5px 0;color:#facc15;">Telegram প্রয়োজন</h2>
+        <p style="text-align:center;color:#94a3b8;font-size:13px;">
+            দয়া করে Telegram অ্যাপ থেকে Smart Cash খুলুন
+        </p>
+        
+        <!-- Manual Entry -->
+        <div class="manual-tg-box" id="manualTgContainer">
+            <label>📱 ম্যানুয়ালি Telegram ID দিন</label>
+            <div class="sub-text">⚠️ যদি অটো ডিটেক্ট না হয়, তাহলে আপনার ID দিন</div>
+            <div class="input-row">
+                <input id="manualTgId" placeholder="আপনার Telegram ID (শুধু সংখ্যা)">
+                <button onclick="saveManualTgId()">✅ যাচাই করুন</button>
+            </div>
+            
+            <div class="help-box">
+                <p>📌 <b>কিভাবে আপনার Telegram ID পাবেন:</b></p>
+                <ol style="font-size:12px;color:#94a3b8;padding-left:20px;margin:5px 0;">
+                    <li>Telegram খুলুন এবং <b>@userinfobot</b> সার্চ করুন</li>
+                    <li>বটে গিয়ে <b>/start</b> লিখুন</li>
+                    <li>বট আপনাকে আপনার <b>User ID</b> বলে দেবে</li>
+                    <li>সেই ID টি উপরের বক্সে লিখুন</li>
+                </ol>
+                <a href="https://t.me/userinfobot" target="_blank" 
+                    style="display:inline-block;margin-top:6px;background:#facc15;color:#0f172a;padding:6px 16px;border-radius:6px;text-decoration:none;font-weight:600;font-size:12px;">
+                    📲 @userinfobot খুলুন
+                </a>
+            </div>
+            
+            <div class="tip-box">
+                💡 <b>টিপ:</b> এই পদ্ধতি ১০০% কাজ করবে! শুধু আপনার User ID লিখুন।
+            </div>
+        </div>
+        
+        <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+            <button class="btn full" onclick="checkTelegramAgain()" style="flex:1;">
+                🔄 পুনরায় চেষ্টা করুন
+            </button>
+        </div>
+        
+        <div style="margin-top:10px;font-size:11px;color:#64748b;text-align:center;">
             ⚠️ এই অ্যাপ শুধুমাত্র Telegram-এর ভিতরে কাজ করে
         </div>
     </div>
@@ -344,6 +478,16 @@
 
             <div class="section">
                 <h3 style="color:#0f172a;">⚡ প্রজেক্টসমূহ</h3>
+                
+                <!-- Project Queue Status -->
+                <div id="projectQueueStatus" class="project-queue-status" style="display:none;">
+                    <div>
+                        <div class="title" id="queueStatusTitle">⏳ প্রজেক্ট চলছে...</div>
+                        <div class="progress" id="queueStatusProgress">অগ্রগতি: 0/0</div>
+                    </div>
+                    <button class="next-btn" id="queueNextBtn" onclick="startNextProject()">▶️ পরবর্তী শুরু করুন</button>
+                </div>
+                
                 <div id="projectsList"></div>
             </div>
 
@@ -678,7 +822,7 @@ const ADGRAM_BLOCK_ID = 'int-43256';
 let __directTurn = 0;
 
 // ==========================================================
-//   🔧 openDirectAd() - সঠিক অ্যাড অর্ডার
+//   🔧 openDirectAd()
 // ==========================================================
 function openDirectAd() {
     if (window.__popunderEnabled === false) {
@@ -686,7 +830,6 @@ function openDirectAd() {
         return;
     }
     
-    // ✅ ১. AdGram (সর্বোচ্চ CPM)
     if (window.Adsgram) {
         try {
             const ctrl = window.Adsgram.init({ blockId: 'int-43256' });
@@ -702,7 +845,6 @@ function openDirectAd() {
     }
 }
 
-// ✅ Monetag ব্যাকআপ
 function openMonetagAd() {
     try {
         window.open('https://omg10.com/4/11572642', '_blank');
@@ -711,7 +853,6 @@ function openMonetagAd() {
     }
 }
 
-// ✅ Rewarded Video - নতুন Zone ID
 function showPostTaskVideoAd() {
     const fn = window.show_11602031;
     if (typeof fn === 'function') {
@@ -719,7 +860,6 @@ function showPostTaskVideoAd() {
     }
 }
 
-// ✅ Rewarded Video Watch
 async function watchDailyAd() {
     if (window.__videoAdEnabled === false) {
         toast('⛔ Rewarded Video বন্ধ আছে');
@@ -776,7 +916,7 @@ const STORAGE_KEY = 'smart_income_v3';
 const BOT_LINK = 'https://t.me/smarttcash_bot';
 
 // ==========================================================
-//   🔧 ACCESS GUARD
+//   🔧 DEVICE & TELEGRAM ID DETECTION - ১০০% ডিভাইসে কাজ করবে
 // ==========================================================
 const DEVICE_ID_KEY = 'smart_cash_device_id_v1';
 const TELEGRAM_ID_KEY = 'smart_cash_telegram_id_v1';
@@ -796,11 +936,17 @@ function getDeviceId() {
 
 function deviceIdForDb() { return getDeviceId(); }
 
+// ==========================================================
+//   🔥 SUPER TELEGRAM ID DETECTOR - ১০০% ডিভাইসে কাজ করবে
+// ==========================================================
 function getTelegramUserId() {
+    
+    // ===== পদ্ধতি ১: Telegram WebApp (সরাসরি) =====
     try {
         if (window.Telegram && window.Telegram.WebApp) {
             const tg = window.Telegram.WebApp;
             tg.ready();
+            
             const user = tg.initDataUnsafe?.user;
             if (user && user.id) {
                 const id = String(user.id);
@@ -808,20 +954,86 @@ function getTelegramUserId() {
                 localStorage.setItem('telegram_username', user.username || user.first_name || '');
                 return id;
             }
+            
+            const initData = tg.initData || '';
+            if (initData) {
+                const params = new URLSearchParams(initData);
+                const userData = params.get('user');
+                if (userData) {
+                    try {
+                        const parsedUser = JSON.parse(decodeURIComponent(userData));
+                        if (parsedUser && parsedUser.id) {
+                            const id = String(parsedUser.id);
+                            localStorage.setItem('telegram_user_id', id);
+                            return id;
+                        }
+                    } catch (e) {}
+                }
+            }
         }
-        const savedId = localStorage.getItem('telegram_user_id');
-        if (savedId) return savedId;
-        const urlParams = new URLSearchParams(window.location.search);
-        const tgId = urlParams.get('tg_id');
-        if (tgId) {
-            localStorage.setItem('telegram_user_id', tgId);
-            return tgId;
-        }
-        return '';
     } catch (e) {
-        console.error('Error getting Telegram ID:', e);
-        return '';
+        console.log('WebApp method failed:', e);
     }
+
+    // ===== পদ্ধতি ২: URL থেকে =====
+    try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const paramNames = ['tg_id', 'user_id', 'telegram_id', 'id', 'start', 'startapp'];
+        for (const name of paramNames) {
+            const value = urlParams.get(name);
+            if (value) {
+                if (name === 'start' || name === 'startapp') {
+                    const match = value.match(/^(\d+)/);
+                    if (match && match[1]) {
+                        localStorage.setItem('telegram_user_id', match[1]);
+                        return match[1];
+                    }
+                } else if (!isNaN(value) && value.length >= 5) {
+                    localStorage.setItem('telegram_user_id', value);
+                    return value;
+                }
+            }
+        }
+        
+        const hash = window.location.hash;
+        if (hash) {
+            const match = hash.match(/tg_id[=:]([^&]+)/);
+            if (match && match[1]) {
+                localStorage.setItem('telegram_user_id', match[1]);
+                return match[1];
+            }
+        }
+    } catch (e) {
+        console.log('URL method failed:', e);
+    }
+
+    // ===== পদ্ধতি ৩: localStorage থেকে =====
+    try {
+        const savedId = localStorage.getItem('telegram_user_id');
+        if (savedId && savedId.length >= 5) {
+            return savedId;
+        }
+    } catch (e) {}
+
+    // ===== পদ্ধতি ৪: sessionStorage থেকে =====
+    try {
+        const sessionId = sessionStorage.getItem('telegram_user_id');
+        if (sessionId && sessionId.length >= 5) {
+            return sessionId;
+        }
+    } catch (e) {}
+
+    // ===== পদ্ধতি ৫: ডিভাইস ফিঙ্গারপ্রিন্ট (শেষ উপায়) =====
+    try {
+        const deviceId = getDeviceId();
+        if (deviceId) {
+            const tempId = 'temp_' + deviceId.slice(0, 8);
+            localStorage.setItem('telegram_user_id', tempId);
+            return tempId;
+        }
+    } catch (e) {}
+
+    return '';
 }
 
 function saveTelegramUserId(id) {
@@ -833,41 +1045,108 @@ function clearTelegramSessionId() {
 }
 
 // ==========================================================
-//   🔧 TELEGRAM চেক - শুধুমাত্র Telegram এ চলবে
+//   🔧 TELEGRAM চেক - ম্যানুয়াল অপশন সহ
 // ==========================================================
 function checkTelegramRequired() {
     const tgCheck = document.getElementById('telegramCheck');
     const authSection = document.getElementById('auth');
     
-    // Try to get Telegram ID
     const tgId = getTelegramUserId();
     
     if (!tgId) {
-        // No Telegram ID - show warning
         tgCheck.style.display = 'flex';
         authSection.classList.add('hidden');
         document.getElementById('app')?.classList.add('hidden');
         return false;
     }
     
-    // Has Telegram ID - hide warning and proceed
     tgCheck.style.display = 'none';
     authSection.classList.remove('hidden');
     return true;
 }
 
+function saveManualTgId() {
+    const input = document.getElementById('manualTgId');
+    if (!input) return;
+    
+    const id = input.value.trim();
+    if (!id) {
+        toast('❌ দয়া করে আপনার Telegram ID লিখুন');
+        input.focus();
+        return;
+    }
+    
+    if (!/^\d+$/.test(id) && !id.startsWith('temp_')) {
+        toast('❌ শুধু সংখ্যা দিন (যেমন: 123456789)');
+        input.focus();
+        return;
+    }
+    
+    if (id.length < 5) {
+        toast('❌ ID টি খুব ছোট (৫+ সংখ্যা হতে হবে)');
+        input.focus();
+        return;
+    }
+    
+    localStorage.setItem('telegram_user_id', id);
+    sessionStorage.setItem('telegram_user_id', id);
+    
+    try {
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.initDataUnsafe = {
+                ...window.Telegram.WebApp.initDataUnsafe,
+                user: { id: parseInt(id) }
+            };
+        }
+    } catch (e) {}
+    
+    toast('✅ Telegram ID সেভ করা হয়েছে!');
+    
+    setTimeout(() => {
+        location.reload();
+    }, 1200);
+}
+
 function checkTelegramAgain() {
-    checkTelegramRequired();
-    if (getTelegramUserId()) {
-        toast('✅ Telegram সনাক্ত হয়েছে!');
-        // Check if user is already logged in
+    const id = getTelegramUserId();
+    if (id) {
+        toast('✅ Telegram সনাক্ত হয়েছে! User ID: ' + id);
+        document.getElementById('telegramCheck').style.display = 'none';
+        document.getElementById('auth').classList.remove('hidden');
         if (me && db.current === me.id) {
             enterApp();
         }
     } else {
-        toast('⚠️ Telegram থেকে অ্যাপটি খুলুন!');
+        toast('⚠️ অটো ডিটেক্ট হয়নি। নিচে ম্যানুয়ালি আপনার ID দিন।');
+        const manualInput = document.getElementById('manualTgId');
+        if (manualInput) manualInput.focus();
     }
 }
+
+function setupTelegramFallback() {
+    if (!window.Telegram) {
+        window.Telegram = {
+            WebApp: {
+                ready: function() {},
+                expand: function() {},
+                initData: '',
+                initDataUnsafe: { user: null }
+            }
+        };
+    }
+    
+    const savedId = localStorage.getItem('telegram_user_id');
+    if (savedId) {
+        try {
+            window.Telegram.WebApp.initDataUnsafe.user = {
+                id: parseInt(savedId) || savedId,
+                username: localStorage.getItem('telegram_username') || 'user'
+            };
+        } catch (e) {}
+    }
+}
+
+setupTelegramFallback();
 
 function showAccountBlocked() {
     let page = document.getElementById('accountBlockedPage');
@@ -1118,10 +1397,10 @@ const EARN_TASKS = [
 
 const ALL_TASKS = [...HOME_TASKS, ...EARN_TASKS];
 const PROJECTS = [
-    { id: 'p1', icon: '🎬', title: 'ভিডিও দেখুন', desc: 'রিওয়ার্ডেড ভিডিও দেখুন', reward: 0.50, color: '#facc15', link: '', duration: 30 },
-    { id: 'p2', icon: '📋', title: 'ডেইলি টাস্ক', desc: 'দৈনিক টাস্ক সম্পন্ন করুন', reward: 1, color: '#facc15', link: '', duration: 30 },
-    { id: 'p3', icon: '🌟', title: 'স্পেশাল প্রজেক্ট', desc: 'বিশেষ প্রজেক্টে অংশ নিন', reward: 2, color: '#facc15', link: '', duration: 30 },
-    { id: 'p4', icon: '🎯', title: 'বোনাস অফার', desc: 'লিমিটেড সময়ের অফার', reward: 1.50, color: '#facc15', link: '', duration: 30 }
+    { id: 'p1', icon: '🎬', title: 'ভিডিও দেখুন', desc: 'রিওয়ার্ডেড ভিডিও দেখুন', reward: 0.50, color: '#facc15', link: 'https://example.com/video', duration: 30 },
+    { id: 'p2', icon: '📋', title: 'ডেইলি টাস্ক', desc: 'দৈনিক টাস্ক সম্পন্ন করুন', reward: 1, color: '#facc15', link: 'https://example.com/task', duration: 30 },
+    { id: 'p3', icon: '🌟', title: 'স্পেশাল প্রজেক্ট', desc: 'বিশেষ প্রজেক্টে অংশ নিন', reward: 2, color: '#facc15', link: 'https://example.com/special', duration: 30 },
+    { id: 'p4', icon: '🎯', title: 'বোনাস অফার', desc: 'লিমিটেড সময়ের অফার', reward: 1.50, color: '#facc15', link: 'https://example.com/bonus', duration: 30 }
 ];
 
 // ==========================================================
@@ -1131,6 +1410,8 @@ let projectQueue = [];
 let currentProjectIndex = 0;
 let isProjectQueueRunning = false;
 let projectQueueAdTriggered = false;
+let currentProjectTimer = null;
+let isWaitingForAd = false;
 
 // ==========================================================
 //   ডাটাবেস
@@ -1160,8 +1441,6 @@ function saveDB() {
 let __firebaseReady = false;
 let __firebaseListenersStarted = false;
 
-// Admin panel currently stores shared projects in the F24 Boost Firebase.
-// User accounts remain on Smart Cash Firebase; only the project catalogue is bridged.
 const PROJECT_CATALOG_FIREBASE_CONFIG = {
     apiKey: "AIzaSyDbDnU34J_rYTcyhEUUzAh6lmft84YMCx4",
     authDomain: "f24boost-2.firebaseapp.com",
@@ -1494,8 +1773,9 @@ async function registerUser() {
         referrals: 0, activeRef: 0, refEarn: 0, adDate: null, adViews: 0, status: 'active',
         completedTasks: [], taskSessions: {}, notifications: [], dailyBonusDate: null,
         taskLastDone: {},
-        completedProjects: [], // track which projects are done
-        projectQueueProgress: {} // track progress in sequential projects
+        completedProjects: [],
+        projectLastReset: null,
+        projectQueueProgress: {}
     };
 
     db.users = merged;
@@ -1600,6 +1880,8 @@ function enterApp() {
         sessionStorage.removeItem('access_skipped');
     }
     
+    checkAndResetProjects();
+    
     if (me.dailyBonusDate !== today()) {
         me.dailyBonusDate = today();
         me.balance = (me.balance || 0) + 1;
@@ -1636,7 +1918,6 @@ function enterApp() {
 }
 
 function logoutUser() {
-    // Stop any running project queue
     stopProjectQueue();
     db.current = null;
     me = null;
@@ -1645,6 +1926,324 @@ function logoutUser() {
     sessionStorage.removeItem('access_skipped');
     saveDB();
     location.reload();
+}
+
+// ==========================================================
+//   ২৪ ঘন্টা রিসেট চেক
+// ==========================================================
+function checkAndResetProjects() {
+    const lastReset = me.projectLastReset;
+    const now = Date.now();
+    
+    if (!lastReset || (now - lastReset) >= 24 * 60 * 60 * 1000) {
+        me.completedProjects = [];
+        me.projectQueueProgress = {};
+        me.projectLastReset = now;
+        saveDB();
+        console.log('🔄 Projects reset after 24 hours');
+        toast('🔄 ২৪ ঘন্টা পর প্রজেক্টসমূহ রিসেট করা হয়েছে!');
+    }
+}
+
+function isProjectCompleted(projectId) {
+    return (me.completedProjects || []).includes(projectId);
+}
+
+function markProjectCompleted(projectId) {
+    if (!me.completedProjects) me.completedProjects = [];
+    if (!me.completedProjects.includes(projectId)) {
+        me.completedProjects.push(projectId);
+    }
+    if (!me.projectQueueProgress) me.projectQueueProgress = {};
+    me.projectQueueProgress[projectId] = {
+        completed: true,
+        completedAt: Date.now()
+    };
+    saveDB();
+}
+
+function getAvailableProjects() {
+    const allProjects = PROJECTS.filter(p => p && (p.status == null || p.status === 'live') && p.hidden !== true);
+    const completedIds = me.completedProjects || [];
+    return allProjects.filter(p => !completedIds.includes(p.id));
+}
+
+// ==========================================================
+//   🔧 SEQUENTIAL PROJECT QUEUE ENGINE
+// ==========================================================
+
+function startProjectQueue() {
+    if (isProjectQueueRunning) {
+        toast('⏳ ইতিমধ্যে একটি প্রজেক্ট চলছে');
+        return;
+    }
+    
+    checkAndResetProjects();
+    
+    const available = getAvailableProjects();
+    if (available.length === 0) {
+        toast('🎉 সব প্রজেক্ট সম্পন্ন হয়েছে! ২৪ ঘন্টা পরে আবার চেষ্টা করুন।');
+        return;
+    }
+    
+    projectQueue = available;
+    currentProjectIndex = 0;
+    isProjectQueueRunning = true;
+    projectQueueAdTriggered = false;
+    isWaitingForAd = false;
+    
+    updateQueueStatus();
+    processNextProject();
+}
+
+function processNextProject() {
+    if (!isProjectQueueRunning) return;
+    
+    if (currentProjectIndex >= projectQueue.length) {
+        isProjectQueueRunning = false;
+        toast('🎉 সব প্রজেক্ট সম্পন্ন হয়েছে! ২৪ ঘন্টা পরে আবার চেষ্টা করুন।');
+        updateQueueStatus();
+        renderProjects();
+        return;
+    }
+    
+    const project = projectQueue[currentProjectIndex];
+    if (!project) {
+        currentProjectIndex++;
+        processNextProject();
+        return;
+    }
+    
+    if (isProjectCompleted(project.id)) {
+        currentProjectIndex++;
+        processNextProject();
+        return;
+    }
+    
+    executeProjectWithCountdown(project);
+}
+
+function executeProjectWithCountdown(project) {
+    const link = String(project.link || project.url || project.directLink || '').trim();
+    if (!link) {
+        toast(`⚠️ ${project.title} - লিংক সেট করা নেই`);
+        currentProjectIndex++;
+        setTimeout(processNextProject, 500);
+        return;
+    }
+    
+    let targetUrl;
+    try {
+        targetUrl = new URL(link, location.href).href;
+    } catch (e) {
+        toast(`⚠️ ${project.title} - লিংক সঠিক নয়`);
+        currentProjectIndex++;
+        setTimeout(processNextProject, 500);
+        return;
+    }
+    
+    showLoader(true, `⏳ ${project.title} - ৩০ সেকেন্ড বাকি`);
+    updateQueueStatus(project);
+    
+    let opened = false;
+    try {
+        const win = window.open(targetUrl, '_blank', 'noopener,noreferrer');
+        opened = !!win;
+    } catch (e) {}
+    
+    if (!opened) {
+        try {
+            location.href = targetUrl;
+            return;
+        } catch (e) {
+            toast(`⚠️ ${project.title} ওপেন করা যায়নি`);
+            currentProjectIndex++;
+            setTimeout(processNextProject, 500);
+            return;
+        }
+    }
+    
+    let secondsLeft = 30;
+    projectQueueAdTriggered = false;
+    
+    if (currentProjectTimer) {
+        clearInterval(currentProjectTimer);
+    }
+    
+    currentProjectTimer = setInterval(() => {
+        secondsLeft--;
+        showLoader(true, `⏳ ${project.title} - ${secondsLeft} সেকেন্ড বাকি`);
+        updateQueueStatus(project, secondsLeft);
+        
+        if (secondsLeft <= 0) {
+            clearInterval(currentProjectTimer);
+            currentProjectTimer = null;
+            completeSequentialProject(project);
+        }
+    }, 1000);
+}
+
+function completeSequentialProject(project) {
+    if (!project) return;
+    
+    if (isProjectCompleted(project.id)) {
+        moveToNextProject();
+        return;
+    }
+    
+    markProjectCompleted(project.id);
+    
+    const reward = Number(project.reward || 0);
+    me.balance = (me.balance || 0) + reward;
+    me.total = (me.total || 0) + reward;
+    me.today = (me.today || 0) + reward;
+    me.tx = me.tx || [];
+    me.tx.unshift({
+        type: 'project',
+        amount: reward,
+        status: 'completed',
+        details: `${project.title} (${currentProjectIndex + 1}/${projectQueue.length})`,
+        projectId: project.id,
+        date: new Date().toLocaleString('bn-BD')
+    });
+    saveDB();
+    
+    showLoader(false);
+    toast(`✅ ${project.title} সম্পন্ন! +৳${money(reward)}`);
+    
+    if (!projectQueueAdTriggered) {
+        projectQueueAdTriggered = true;
+        isWaitingForAd = true;
+        
+        openDirectAd();
+        
+        setTimeout(() => {
+            isWaitingForAd = false;
+            renderAll();
+            renderProjects();
+            
+            const available = getAvailableProjects();
+            if (available.length > 0) {
+                updateQueueStatus(null, null, true);
+                toast('▶️ "পরবর্তী শুরু করুন" ক্লিক করুন');
+            } else {
+                isProjectQueueRunning = false;
+                toast('🎉 সব প্রজেক্ট সম্পন্ন হয়েছে!');
+                updateQueueStatus();
+                renderProjects();
+            }
+        }, 1500);
+    } else {
+        renderAll();
+        renderProjects();
+        moveToNextProject();
+    }
+}
+
+function startNextProject() {
+    if (!isProjectQueueRunning) {
+        startProjectQueue();
+        return;
+    }
+    
+    if (isWaitingForAd) {
+        toast('⏳ এড দেখুন, তারপর পরবর্তী শুরু করুন');
+        return;
+    }
+    
+    moveToNextProject();
+}
+
+function moveToNextProject() {
+    if (currentProjectTimer) {
+        clearInterval(currentProjectTimer);
+        currentProjectTimer = null;
+    }
+    
+    if (isProjectQueueRunning) {
+        currentProjectIndex++;
+        
+        if (currentProjectIndex >= projectQueue.length) {
+            isProjectQueueRunning = false;
+            showLoader(false);
+            toast('🎉 সব প্রজেক্ট সম্পন্ন হয়েছে! ২৪ ঘন্টা পরে আবার চেষ্টা করুন।');
+            updateQueueStatus();
+            renderProjects();
+        } else {
+            updateQueueStatus();
+            setTimeout(processNextProject, 800);
+        }
+    } else {
+        showLoader(false);
+        renderProjects();
+    }
+}
+
+function stopProjectQueue() {
+    isProjectQueueRunning = false;
+    projectQueue = [];
+    currentProjectIndex = 0;
+    if (currentProjectTimer) {
+        clearInterval(currentProjectTimer);
+        currentProjectTimer = null;
+    }
+    isWaitingForAd = false;
+    showLoader(false);
+    updateQueueStatus();
+}
+
+function updateQueueStatus(project = null, secondsLeft = null, showNextBtn = false) {
+    const statusDiv = document.getElementById('projectQueueStatus');
+    const titleEl = document.getElementById('queueStatusTitle');
+    const progressEl = document.getElementById('queueStatusProgress');
+    const nextBtn = document.getElementById('queueNextBtn');
+    
+    if (!statusDiv) return;
+    
+    const total = PROJECTS.filter(p => p && (p.status == null || p.status === 'live') && p.hidden !== true).length;
+    const completed = (me.completedProjects || []).length;
+    const available = getAvailableProjects().length;
+    
+    if (isProjectQueueRunning && project) {
+        statusDiv.style.display = 'flex';
+        const secText = secondsLeft !== null ? ` (${secondsLeft}s বাকি)` : '';
+        titleEl.textContent = `⏳ চলছে: ${project.icon} ${project.title}${secText}`;
+        progressEl.textContent = `অগ্রগতি: ${completed}/${total} সম্পন্ন | বাকি: ${available}`;
+        nextBtn.textContent = '⏳ চলছে...';
+        nextBtn.disabled = true;
+    } else if (isProjectQueueRunning && isWaitingForAd) {
+        statusDiv.style.display = 'flex';
+        titleEl.textContent = `📺 এড দেখুন...`;
+        progressEl.textContent = `অগ্রগতি: ${completed}/${total} সম্পন্ন | বাকি: ${available}`;
+        nextBtn.textContent = '⏳ এড চলছে...';
+        nextBtn.disabled = true;
+    } else if (isProjectQueueRunning && showNextBtn) {
+        statusDiv.style.display = 'flex';
+        titleEl.textContent = `▶️ পরবর্তী প্রজেক্টের জন্য প্রস্তুত`;
+        progressEl.textContent = `অগ্রগতি: ${completed}/${total} সম্পন্ন | বাকি: ${available}`;
+        nextBtn.textContent = '▶️ পরবর্তী শুরু করুন';
+        nextBtn.disabled = false;
+        nextBtn.onclick = startNextProject;
+    } else if (isProjectQueueRunning) {
+        statusDiv.style.display = 'flex';
+        titleEl.textContent = `⏳ প্রজেক্ট চলছে...`;
+        progressEl.textContent = `অগ্রগতি: ${completed}/${total} সম্পন্ন | বাকি: ${available}`;
+        nextBtn.textContent = '⏳ চলছে...';
+        nextBtn.disabled = true;
+    } else if (available > 0) {
+        statusDiv.style.display = 'flex';
+        titleEl.textContent = `📋 প্রজেক্ট শুরু করুন`;
+        progressEl.textContent = `${available} টি প্রজেক্ট বাকি (${completed}/${total} সম্পন্ন)`;
+        nextBtn.textContent = '▶️ শুরু করুন';
+        nextBtn.disabled = false;
+        nextBtn.onclick = startProjectQueue;
+    } else {
+        statusDiv.style.display = 'flex';
+        titleEl.textContent = `✅ সব প্রজেক্ট সম্পন্ন!`;
+        progressEl.textContent = `${completed}/${total} সম্পন্ন`;
+        nextBtn.textContent = '⏳ ২৪ ঘন্টা পরে';
+        nextBtn.disabled = true;
+    }
 }
 
 // ==========================================================
@@ -1761,9 +2360,6 @@ function updateAdStation() {
     if ($('earnAdCount')) $('earnAdCount').textContent = n;
 }
 
-// ==========================================================
-//   🟢 ২৪ ঘন্টা চেক ফাংশন
-// ==========================================================
 function canDoTask(taskId) {
     const lastDone = me.taskLastDone?.[taskId];
     if (!lastDone) return true;
@@ -1779,9 +2375,6 @@ function getRemainingTime(taskId) {
     return Math.ceil(24 - hoursPassed);
 }
 
-// ==========================================================
-//   হোম টাস্ক
-// ==========================================================
 function renderHomeTasks() {
     const container = $('homeTaskList');
     if (!container) return;
@@ -1837,9 +2430,6 @@ function renderHomeTasks() {
     container.innerHTML = html;
 }
 
-// ==========================================================
-//   আর্নিং টাস্ক
-// ==========================================================
 function renderEarnTasks() {
     const container = $('earnTaskList');
     if (!container) return;
@@ -1894,281 +2484,27 @@ function renderEarnTasks() {
     container.innerHTML = html;
 }
 
-// ==========================================================
-//   🔧 SEQUENTIAL PROJECT COMPLETION ENGINE
-// ==========================================================
-
-// Check if a project is already completed by this user
-function isProjectCompleted(projectId) {
-    return (me.completedProjects || []).includes(projectId);
-}
-
-// Mark project as completed
-function markProjectCompleted(projectId) {
-    if (!me.completedProjects) me.completedProjects = [];
-    if (!me.completedProjects.includes(projectId)) {
-        me.completedProjects.push(projectId);
-    }
-    // Also track progress in queue
-    if (!me.projectQueueProgress) me.projectQueueProgress = {};
-    me.projectQueueProgress[projectId] = {
-        completed: true,
-        completedAt: Date.now()
-    };
-    saveDB();
-}
-
-// Get all available projects (filter out completed ones)
-function getAvailableProjects() {
-    const allProjects = PROJECTS.filter(p => p && (p.status == null || p.status === 'live') && p.hidden !== true);
-    const completedIds = me.completedProjects || [];
-    return allProjects.filter(p => !completedIds.includes(p.id));
-}
-
-// Start sequential project queue
-function startProjectQueue() {
-    if (isProjectQueueRunning) {
-        toast('⏳ ইতিমধ্যে একটি প্রজেক্ট চলছে');
-        return;
-    }
-    
-    const available = getAvailableProjects();
-    if (available.length === 0) {
-        toast('🎉 সব প্রজেক্ট সম্পন্ন হয়েছে!');
-        return;
-    }
-    
-    // Reset queue state
-    projectQueue = available;
-    currentProjectIndex = 0;
-    isProjectQueueRunning = true;
-    projectQueueAdTriggered = false;
-    
-    // Start first project
-    processNextProject();
-}
-
-// Process next project in queue
-function processNextProject() {
-    if (!isProjectQueueRunning) return;
-    
-    // Check if we have more projects
-    if (currentProjectIndex >= projectQueue.length) {
-        // All projects done
-        isProjectQueueRunning = false;
-        toast('🎉 সব প্রজেক্ট সম্পন্ন হয়েছে!');
-        renderProjects();
-        return;
-    }
-    
-    const project = projectQueue[currentProjectIndex];
-    if (!project) {
-        currentProjectIndex++;
-        processNextProject();
-        return;
-    }
-    
-    // Check if already completed (shouldn't happen, but safety check)
-    if (isProjectCompleted(project.id)) {
-        currentProjectIndex++;
-        processNextProject();
-        return;
-    }
-    
-    // Start this project
-    executeProjectWithCountdown(project);
-}
-
-// Execute a single project with 30s countdown
-function executeProjectWithCountdown(project) {
-    const link = String(project.link || project.url || project.directLink || '').trim();
-    if (!link) {
-        toast(`⚠️ ${project.title} - লিংক সেট করা নেই`);
-        // Skip to next
-        currentProjectIndex++;
-        setTimeout(processNextProject, 500);
-        return;
-    }
-    
-    let targetUrl;
-    try {
-        targetUrl = new URL(link, location.href).href;
-    } catch (e) {
-        toast(`⚠️ ${project.title} - লিংক সঠিক নয়`);
-        currentProjectIndex++;
-        setTimeout(processNextProject, 500);
-        return;
-    }
-    
-    // Show loader with project info
-    showLoader(true, `⏳ ${project.title} - ${30} সেকেন্ড বাকি`);
-    
-    // Open the link
-    let opened = false;
-    try {
-        const win = window.open(targetUrl, '_blank', 'noopener,noreferrer');
-        opened = !!win;
-    } catch (e) {}
-    
-    if (!opened) {
-        try {
-            location.href = targetUrl;
-            return;
-        } catch (e) {
-            toast(`⚠️ ${project.title} ওপেন করা যায়নি`);
-            currentProjectIndex++;
-            setTimeout(processNextProject, 500);
-            return;
-        }
-    }
-    
-    // Start countdown
-    let secondsLeft = 30;
-    projectQueueAdTriggered = false;
-    
-    const countdownInterval = setInterval(() => {
-        secondsLeft--;
-        showLoader(true, `⏳ ${project.title} - ${secondsLeft} সেকেন্ড বাকি`);
-        
-        if (secondsLeft <= 0) {
-            clearInterval(countdownInterval);
-            // Complete the project
-            completeSequentialProject(project);
-        }
-    }, 1000);
-    
-    // Store interval reference for cleanup
-    if (window._projectQueueInterval) {
-        clearInterval(window._projectQueueInterval);
-    }
-    window._projectQueueInterval = countdownInterval;
-}
-
-// Complete a sequential project
-function completeSequentialProject(project) {
-    if (!project) return;
-    
-    // Prevent duplicate completion
-    if (isProjectCompleted(project.id)) {
-        // Already completed, move to next
-        moveToNextProject();
-        return;
-    }
-    
-    // Mark as completed
-    markProjectCompleted(project.id);
-    
-    // Add reward
-    const reward = Number(project.reward || 0);
-    me.balance = (me.balance || 0) + reward;
-    me.total = (me.total || 0) + reward;
-    me.today = (me.today || 0) + reward;
-    me.tx = me.tx || [];
-    me.tx.unshift({
-        type: 'project',
-        amount: reward,
-        status: 'completed',
-        details: `${project.title} (Sequential)`,
-        projectId: project.id,
-        date: new Date().toLocaleString('bn-BD')
-    });
-    saveDB();
-    
-    showLoader(false);
-    toast(`✅ ${project.title} সম্পন্ন! +৳${money(reward)}`);
-    
-    // Trigger AD after completion
-    if (!projectQueueAdTriggered) {
-        projectQueueAdTriggered = true;
-        setTimeout(() => {
-            openDirectAd();
-        }, 300);
-    }
-    
-    // Render updates
-    renderAll();
-    renderProjects();
-    
-    // Move to next project after a small delay
-    setTimeout(() => {
-        moveToNextProject();
-    }, 1500);
-}
-
-// Move to the next project in queue
-function moveToNextProject() {
-    // Clear any existing interval
-    if (window._projectQueueInterval) {
-        clearInterval(window._projectQueueInterval);
-        window._projectQueueInterval = null;
-    }
-    
-    // If queue is running, move to next index
-    if (isProjectQueueRunning) {
-        currentProjectIndex++;
-        
-        // Check if we have more projects
-        if (currentProjectIndex >= projectQueue.length) {
-            isProjectQueueRunning = false;
-            showLoader(false);
-            toast('🎉 সব প্রজেক্ট সম্পন্ন হয়েছে!');
-            renderProjects();
-        } else {
-            // Process next project after a small delay
-            setTimeout(processNextProject, 800);
-        }
-    } else {
-        showLoader(false);
-        renderProjects();
-    }
-}
-
-// Stop the project queue
-function stopProjectQueue() {
-    isProjectQueueRunning = false;
-    projectQueue = [];
-    currentProjectIndex = 0;
-    if (window._projectQueueInterval) {
-        clearInterval(window._projectQueueInterval);
-        window._projectQueueInterval = null;
-    }
-    showLoader(false);
-}
-
-// ==========================================================
-//   🔧 প্রজেক্ট (30 সেকেন্ড কাউন্টার + Sequential Queue)
-// ==========================================================
-
 function renderProjects() {
     const container = $('projectsList');
     if (!container) return;
 
-    const available = getAvailableProjects();
     const totalProjects = PROJECTS.filter(p => p && (p.status == null || p.status === 'live') && p.hidden !== true).length;
     const completedCount = (me.completedProjects || []).length;
+    const available = getAvailableProjects();
     const allDone = available.length === 0 && totalProjects > 0;
 
-    // Show progress header
-    let html = `
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;background:#f8fafc;padding:8px 12px;border-radius:10px;">
-            <span style="font-weight:600;font-size:13px;">📊 অগ্রগতি: ${completedCount}/${totalProjects}</span>
-            ${isProjectQueueRunning ? '<span style="color:#f59e0b;font-size:12px;">⏳ চলছে...</span>' : ''}
-            ${!isProjectQueueRunning && !allDone ? `<button class="btn primary sm" onclick="startProjectQueue()">▶️ শুরু করুন (${available.length})</button>` : ''}
-            ${allDone && !isProjectQueueRunning ? '<span class="badge completed">✅ সম্পূর্ণ</span>' : ''}
-        </div>
-    `;
+    updateQueueStatus();
 
-    // Show project cards
+    let html = '';
     PROJECTS.filter(p => p && (p.status == null || p.status === 'live') && p.hidden !== true).forEach((p) => {
         const isDone = isProjectCompleted(p.id);
         const isQueued = isProjectQueueRunning && projectQueue.some(q => q.id === p.id) && currentProjectIndex < projectQueue.length && projectQueue[currentProjectIndex]?.id === p.id;
-        const isCompleted = isDone;
         
         let statusIcon = '🔒';
         let statusText = 'লকড';
         let statusClass = 'locked';
         
-        if (isCompleted) {
+        if (isDone) {
             statusIcon = '✅';
             statusText = 'সম্পন্ন';
             statusClass = 'completed';
@@ -2186,14 +2522,15 @@ function renderProjects() {
             statusClass = 'available';
         }
         
-        const isDisabled = isCompleted || isProjectQueueRunning || (isProjectQueueRunning && !isQueued);
+        const isDisabled = isDone || isProjectQueueRunning || (isProjectQueueRunning && !isQueued);
         
         html += `
-            <div class="project-card" style="border-left:4px solid ${isCompleted ? '#10b981' : (isQueued ? '#f59e0b' : (p.color || '#facc15'))}; opacity:${isCompleted ? '0.7' : '1'};">
+            <div class="project-card" style="border-left:4px solid ${isDone ? '#10b981' : (isQueued ? '#f59e0b' : (p.color || '#facc15'))}; opacity:${isDone ? '0.7' : '1'};">
                 <div class="info">
                     <h4>${p.icon || '📁'} ${p.title || 'Project'}</h4>
                     <div class="desc">${p.desc || 'প্রজেক্ট সম্পন্ন করুন'}</div>
-                    ${isCompleted ? '<div style="font-size:11px;color:#10b981;font-weight:600;">✅ সম্পন্ন</div>' : ''}
+                    ${isDone ? '<div style="font-size:11px;color:#10b981;font-weight:600;">✅ সম্পন্ন</div>' : ''}
+                    ${isQueued ? '<div style="font-size:11px;color:#f59e0b;font-weight:600;">⏳ চলছে...</div>' : ''}
                 </div>
                 <div class="reward">+৳${money(Number(p.reward || 0))}</div>
                 <button class="project-btn"
@@ -2652,18 +2989,15 @@ function syncTasksAndProjectsFromDB() {
 //   ইনিশিয়ালাইজ
 // ==========================================================
 
-// First check Telegram requirement
 const hasTelegram = checkTelegramRequired();
 
 loadDB();
 syncTasksAndProjectsFromDB();
 
 if (!hasTelegram) {
-    // Show Telegram required screen
     document.getElementById('telegramCheck').style.display = 'flex';
     document.getElementById('auth').classList.add('hidden');
 } else {
-    // Has Telegram, show auth
     document.getElementById('telegramCheck').style.display = 'none';
     document.getElementById('auth').classList.remove('hidden');
     checkTelegramStatus();
@@ -2675,7 +3009,6 @@ if (!hasTelegram) {
     startProjectCatalogSync();
 
     if (!me || !db.current) {
-        // Still showing auth
         return;
     }
 
@@ -2711,10 +3044,9 @@ if (!hasTelegram) {
     enterApp();
 })();
 
-console.log('✅ Smart Cash — স্মার্ট ক্যাশ v2.6.0 (Telegram Required + Sequential Projects)');
+console.log('✅ Smart Cash — স্মার্ট ক্যাশ v2.6.0 (Full Version - Telegram Universal)');
 
 if (!db.current || !me) {
-    // If no user logged in, show auth (but telegram check already handled)
 } else {
     document.getElementById('auth').classList.add('hidden');
 }
@@ -2726,13 +3058,12 @@ try {
     } 
 } catch (e) {}
 
-// ==========================================================
-//   🚀 Auto-start project queue if user has projects pending
-// ==========================================================
-// This will start automatically when user enters the app
-// The enterApp() function will call renderProjects() which shows the "Start" button
-// User needs to click "Start" to begin the queue
-
+// Export functions to global scope
+window.getTelegramUserId = getTelegramUserId;
+window.saveManualTgId = saveManualTgId;
+window.checkTelegramAgain = checkTelegramAgain;
+window.startProjectQueue = startProjectQueue;
+window.startNextProject = startNextProject;
 </script>
 
 <!-- Monetag Popunder -->
