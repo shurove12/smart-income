@@ -8,7 +8,7 @@
     <!-- Rewarded Video Ad SDK -->
     <script src="https://libtl.com/sdk.js" data-zone="11567392" data-sdk="show_11567392"></script>
     
-    <!-- AdGram Interstitial -->
+    <!-- AdGram Interstitial (শুধু int-43256 ব্যবহার) -->
     <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
     
     <!-- Monetag Popunder -->
@@ -163,7 +163,7 @@
         @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
         .level-container{background:#f8fafc;border-radius:10px;padding:10px;margin:6px 0}
 
-        .banner-ad-container{margin:12px 0;text-align:center;min-height:70px;background:#f8fafc;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;border:1px solid #e5eaf1}
+        .banner-ad-container{margin:12px 0;text-align:center;min-height:60px;background:#f8fafc;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center}
         .banner-ad-container iframe{max-width:100%;border:0}
         .task-ad-divider{margin:6px 0;padding:4px 0;background:#f1f5f9;border-radius:6px;text-align:center;font-size:10px;color:#94a3b8}
         .ad-label{font-size:9px;color:#94a3b8;text-align:center;padding:2px;letter-spacing:0.5px;text-transform:uppercase}
@@ -190,6 +190,32 @@
         .leaderboard-item .rank{font-weight:700;color:#facc15;width:30px}
         .leaderboard-item .name{flex:1;font-weight:600}
         .leaderboard-item .amount{color:#10b981;font-weight:700}
+        
+        /* প্রজেক্ট কাউন্টার স্টাইল */
+        .project-counter {
+            background: #0f172a;
+            color: #facc15;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            min-width: 60px;
+            text-align: center;
+        }
+        .project-btn {
+            background: #facc15;
+            color: #0f172a;
+            border: 0;
+            border-radius: 10px;
+            padding: 8px 14px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.2s;
+            min-width: 120px;
+        }
+        .project-btn:hover { transform: scale(0.97); opacity: 0.9; }
+        .project-btn:disabled { opacity: 0.5; cursor: not-allowed; }
     </style>
 </head>
 <body>
@@ -281,7 +307,10 @@
 
             <!-- হোম টাস্কের উপরে ব্যানার -->
             <div id="home-top-banner" class="banner-ad-container">
-                <iframe src="https://www.highperformanceformat.com/51bcf215100b208521b1f970deaedf8e/invoke.html" style="width:100%;max-width:728px;height:90px;border:0;" scrolling="no" frameborder="0"></iframe>
+                <script>
+                    atOptions = { 'key' : '51bcf215100b208521b1f970deaedf8e', 'format' : 'iframe', 'height' : 90, 'width' : 728, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/51bcf215100b208521b1f970deaedf8e/invoke.js"></script>
             </div>
 
             <div id="homeTaskSection">
@@ -297,7 +326,10 @@
 
             <!-- প্রজেক্টের উপরে ব্যানার -->
             <div id="home-project-top-banner" class="banner-ad-container" style="margin-top:16px;">
-                <iframe src="https://www.highperformanceformat.com/f70b806885d12defbb6515475012d220/invoke.html" style="width:100%;max-width:320px;height:50px;border:0;" scrolling="no" frameborder="0"></iframe>
+                <script>
+                    atOptions = { 'key' : 'f70b806885d12defbb6515475012d220', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/f70b806885d12defbb6515475012d220/invoke.js"></script>
             </div>
 
             <div class="section">
@@ -305,9 +337,20 @@
                 <div id="projectsList"></div>
             </div>
 
+            <!-- প্রজেক্টের মাঝখানে ব্যানার (ফাঁকা জায়গা ফিলাপ) -->
+            <div id="project-mid-banner" class="banner-ad-container" style="margin:16px 0;">
+                <script>
+                    atOptions = { 'key' : 'f70b806885d12defbb6515475012d220', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/f70b806885d12defbb6515475012d220/invoke.js"></script>
+            </div>
+
             <!-- হোমের নিচের ব্যানার -->
             <div id="ad-home-728" class="adbox">
-                <iframe src="https://www.highperformanceformat.com/51bcf215100b208521b1f970deaedf8e/invoke.html" style="width:100%;max-width:728px;height:90px;border:0;" scrolling="no" frameborder="0"></iframe>
+                <script>
+                    atOptions = { 'key' : '51bcf215100b208521b1f970deaedf8e', 'format' : 'iframe', 'height' : 90, 'width' : 728, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/51bcf215100b208521b1f970deaedf8e/invoke.js"></script>
             </div>
             <div id="ad-home-native" class="native-ad-container"></div>
         </div>
@@ -320,11 +363,17 @@
 
             <!-- আর্নিং টাস্কের উপরে ব্যানার -->
             <div id="earn-top-banner" class="banner-ad-container">
-                <iframe src="https://www.highperformanceformat.com/f70b806885d12defbb6515475012d220/invoke.html" style="width:100%;max-width:320px;height:50px;border:0;" scrolling="no" frameborder="0"></iframe>
+                <script>
+                    atOptions = { 'key' : 'f70b806885d12defbb6515475012d220', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/f70b806885d12defbb6515475012d220/invoke.js"></script>
             </div>
 
             <div id="ad-earn-320" class="adbox">
-                <iframe src="https://www.highperformanceformat.com/f70b806885d12defbb6515475012d220/invoke.html" style="width:100%;max-width:320px;height:50px;border:0;" scrolling="no" frameborder="0"></iframe>
+                <script>
+                    atOptions = { 'key' : 'f70b806885d12defbb6515475012d220', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/f70b806885d12defbb6515475012d220/invoke.js"></script>
             </div>
 
             <div class="card" style="border:2px solid #facc15;">
@@ -349,10 +398,16 @@
             </div>
 
             <div id="ad-earn-300" class="adbox">
-                <iframe src="https://www.highperformanceformat.com/4f73a7be6b5aa37211aad8635c516fda/invoke.html" style="width:100%;max-width:300px;height:250px;border:0;" scrolling="no" frameborder="0"></iframe>
+                <script>
+                    atOptions = { 'key' : '4f73a7be6b5aa37211aad8635c516fda', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/4f73a7be6b5aa37211aad8635c516fda/invoke.js"></script>
             </div>
             <div id="ad-earn-468" class="adbox">
-                <iframe src="https://www.highperformanceformat.com/f9b4e4f2db5fe51891bd5a72de5078dd/invoke.html" style="width:100%;max-width:468px;height:60px;border:0;" scrolling="no" frameborder="0"></iframe>
+                <script>
+                    atOptions = { 'key' : 'f9b4e4f2db5fe51891bd5a72de5078dd', 'format' : 'iframe', 'height' : 60, 'width' : 468, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/f9b4e4f2db5fe51891bd5a72de5078dd/invoke.js"></script>
             </div>
             <div id="ad-earn-container" class="native-ad-container"></div>
         </div>
@@ -363,7 +418,10 @@
         <div id="ref" class="page">
             <!-- রেফার সিস্টেমের উপরে ব্যানার -->
             <div id="ref-top-banner" class="banner-ad-container">
-                <iframe src="https://www.highperformanceformat.com/7377c6284642e41982bac15f7a52f957/invoke.html" style="width:100%;max-width:160px;height:600px;border:0;" scrolling="no" frameborder="0"></iframe>
+                <script>
+                    atOptions = { 'key' : '7377c6284642e41982bac15f7a52f957', 'format' : 'iframe', 'height' : 600, 'width' : 160, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/7377c6284642e41982bac15f7a52f957/invoke.js"></script>
             </div>
 
             <h3 style="color:#0f172a;">👥 Referral System</h3>
@@ -391,11 +449,17 @@
             
             <!-- রেফার সিস্টেমের নিচে ব্যানার -->
             <div id="ref-bottom-banner" class="banner-ad-container">
-                <iframe src="https://www.highperformanceformat.com/7377c6284642e41982bac15f7a52f957/invoke.html" style="width:100%;max-width:160px;height:600px;border:0;" scrolling="no" frameborder="0"></iframe>
+                <script>
+                    atOptions = { 'key' : '7377c6284642e41982bac15f7a52f957', 'format' : 'iframe', 'height' : 600, 'width' : 160, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/7377c6284642e41982bac15f7a52f957/invoke.js"></script>
             </div>
 
             <div id="ad-ref-160" class="adbox">
-                <iframe src="https://www.highperformanceformat.com/7377c6284642e41982bac15f7a52f957/invoke.html" style="width:100%;max-width:160px;height:600px;border:0;" scrolling="no" frameborder="0"></iframe>
+                <script>
+                    atOptions = { 'key' : '7377c6284642e41982bac15f7a52f957', 'format' : 'iframe', 'height' : 600, 'width' : 160, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/7377c6284642e41982bac15f7a52f957/invoke.js"></script>
             </div>
             <div id="ad-ref-native" class="native-ad-container"></div>
         </div>
@@ -407,7 +471,10 @@
             
             <!-- উইথড্র রিকোয়েস্টের উপরে ব্যানার -->
             <div id="history-top-banner" class="banner-ad-container">
-                <iframe src="https://www.highperformanceformat.com/0ca63518e47c3eff896923a1d3c9fbdb/invoke.html" style="width:100%;max-width:160px;height:300px;border:0;" scrolling="no" frameborder="0"></iframe>
+                <script>
+                    atOptions = { 'key' : '0ca63518e47c3eff896923a1d3c9fbdb', 'format' : 'iframe', 'height' : 300, 'width' : 160, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/0ca63518e47c3eff896923a1d3c9fbdb/invoke.js"></script>
             </div>
 
             <div class="card" style="border:2px solid #facc15;">
@@ -467,7 +534,10 @@
 
             <!-- ট্রানজেকশন হিস্ট্রির উপরে ব্যানার -->
             <div id="history-tx-top-banner" class="banner-ad-container">
-                <iframe src="https://www.highperformanceformat.com/f9b4e4f2db5fe51891bd5a72de5078dd/invoke.html" style="width:100%;max-width:468px;height:60px;border:0;" scrolling="no" frameborder="0"></iframe>
+                <script>
+                    atOptions = { 'key' : 'f9b4e4f2db5fe51891bd5a72de5078dd', 'format' : 'iframe', 'height' : 60, 'width' : 468, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/f9b4e4f2db5fe51891bd5a72de5078dd/invoke.js"></script>
             </div>
 
             <div class="card">
@@ -477,14 +547,23 @@
 
             <!-- ট্রানজেকশন হিস্ট্রির মাঝখানে ব্যানার -->
             <div id="history-tx-mid-banner" class="banner-ad-container">
-                <iframe src="https://www.highperformanceformat.com/0ca63518e47c3eff896923a1d3c9fbdb/invoke.html" style="width:100%;max-width:160px;height:300px;border:0;" scrolling="no" frameborder="0"></iframe>
+                <script>
+                    atOptions = { 'key' : '0ca63518e47c3eff896923a1d3c9fbdb', 'format' : 'iframe', 'height' : 300, 'width' : 160, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/0ca63518e47c3eff896923a1d3c9fbdb/invoke.js"></script>
             </div>
 
             <div id="ad-history-468" class="adbox">
-                <iframe src="https://www.highperformanceformat.com/f9b4e4f2db5fe51891bd5a72de5078dd/invoke.html" style="width:100%;max-width:468px;height:60px;border:0;" scrolling="no" frameborder="0"></iframe>
+                <script>
+                    atOptions = { 'key' : 'f9b4e4f2db5fe51891bd5a72de5078dd', 'format' : 'iframe', 'height' : 60, 'width' : 468, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/f9b4e4f2db5fe51891bd5a72de5078dd/invoke.js"></script>
             </div>
             <div id="ad-history-160" class="adbox">
-                <iframe src="https://www.highperformanceformat.com/0ca63518e47c3eff896923a1d3c9fbdb/invoke.html" style="width:100%;max-width:160px;height:300px;border:0;" scrolling="no" frameborder="0"></iframe>
+                <script>
+                    atOptions = { 'key' : '0ca63518e47c3eff896923a1d3c9fbdb', 'format' : 'iframe', 'height' : 300, 'width' : 160, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/0ca63518e47c3eff896923a1d3c9fbdb/invoke.js"></script>
             </div>
             <div id="ad-history-native" class="native-ad-container"></div>
         </div>
@@ -495,7 +574,10 @@
         <div id="profile" class="page">
             <!-- প্রোফাইলের উপরে ব্যানার -->
             <div id="profile-top-banner" class="banner-ad-container">
-                <iframe src="https://www.highperformanceformat.com/51bcf215100b208521b1f970deaedf8e/invoke.html" style="width:100%;max-width:728px;height:90px;border:0;" scrolling="no" frameborder="0"></iframe>
+                <script>
+                    atOptions = { 'key' : '51bcf215100b208521b1f970deaedf8e', 'format' : 'iframe', 'height' : 90, 'width' : 728, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/51bcf215100b208521b1f970deaedf8e/invoke.js"></script>
             </div>
 
             <h3 style="color:#0f172a;">👤 Profile</h3>
@@ -509,7 +591,10 @@
                 <button class="btn red full" onclick="logoutUser()">Logout</button>
             </div>
             <div id="ad-profile-728" class="adbox">
-                <iframe src="https://www.highperformanceformat.com/51bcf215100b208521b1f970deaedf8e/invoke.html" style="width:100%;max-width:728px;height:90px;border:0;" scrolling="no" frameborder="0"></iframe>
+                <script>
+                    atOptions = { 'key' : '51bcf215100b208521b1f970deaedf8e', 'format' : 'iframe', 'height' : 90, 'width' : 728, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/51bcf215100b208521b1f970deaedf8e/invoke.js"></script>
             </div>
             <div id="ad-profile-native" class="native-ad-container"></div>
         </div>
@@ -524,7 +609,10 @@
                 <div id="leaderboardList"></div>
             </div>
             <div id="ad-leaderboard" class="adbox">
-                <iframe src="https://www.highperformanceformat.com/f70b806885d12defbb6515475012d220/invoke.html" style="width:100%;max-width:320px;height:50px;border:0;" scrolling="no" frameborder="0"></iframe>
+                <script>
+                    atOptions = { 'key' : 'f70b806885d12defbb6515475012d220', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/f70b806885d12defbb6515475012d220/invoke.js"></script>
             </div>
         </div>
 
@@ -565,11 +653,10 @@
 
 <script>
 // ==========================================================
-//   🔧 DIRECT_LINKS - ঠিক করা (শুধু AdGram ID)
+//   🔧 DIRECT_LINKS (শুধু int-43256 ব্যবহার করবে)
 // ==========================================================
-const ADGRAM_BLOCK_ID = 'int-43256';
-
 const DIRECT_LINKS = [
+    'https://partner.adsgram.ai/units/int-43256/',  // ← AdGram int-43256
     'https://www.effectivecpmnetwork.com/uzb1t5ufj8?key=e19391500b97ca1f8e98e175831054cd',
     'https://omg10.com/4/11572642'
 ];
@@ -583,7 +670,7 @@ const DEFAULT_AD_CONFIG = {
     videoAdEnabled: true,
     adsterraLink: 'https://www.effectivecpmnetwork.com/uzb1t5ufj8?key=e19391500b97ca1f8e98e175831054cd',
     monetagLink: 'https://omg10.com/4/11572642',
-    adgramBlockId: 'int-43256',
+    adgramBlockId: 'int-43256',  // ← শুধু int-43256
     rewardedZone: '11567392',
     zone728: '51bcf215100b208521b1f970deaedf8e',
     zone320: 'f70b806885d12defbb6515475012d220',
@@ -593,10 +680,11 @@ const DEFAULT_AD_CONFIG = {
     zone160x300: '0ca63518e47c3eff896923a1d3c9fbdb'
 };
 
+const ADGRAM_BLOCK_ID = 'int-43256';  // ← শুধু int-43256
 let __directTurn = 0;
 
 // ==========================================================
-//   🔧 openDirectAd() - AdGram Interstitial ব্যবহার
+//   🔧 openDirectAd() - AdGram int-43256 ব্যবহার
 // ==========================================================
 function openDirectAd() {
     if (window.__popunderEnabled === false) {
@@ -604,21 +692,20 @@ function openDirectAd() {
         return;
     }
     
+    // AdGram int-43256 দেখানো
     if (window.Adsgram) {
         try {
-            const blockId = db.adConfig?.adgramBlockId || ADGRAM_BLOCK_ID;
+            const blockId = db.adConfig?.adgramBlockId || 'int-43256';
             const ctrl = window.Adsgram.init({ blockId: blockId });
             ctrl.show().catch(() => { 
-                const choice = Math.floor(Math.random() * DIRECT_LINKS.length);
-                window.open(DIRECT_LINKS[choice], '_blank');
+                // ফেইল হলে বিকল্প লিংক
+                window.open(DIRECT_LINKS[1], '_blank');
             });
         } catch (e) {
-            const choice = Math.floor(Math.random() * DIRECT_LINKS.length);
-            window.open(DIRECT_LINKS[choice], '_blank');
+            window.open(DIRECT_LINKS[1], '_blank');
         }
     } else {
-        const choice = Math.floor(Math.random() * DIRECT_LINKS.length);
-        window.open(DIRECT_LINKS[choice], '_blank');
+        window.open(DIRECT_LINKS[1], '_blank');
     }
 }
 
@@ -633,7 +720,7 @@ const STORAGE_KEY = 'smart_income_v3';
 const BOT_LINK = 'https://t.me/smarttcash_bot';
 
 // ==========================================================
-//   🔧 ACCESS GUARD - আপডেটেড
+//   🔧 ACCESS GUARD
 // ==========================================================
 const DEVICE_ID_KEY = 'smart_cash_device_id_v1';
 const TELEGRAM_ID_KEY = 'smart_cash_telegram_id_v1';
@@ -1025,9 +1112,6 @@ function applyRemoteUser(remote) {
     if (typeof renderAll === 'function') renderAll();
 }
 
-// ==========================================================
-//   startFirebaseRealtimeSync()
-// ==========================================================
 function startFirebaseRealtimeSync() {
     if (!__firebaseReady || __firebaseListenersStarted) return;
     __firebaseListenersStarted = true;
@@ -1095,9 +1179,6 @@ function startFirebaseRealtimeSync() {
     });
 }
 
-// ==========================================================
-//   অ্যাড সেটিংস ফাংশন
-// ==========================================================
 function updateAdSettings() {
     const config = db.adConfig || DEFAULT_AD_CONFIG;
     
@@ -1105,8 +1186,8 @@ function updateAdSettings() {
     window.__vignetteEnabled = config.vignetteEnabled !== false;
     window.__videoAdEnabled = config.videoAdEnabled !== false;
     
-    if (config.adsterraLink) DIRECT_LINKS[0] = config.adsterraLink;
-    if (config.monetagLink) DIRECT_LINKS[1] = config.monetagLink;
+    if (config.adsterraLink) DIRECT_LINKS[1] = config.adsterraLink;
+    if (config.monetagLink) DIRECT_LINKS[2] = config.monetagLink;
     
     console.log('✅ অ্যাড সেটিংস আপডেট:', {
         popunder: window.__popunderEnabled,
@@ -1115,18 +1196,30 @@ function updateAdSettings() {
     });
 }
 
-// ==========================================================
-//   ব্যানার রিলোড ফাংশন
-// ==========================================================
 function reloadBannerAds() {
-    document.querySelectorAll('.banner-ad-container').forEach((container) => {
+    document.querySelectorAll('.banner-ad-container').forEach((container, index) => {
         try {
-            // শুধু প্রজেক্টের ব্যানার রিলোড
+            const zoneKey = db.adConfig?.zone320 || 'f70b806885d12defbb6515475012d220';
             if (container.id && container.id.startsWith('project_banner_')) {
-                const iframe = container.querySelector('iframe');
-                if (iframe) {
-                    iframe.src = iframe.src;
-                }
+                container.innerHTML = `
+                    <div id="banner_reload_${index}"></div>
+                    <script>
+                        (function() {
+                            try {
+                                var atOptions = { 
+                                    'key' : '${zoneKey}', 
+                                    'format' : 'iframe', 
+                                    'height' : 50, 
+                                    'width' : 320, 
+                                    'params' : {} 
+                                };
+                                document.write('<scr' + 'ipt src="https://www.highperformanceformat.com/' + atOptions.key + '/invoke.js"><\/scr' + 'ipt>');
+                            } catch(e) {
+                                console.log('Ad reload error:', e);
+                            }
+                        })();
+                    <\/script>
+                `;
             }
         } catch(e) {
             console.log('Banner reload error:', e);
@@ -1554,7 +1647,10 @@ function renderHomeTasks() {
             html += `
                 <div class="task-ad-divider">
                     <div class="banner-ad-container" style="margin:4px 0;">
-                        <iframe src="https://www.highperformanceformat.com/f70b806885d12defbb6515475012d220/invoke.html" style="width:100%;max-width:320px;height:50px;border:0;" scrolling="no" frameborder="0"></iframe>
+                        <script>
+                            atOptions = { 'key' : 'f70b806885d12defbb6515475012d220', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+                        <\/script>
+                        <script src="https://www.highperformanceformat.com/f70b806885d12defbb6515475012d220/invoke.js"><\/script>
                     </div>
                 </div>
             `;
@@ -1600,7 +1696,10 @@ function renderEarnTasks() {
             html += `
                 <div class="task-ad-divider">
                     <div class="banner-ad-container" style="margin:4px 0;">
-                        <iframe src="https://www.highperformanceformat.com/4f73a7be6b5aa37211aad8635c516fda/invoke.html" style="width:100%;max-width:300px;height:250px;border:0;" scrolling="no" frameborder="0"></iframe>
+                        <script>
+                            atOptions = { 'key' : '4f73a7be6b5aa37211aad8635c516fda', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
+                        <\/script>
+                        <script src="https://www.highperformanceformat.com/4f73a7be6b5aa37211aad8635c516fda/invoke.js"><\/script>
                     </div>
                 </div>
             `;
@@ -1610,7 +1709,7 @@ function renderEarnTasks() {
 }
 
 // ==========================================================
-//   🔧 প্রজেক্ট (বাটন টেক্সট + ব্যানার ঠিক করা)
+//   🔧 প্রজেক্ট (৩০ সেকেন্ড কাউন্টার সহ)
 // ==========================================================
 let __projectSession = {
     active: false,
@@ -1623,8 +1722,8 @@ function __projectButtonText(projectId) {
     if (__projectSession.active && __projectSession.projectId === projectId) {
         return `⏳ ${__projectSession.secondsLeft}s`;
     }
-    if (__projectSession.active) return '⏳ অপেক্ষা করুন';
-    return '▶️ Start';
+    if (__projectSession.active) return '⏳ অন্য প্রজেক্ট চলছে';
+    return '▶️ শুরু করুন (৩০s)';
 }
 
 function __projectFinish(id) {
@@ -1691,32 +1790,43 @@ function renderProjects() {
         const buttonText = __projectButtonText(p.id);
 
         html += `
-            <div class="project-card" style="border-left:4px solid ${p.color}">
+            <div class="project-card" style="border-left:4px solid ${p.color};">
                 <div class="info">
                     <h4>${p.icon} ${p.title}</h4>
                     <div class="desc">${p.desc}</div>
                 </div>
                 <div class="reward">+৳${money(p.reward)}</div>
-                <button class="btn"
-                    style="background:${p.color};color:#0f172a;padding:6px 14px;font-size:13px;margin-top:6px;${disabled ? 'opacity:.6;cursor:not-allowed;' : ''}"
+                <button class="project-btn" 
                     ${disabled ? 'disabled' : ''}
-                    onclick="doProject('${p.id}')">${buttonText}</button>
+                    onclick="doProject('${p.id}')"
+                    id="projectBtn_${p.id}">
+                    ${buttonText}
+                </button>
             </div>
         `;
 
-        // ✅ প্রজেক্টের মাঝখানে ব্যানার অ্যাড - iframe ব্যবহার
+        // প্রজেক্টের মাঝখানে ব্যানার (ফাঁকা জায়গা ফিলাপ)
         if (index < PROJECTS.length - 1) {
             const zoneKey = db.adConfig?.zone320 || 'f70b806885d12defbb6515475012d220';
             html += `
-                <div class="banner-ad-container" id="project_banner_${index}" style="margin:12px 0;min-height:70px;background:#f8fafc;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;border:1px solid #e5eaf1;">
-                    <iframe 
-                        src="https://www.highperformanceformat.com/${zoneKey}/invoke.html" 
-                        style="width:100%;max-width:320px;height:50px;border:0;"
-                        scrolling="no"
-                        frameborder="0"
-                        allowtransparency="true"
-                        loading="lazy">
-                    </iframe>
+                <div class="banner-ad-container" id="project_banner_${index}" style="margin:12px 0;min-height:60px;background:#f8fafc;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;">
+                    <div id="banner_${index}"></div>
+                    <script>
+                        (function() {
+                            try {
+                                var atOptions = { 
+                                    'key' : '${zoneKey}', 
+                                    'format' : 'iframe', 
+                                    'height' : 50, 
+                                    'width' : 320, 
+                                    'params' : {} 
+                                };
+                                document.write('<scr' + 'ipt src="https://www.highperformanceformat.com/' + atOptions.key + '/invoke.js"><\/scr' + 'ipt>');
+                            } catch(e) {
+                                console.log('Ad load error:', e);
+                            }
+                        })();
+                    <\/script>
                 </div>
             `;
         }
@@ -1739,7 +1849,7 @@ function doProject(id) {
 
     if ((me.today || 0) >= 100) return toast('আজকের earning limit শেষ');
 
-    // Ad দেখাও
+    // AdGram int-43256 দেখানো
     openDirectAd();
 
     __projectSession.active = true;
@@ -1749,11 +1859,21 @@ function doProject(id) {
     renderProjects();
     showLoader(true, '⏳ ৩০ সেকেন্ড অপেক্ষা করুন...');
 
-    __projectSession.interval = setInterval(__projectTick, 1000);
+    // কাউন্টার শুরু
+    __projectSession.interval = setInterval(() => {
+        __projectSession.secondsLeft--;
+        renderProjects();
+        
+        if (__projectSession.secondsLeft <= 0) {
+            clearInterval(__projectSession.interval);
+            __projectSession.interval = null;
+            __projectFinish(id);
+        }
+    }, 1000);
 }
 
 // ==========================================================
-//   টাস্ক ডিটেইল
+//   টাস্ক ডিটেইল (৩০ সেকেন্ড কাউন্টার সহ)
 // ==========================================================
 let currentTaskId = null;
 let sessionTimer = null;
@@ -1859,22 +1979,20 @@ function updateSessionUI(taskId) {
 }
 
 function startSession(e) {
-    // AdGram Interstitial দেখাও
+    // AdGram int-43256 দেখানো
     if (window.Adsgram) {
         try {
-            const blockId = db.adConfig?.adgramBlockId || ADGRAM_BLOCK_ID;
-            const ctrl = window.Adsgram.init({ blockId: blockId });
+            const ctrl = window.Adsgram.init({ 
+                blockId: 'int-43256'
+            });
             ctrl.show().catch(() => { 
-                const choice = Math.floor(Math.random() * DIRECT_LINKS.length);
-                window.open(DIRECT_LINKS[choice], '_blank');
+                window.open(DIRECT_LINKS[1], '_blank');
             });
         } catch (err) {
-            const choice = Math.floor(Math.random() * DIRECT_LINKS.length);
-            window.open(DIRECT_LINKS[choice], '_blank');
+            window.open(DIRECT_LINKS[1], '_blank');
         }
     } else {
-        const choice = Math.floor(Math.random() * DIRECT_LINKS.length);
-        window.open(DIRECT_LINKS[choice], '_blank');
+        window.open(DIRECT_LINKS[1], '_blank');
     }
 
     if (!currentTaskId) return;
@@ -1903,7 +2021,6 @@ function startSession(e) {
     sessionTimer = setInterval(() => {
         timeLeft--;
         timerEl.textContent = timeLeft;
-        
         if (timeLeft <= 0) {
             clearInterval(sessionTimer);
             sessionTimer = null;
@@ -2042,7 +2159,7 @@ function submitWithdraw() {
 }
 
 // ==========================================================
-//   REWARDED AD
+//   🔧 REWARDED AD
 // ==========================================================
 async function watchDailyAd() {
     if (window.__videoAdEnabled === false) {
@@ -2273,8 +2390,8 @@ checkTelegramStatus();
     enterApp();
 })();
 
-console.log('✅ Smart Cash — স্মার্ট ক্যাশ v2.1.4 (চূড়ান্ত)');
-console.log('✅ সব আপডেট সম্পন্ন: AdGram int-43256, কাউন্টার 30→1, প্রজেক্ট ব্যানার iframe');
+console.log('✅ Smart Cash — স্মার্ট ক্যাশ v2.2.0 (আপডেটেড)');
+console.log('✅ আপডেট: প্রজেক্ট ও টাস্কে ৩০ সেকেন্ড কাউন্টার, AdGram int-43256 ঠিক করা, ফাঁকা জায়গা ফিলাপ');
 
 if (!db.current || !me) {
     $('auth').classList.remove('hidden');
