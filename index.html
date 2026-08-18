@@ -6,10 +6,10 @@
     <meta name="monetag" content="584a8084bf4f71bb2ae1dc8665e4ecf6">
     
     <!-- Rewarded Video Ad SDK -->
-    <script src="https://libtl.com/sdk.js" data-zone="11567392" data-sdk="show_11567392"></script>
+    <script async src="https://libtl.com/sdk.js" data-zone="11567392" data-sdk="show_11567392"></script>
     
     <!-- AdGram Interstitial -->
-    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+    <script async src="https://sad.adsgram.ai/js/sad.min.js"></script>
     
     <!-- Monetag Popunder -->
     <script>(function(s){s.dataset.zone='11572640',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
@@ -19,7 +19,7 @@
     <script async data-cfasync="false" src="https://pl30829866.effectivecpmnetwork.com/2b/32/ab/2b32ab962eb4c06c52ac028b5d6bdb58.js"></script>
     
     <!-- Telegram WebApp SDK -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script async src="https://telegram.org/js/telegram-web-app.js"></script>
     
     <!-- Firebase Config & SDK -->
     <script>
@@ -1873,6 +1873,7 @@ function __projectTick() {
 
     __projectSession.secondsLeft--;
     renderProjects();
+    showLoader(true, `⏳ ${__projectSession.secondsLeft} সেকেন্ড অপেক্ষা করুন...`);
 
     if (__projectSession.secondsLeft <= 0) {
         const id = __projectSession.projectId;
