@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="monetag" content="584a8084bf4f71bb2ae1dc8665e4ecf6">
     
-    <!-- Rewarded Video Ad SDK -->
-    <script src="https://libtl.com/sdk.js" data-zone="11567392" data-sdk="show_11567392"></script>
+    <!-- ✅ Rewarded Video Ad SDK (আপডেট) -->
+    <script src='//libtl.com/sdk.js' data-zone='11602031' data-sdk='show_11602031'></script>
     
     <!-- AdGram Interstitial -->
     <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
@@ -52,6 +52,8 @@
         .btn.green{background:#10b981;color:#fff}
         .btn.red{background:#ef4444;color:#fff}
         .btn.warning{background:#f59e0b;color:#fff}
+        .btn.primary{background:#2563eb;color:#fff}
+        .btn.sm{padding:6px 12px;font-size:12px}
         .row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
         .top{background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff;padding:20px 18px 25px;border-radius:0 0 28px 28px;border-bottom:3px solid #facc15}
         .balance{margin-top:15px;background:#facc15;border-radius:20px;padding:18px;color:#0f172a}
@@ -395,9 +397,7 @@
             <div id="ad-earn-container" class="native-ad-container"></div>
         </div>
 
-        <!-- ========================================================== -->
         <!-- ===== REFERRAL PAGE ===== -->
-        <!-- ========================================================== -->
         <div id="ref" class="page">
             <div id="ref-top-banner" class="banner-ad-container">
                 <script>
@@ -445,9 +445,7 @@
             <div id="ad-ref-native" class="native-ad-container"></div>
         </div>
 
-        <!-- ========================================================== -->
         <!-- ===== HISTORY PAGE ===== -->
-        <!-- ========================================================== -->
         <div id="history" class="page">
             
             <div id="history-top-banner" class="banner-ad-container">
@@ -546,9 +544,7 @@
             <div id="ad-history-native" class="native-ad-container"></div>
         </div>
 
-        <!-- ========================================================== -->
         <!-- ===== PROFILE PAGE ===== -->
-        <!-- ========================================================== -->
         <div id="profile" class="page">
             <div id="profile-top-banner" class="banner-ad-container">
                 <script>
@@ -576,9 +572,7 @@
             <div id="ad-profile-native" class="native-ad-container"></div>
         </div>
 
-        <!-- ========================================================== -->
         <!-- ===== LEADERBOARD PAGE ===== -->
-        <!-- ========================================================== -->
         <div id="leaderboard" class="page">
             <h3 style="color:#0f172a;">🏆 লিডারবোর্ড</h3>
             <div class="card">
@@ -656,7 +650,7 @@ const DEFAULT_AD_CONFIG = {
     adsterraLink: 'https://www.effectivecpmnetwork.com/uzb1t5ufj8?key=e19391500b97ca1f8e98e175831054cd',
     monetagLink: 'https://omg10.com/4/11572642',
     adgramBlockId: 'int-43256',
-    rewardedZone: '11567392',
+    rewardedZone: '11602031',
     zone728: '51bcf215100b208521b1f970deaedf8e',
     zone320: 'f70b806885d12defbb6515475012d220',
     zone300: '4f73a7be6b5aa37211aad8635c516fda',
@@ -669,7 +663,7 @@ const ADGRAM_BLOCK_ID = 'int-43256';
 let __directTurn = 0;
 
 // ==========================================================
-//   🔧 openDirectAd() - ৩টি লিংক রোটেশন
+//   🔧 openDirectAd() - সঠিক অ্যাড অর্ডার
 // ==========================================================
 function openDirectAd() {
     if (window.__popunderEnabled === false) {
@@ -677,25 +671,90 @@ function openDirectAd() {
         return;
     }
     
-    const link = getNextLink();
-    
-    if (link.includes('int-43256') && window.Adsgram) {
+    // ✅ ১. AdGram (সর্বোচ্চ CPM)
+    if (window.Adsgram) {
         try {
             const ctrl = window.Adsgram.init({ blockId: 'int-43256' });
-            ctrl.show().catch(() => window.open(link, '_blank'));
+            ctrl.show().catch(() => {
+                openMonetagAd();
+            });
+            return;
         } catch (e) {
-            window.open(link, '_blank');
+            openMonetagAd();
         }
     } else {
-        window.open(link, '_blank');
+        openMonetagAd();
     }
 }
 
+// ✅ Monetag ব্যাকআপ
+function openMonetagAd() {
+    try {
+        window.open('https://omg10.com/4/11572642', '_blank');
+    } catch (e) {
+        window.open('https://www.effectivecpmnetwork.com/uzb1t5ufj8?key=e19391500b97ca1f8e98e175831054cd', '_blank');
+    }
+}
+
+// ✅ Rewarded Video - নতুন Zone ID
 function showPostTaskVideoAd() {
-    const fn = window.show_11567392;
+    const fn = window.show_11602031;
     if (typeof fn === 'function') {
         try { fn().catch(() => {}); } catch (e) {}
     }
+}
+
+// ✅ Rewarded Video Watch
+async function watchDailyAd() {
+    if (window.__videoAdEnabled === false) {
+        toast('⛔ Rewarded Video বন্ধ আছে');
+        return;
+    }
+    
+    if (me.adDate !== today()) { me.adDate = today(); me.adViews = 0; }
+    if ((me.adViews || 0) >= 10) { toast('আজকের ১০টি Rewarded Ad শেষ'); return; }
+    
+    const zoneId = db.adConfig?.rewardedZone || '11602031';
+    let fn = window['show_' + zoneId];
+    
+    if (typeof fn !== 'function') {
+        toast('Ad SDK লোড হচ্ছে...');
+        const s = document.createElement('script');
+        s.src = '//libtl.com/sdk.js';
+        s.dataset.zone = zoneId;
+        s.dataset.sdk = 'show_' + zoneId;
+        document.head.appendChild(s);
+        setTimeout(() => { 
+            if (typeof window['show_' + zoneId] === 'function') watchDailyAd();
+            else toast('SDK লোড হয়নি'); 
+        }, 2000);
+        return;
+    }
+    
+    const eid = 'ad_' + me.id + '_' + Date.now() + '_' + (me.adViews + 1);
+    try {
+        showLoader(true, 'Rewarded Ad লোড হচ্ছে...');
+        await fn({ ymid: eid, requestVar: 'daily_rewarded_ad_' + Date.now() });
+        me.adViews = (me.adViews || 0) + 1;
+        const r = 0.50;
+        me.balance += r;
+        me.total += r;
+        me.today += r;
+        me.tx = me.tx || [];
+        me.tx.unshift({
+            type: 'rewarded-ad',
+            amount: r,
+            status: 'completed',
+            date: new Date().toLocaleString('bn-BD')
+        });
+        saveDB();
+        renderAll();
+        showLoader(false);
+        toast('✅ Ad দেখা সম্পন্ন! +৳0.50');
+    } catch (e) {
+        showLoader(false);
+        toast('⚠️ Ad লোড হয়নি');
+    } finally { updateAdStation(); }
 }
 
 const STORAGE_KEY = 'smart_income_v3';
@@ -1235,7 +1294,6 @@ function showLoader(show, msg = 'কাজ হচ্ছে...') {
 
 function showNotification(text) {
     if (!text) {
-        // ডিফল্ট নোটিশ
         text = `⚠️ সতর্কতা: VPN বা DNS চালু থাকলে পেমেন্ট পাবেন না! অ্যাডমিন সব সময় মনিটর করে।\n\n📌 প্রজেক্টসমূহ: ভিডিও দেখুন (৳০.৫০) | ডেইলি টাস্ক (৳১) | স্পেশাল প্রজেক্ট (৳২) | বোনাস অফার (৳১.৫০)\n\n📋 টাস্ক: হোম টাস্ক (৫টি) | আর্নিং টাস্ক (১০টি) | প্রতিটি টাস্ক শেষে রিওয়ার্ড`;
     }
     const bar = document.getElementById('notificationBar');
@@ -1334,7 +1392,7 @@ async function registerUser() {
         balance: 0, total: 0, today: 0, todayDate: today(), tx: [], spunDate: null, dailyDate: null,
         referrals: 0, activeRef: 0, refEarn: 0, adDate: null, adViews: 0, status: 'active',
         completedTasks: [], taskSessions: {}, notifications: [], dailyBonusDate: null,
-        taskLastDone: {} // ২৪ ঘন্টা ট্র্যাকিং
+        taskLastDone: {}
     };
 
     db.users = merged;
@@ -1461,7 +1519,6 @@ function enterApp() {
     renderLevels();
     renderLeaderboard();
     
-    // নোটিশ দেখানো
     showNotification();
     
     if (me.notifications && me.notifications.length > 0) {
@@ -1618,7 +1675,7 @@ function getRemainingTime(taskId) {
 }
 
 // ==========================================================
-//   হোম টাস্ক (মাঝখানের অ্যাড সরানো)
+//   হোম টাস্ক
 // ==========================================================
 function renderHomeTasks() {
     const container = $('homeTaskList');
@@ -1671,13 +1728,12 @@ function renderHomeTasks() {
                 ${isDone && !canDo ? `<div style="font-size:11px;color:#f59e0b;margin-top:4px;">⏳ ${remainingHours} ঘন্টা বাকি</div>` : ''}
             </div>
         `;
-        // ❌ মাঝখানের অ্যাড সরানো হয়েছে
     });
     container.innerHTML = html;
 }
 
 // ==========================================================
-//   আর্নিং টাস্ক (মাঝখানের অ্যাড সরানো)
+//   আর্নিং টাস্ক
 // ==========================================================
 function renderEarnTasks() {
     const container = $('earnTaskList');
@@ -1729,13 +1785,12 @@ function renderEarnTasks() {
                 ${isDone && !canDo ? `<div style="font-size:11px;color:#f59e0b;margin-top:4px;">⏳ ${remainingHours} ঘন্টা বাকি</div>` : ''}
             </div>
         `;
-        // ❌ মাঝখানের অ্যাড সরানো হয়েছে
     });
     container.innerHTML = html;
 }
 
 // ==========================================================
-//   🔧 প্রজেক্ট (৩০ সেকেন্ড কাউন্টার শো করাবে + মাঝখানের অ্যাড সরানো)
+//   🔧 প্রজেক্ট (৩০ সেকেন্ড কাউন্টার)
 // ==========================================================
 let __projectSession = {
     active: false,
@@ -1748,7 +1803,9 @@ function __projectButtonText(projectId) {
     if (__projectSession.active && __projectSession.projectId === projectId) {
         return `⏳ ${__projectSession.secondsLeft}s`;
     }
-    if (__projectSession.active) return '⏳ অন্য প্রজেক্ট চলছে';
+    if (__projectSession.active) {
+        return '⏳ অন্য প্রজেক্ট চলছে';
+    }
     return '▶️ ভিতরে প্রবেশ করাবে';
 }
 
@@ -1772,6 +1829,10 @@ function __projectFinish(id) {
     renderAll();
     showLoader(false);
     toast(`✅ ${p.title} সম্পন্ন! +৳${money(p.reward)}`);
+    
+    setTimeout(() => {
+        openDirectAd();
+    }, 300);
     showPostTaskVideoAd();
 
     __projectSession.active = false;
@@ -1811,9 +1872,19 @@ function renderProjects() {
     if (!container) return;
 
     let html = '';
-    PROJECTS.forEach((p, index) => {
-        const disabled = __projectSession.active;
-        const buttonText = __projectButtonText(p.id);
+    PROJECTS.forEach((p) => {
+        const isRunning = __projectSession.active && __projectSession.projectId === p.id;
+        const isOtherRunning = __projectSession.active && __projectSession.projectId !== p.id;
+        let buttonText = '▶️ ভিতরে প্রবেশ করাবে';
+        let buttonStyle = '';
+        
+        if (isRunning) {
+            buttonText = `⏳ ${__projectSession.secondsLeft}s`;
+            buttonStyle = 'background:#f59e0b;';
+        } else if (isOtherRunning) {
+            buttonText = '⏳ অন্য প্রজেক্ট চলছে';
+            buttonStyle = 'opacity:0.5;cursor:not-allowed;';
+        }
 
         html += `
             <div class="project-card" style="border-left:4px solid ${p.color};">
@@ -1823,14 +1894,14 @@ function renderProjects() {
                 </div>
                 <div class="reward">+৳${money(p.reward)}</div>
                 <button class="project-btn" 
-                    ${disabled ? 'disabled' : ''}
+                    id="projectBtn_${p.id}"
+                    ${isOtherRunning ? 'disabled' : ''}
                     onclick="doProject('${p.id}')"
-                    id="projectBtn_${p.id}">
+                    style="${buttonStyle}">
                     ${buttonText}
                 </button>
             </div>
         `;
-        // ❌ মাঝখানের অ্যাড সরানো হয়েছে
     });
     container.innerHTML = html;
 }
@@ -1850,6 +1921,7 @@ function doProject(id) {
 
     if ((me.today || 0) >= 100) return toast('আজকের earning limit শেষ');
 
+    // অ্যাড দেখাও
     openDirectAd();
 
     __projectSession.active = true;
@@ -1859,21 +1931,25 @@ function doProject(id) {
     renderProjects();
     showLoader(true, '⏳ ৩০ সেকেন্ড অপেক্ষা করুন...');
 
-    // ✅ কাউন্টার শুরু - প্রতি সেকেন্ডে আপডেট হবে
     __projectSession.interval = setInterval(() => {
         __projectSession.secondsLeft--;
-        renderProjects(); // ← বাটনে কাউন্ট দেখাবে
+        renderProjects();
+        
+        if (__projectSession.secondsLeft > 0) {
+            showLoader(true, `⏳ ${__projectSession.secondsLeft} সেকেন্ড বাকি`);
+        }
         
         if (__projectSession.secondsLeft <= 0) {
             clearInterval(__projectSession.interval);
             __projectSession.interval = null;
+            showLoader(false);
             __projectFinish(id);
         }
     }, 1000);
 }
 
 // ==========================================================
-//   টাস্ক ডিটেইল (৩০ সেকেন্ড কাউন্টার শো করাবে)
+//   টাস্ক ডিটেইল
 // ==========================================================
 let currentTaskId = null;
 let sessionTimer = null;
@@ -1884,7 +1960,6 @@ function openTaskDetail(taskId) {
     const task = ALL_TASKS.find(t => t.id === taskId);
     if (!task) return;
     
-    // ২৪ ঘন্টা চেক
     if ((me.completedTasks || []).includes(taskId) && !canDoTask(taskId)) {
         const remaining = getRemainingTime(taskId);
         toast(`⏳ ${remaining} ঘন্টা পর আবার করতে পারবেন`);
@@ -1892,7 +1967,6 @@ function openTaskDetail(taskId) {
     }
     
     if ((me.completedTasks || []).includes(taskId) && canDoTask(taskId)) {
-        // ২৪ ঘন্টা পার হয়ে গেছে, আবার করতে পারবে
         me.completedTasks = me.completedTasks.filter(id => id !== taskId);
         if (me.taskSessions) delete me.taskSessions[taskId];
         saveDB();
@@ -1917,12 +1991,16 @@ function closeTaskDetail() {
     if (sessionTimer) { clearInterval(sessionTimer); sessionTimer = null; }
     isWaitingForComplete = false;
     
+    setTimeout(() => {
+        openDirectAd();
+    }, 300);
+    
     if (currentTaskId) {
         const task = ALL_TASKS.find(t => t.id === currentTaskId);
         if (task && !(me.completedTasks || []).includes(currentTaskId)) {
             setTimeout(() => {
                 showPostTaskVideoAd();
-            }, 300);
+            }, 500);
         }
         currentTaskId = null;
     }
@@ -2008,7 +2086,7 @@ function startSession(e) {
     timerLabel.textContent = '⏳ সেশন চলছে...';
 
     let timeLeft = 30;
-    timerEl.textContent = timeLeft; // ← 30 দেখাবে
+    timerEl.textContent = timeLeft;
 
     renderSessions(currentTaskId);
     isWaitingForComplete = true;
@@ -2016,8 +2094,7 @@ function startSession(e) {
     if (sessionTimer) clearInterval(sessionTimer);
     sessionTimer = setInterval(() => {
         timeLeft--;
-        timerEl.textContent = timeLeft; // ← 29,28...1 দেখাবে
-        
+        timerEl.textContent = timeLeft;
         if (timeLeft <= 0) {
             clearInterval(sessionTimer);
             sessionTimer = null;
@@ -2069,7 +2146,6 @@ function completeFullTask(taskId) {
         if (!me.completedTasks) me.completedTasks = [];
         me.completedTasks.push(taskId);
         
-        // ২৪ ঘন্টা ট্র্যাকিং
         if (!me.taskLastDone) me.taskLastDone = {};
         me.taskLastDone[taskId] = Date.now();
         
@@ -2158,61 +2234,6 @@ function submitWithdraw() {
     toast('✅ প্রত্যাহার আবেদন সফল! ২৪-৭২ ঘন্টার মধ্যে টাকা পাঠানো হবে।');
     document.getElementById('wdAmount').value = '';
     calculateWithdraw();
-}
-
-// ==========================================================
-//   🔧 REWARDED AD
-// ==========================================================
-async function watchDailyAd() {
-    if (window.__videoAdEnabled === false) {
-        toast('⛔ Rewarded Video বন্ধ আছে');
-        return;
-    }
-    
-    if (me.adDate !== today()) { me.adDate = today(); me.adViews = 0; }
-    if ((me.adViews || 0) >= 10) { toast('আজকের ১০টি Rewarded Ad শেষ'); return; }
-    
-    const zoneId = db.adConfig?.rewardedZone || '11567392';
-    let fn = window['show_' + zoneId];
-    
-    if (typeof fn !== 'function') {
-        toast('Ad SDK লোড হচ্ছে...');
-        const s = document.createElement('script');
-        s.src = 'https://libtl.com/sdk.js';
-        s.dataset.zone = zoneId;
-        s.dataset.sdk = 'show_' + zoneId;
-        document.head.appendChild(s);
-        setTimeout(() => { 
-            if (typeof window['show_' + zoneId] === 'function') watchDailyAd();
-            else toast('SDK লোড হয়নি'); 
-        }, 2000);
-        return;
-    }
-    
-    const eid = 'ad_' + me.id + '_' + Date.now() + '_' + (me.adViews + 1);
-    try {
-        showLoader(true, 'Rewarded Ad লোড হচ্ছে...');
-        await fn({ ymid: eid, requestVar: 'daily_rewarded_ad_' + Date.now() });
-        me.adViews = (me.adViews || 0) + 1;
-        const r = 0.50;
-        me.balance += r;
-        me.total += r;
-        me.today += r;
-        me.tx = me.tx || [];
-        me.tx.unshift({
-            type: 'rewarded-ad',
-            amount: r,
-            status: 'completed',
-            date: new Date().toLocaleString('bn-BD')
-        });
-        saveDB();
-        renderAll();
-        showLoader(false);
-        toast('✅ Ad দেখা সম্পন্ন! +৳0.50');
-    } catch (e) {
-        showLoader(false);
-        toast('⚠️ Ad লোড হয়নি');
-    } finally { updateAdStation(); }
 }
 
 // ==========================================================
@@ -2392,8 +2413,7 @@ checkTelegramStatus();
     enterApp();
 })();
 
-console.log('✅ Smart Cash — স্মার্ট ক্যাশ v2.3.0 (সব ৮টি আপডেট সহ)');
-console.log('✅ ৮টি আপডেট: কাউন্টার, লিংক রোটেশন, ২৪ঘন্টা, নোটিশ, প্রজেক্ট অ্যাড সরানো, স্পেস কমানো, হোম/আর্নিং অ্যাড সরানো');
+console.log('✅ Smart Cash — স্মার্ট ক্যাশ v2.5.0 (সম্পূর্ণ আপডেট)');
 
 if (!db.current || !me) {
     $('auth').classList.remove('hidden');
