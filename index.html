@@ -2571,5 +2571,30 @@ try {
     observer.observe(document.body, { childList: true, subtree: true });
 })();
 </script>
+<script>
+// শুধু "VPN" / "DNS" বিষয়ক নেটিভ এড creative হাইড করে দেয় — বাকি সব ধরনের এড আগের মতোই চালু থাকবে
+(function () {
+    const KEYWORD_RE = /\bvpn\b|\bdns\b/i;
+    function checkAndHide(el) {
+        if (!el || el.nodeType !== 1) return;
+        if (el.dataset && el.dataset.__vpnDnsChecked) return;
+        const text = el.textContent || '';
+        if (text.length < 300 && KEYWORD_RE.test(text)) {
+            el.dataset.__vpnDnsChecked = '1';
+            el.style.setProperty('display', 'none', 'important');
+        }
+    }
+    const observer = new MutationObserver(muts => {
+        muts.forEach(m => {
+            m.addedNodes.forEach(node => {
+                if (node.nodeType !== 1) return;
+                checkAndHide(node);
+                node.querySelectorAll && node.querySelectorAll('div, a, span').forEach(checkAndHide);
+            });
+        });
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+})();
+</script>
 </body>
 </html>
