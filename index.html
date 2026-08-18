@@ -18,6 +18,9 @@
     <script async src="https://pl30829859.effectivecpmnetwork.com/4beb40aebf3d21b797c6bb96ba14331f/invoke.js"></script>
     <script async data-cfasync="false" src="https://pl30829866.effectivecpmnetwork.com/2b/32/ab/2b32ab962eb4c06c52ac028b5d6bdb58.js"></script>
     
+    <!-- Telegram WebApp SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
     <!-- Firebase Config & SDK -->
     <script>
         const FIREBASE_CONFIG = {
@@ -191,7 +194,35 @@
         .leaderboard-item .name{flex:1;font-weight:600}
         .leaderboard-item .amount{color:#10b981;font-weight:700}
         
-        /* মোবাইল নেটওয়ার্কের জন্য মেসেজ */
+        #telegramStatus {
+            text-align:center;
+            padding:8px;
+            border-radius:8px;
+            margin-bottom:10px;
+            font-size:12px;
+            display:none;
+        }
+        #telegramStatus.connected {
+            background:#d1fae5;
+            color:#065f46;
+            display:block;
+        }
+        #telegramStatus.disconnected {
+            background:#fee2e2;
+            color:#991b1b;
+            display:block;
+        }
+        #telegramStatus .retry-btn {
+            background:#facc15;
+            border:0;
+            border-radius:6px;
+            padding:4px 12px;
+            font-weight:600;
+            cursor:pointer;
+            margin-top:4px;
+            font-size:11px;
+        }
+        
         #mobileNetworkWarning {
             display: none;
             background: #fef3c7;
@@ -223,8 +254,8 @@
         <h2 style="text-align:center;margin:5px 0;color:#facc15;">Smart Cash</h2>
         <p style="text-align:center;color:#94a3b8;font-size:13px;">Earn Smart, Cash Fast</p>
 
-        <!-- Telegram Status -->
-        <div id="telegramStatus" style="text-align:center;padding:8px;border-radius:8px;margin-bottom:10px;font-size:12px;display:none;"></div>
+        <!-- ✅ Telegram Status -->
+        <div id="telegramStatus"></div>
 
         <div id="loginBox">
             <input id="le" type="email" placeholder="Email" autocomplete="email">
@@ -616,7 +647,7 @@ const DEFAULT_AD_CONFIG = {
 let __directTurn = 0;
 
 // ==========================================================
-//   🔧 openDirectAd() - AdGram Interstitial
+//   🔧 openDirectAd()
 // ==========================================================
 function openDirectAd() {
     if (window.__popunderEnabled === false) {
@@ -629,14 +660,23 @@ function openDirectAd() {
             const blockId = db.adConfig?.adgramBlockId || ADGRAM_BLOCK_ID;
             const ctrl = window.Adsgram.init({ blockId: blockId });
             ctrl.show().catch(() => { 
-                const choice = Math.floor(Math.random() * DIRECT_LINKS.length);
-                window.open(DIRECT_LINKS[choice], '_blank');
+                fallbackOpenAd();
             });
         } catch (e) {
-            const choice = Math.floor(Math.random() * DIRECT_LINKS.length);
-            window.open(DIRECT_LINKS[choice], '_blank');
+            fallbackOpenAd();
         }
     } else {
+        fallbackOpenAd();
+    }
+}
+
+function fallbackOpenAd() {
+    try {
+        const s = document.createElement('script');
+        s.dataset.zone = '11572640';
+        s.src = 'https://nap5k.com/tag.min.js';
+        document.body.appendChild(s);
+    } catch(e) {
         const choice = Math.floor(Math.random() * DIRECT_LINKS.length);
         window.open(DIRECT_LINKS[choice], '_blank');
     }
@@ -653,7 +693,7 @@ const STORAGE_KEY = 'smart_income_v3';
 const BOT_LINK = 'https://t.me/smarttcash_bot';
 
 // ==========================================================
-//   🔧 ACCESS GUARD - মোবাইল ফ্রেন্ডলি
+//   🔧 ACCESS GUARD
 // ==========================================================
 const DEVICE_ID_KEY = 'smart_cash_device_id_v1';
 const TELEGRAM_ID_KEY = 'smart_cash_telegram_id_v1';
@@ -673,32 +713,76 @@ function getDeviceId() {
 
 function deviceIdForDb() { return getDeviceId(); }
 
-function getTelegramUserId() {
+// ==========================================================
+//   🔧 আপডেটেড: getTelegramUserId() - রিট্রাই সহ
+// ==========================================================
+function getTelegramUserId(retryCount = 0) {
     try {
+        // চেক করো window.Telegram আছে কিনা
         if (window.Telegram && window.Telegram.WebApp) {
             const tg = window.Telegram.WebApp;
-            tg.ready();
-            const user = tg.initDataUnsafe?.user;
-            if (user && user.id) {
-                const id = String(user.id);
-                localStorage.setItem('telegram_user_id', id);
-                localStorage.setItem('telegram_username', user.username || user.first_name || '');
-                return id;
+            try {
+                tg.ready();
+            } catch(e) { /* ignore */ }
+            
+            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                const user = tg.initDataUnsafe.user;
+                if (user.id) {
+                    const id = String(user.id);
+                    localStorage.setItem('telegram_user_id', id);
+                    localStorage.setItem('telegram_username', user.username || user.first_name || '');
+                    return id;
+                }
             }
         }
+        
+        // localStorage থেকে চেক
         const savedId = localStorage.getItem('telegram_user_id');
-        if (savedId) return savedId;
+        if (savedId) {
+            return savedId;
+        }
+        
+        // URL parameter থেকে চেক
         const urlParams = new URLSearchParams(window.location.search);
-        const tgId = urlParams.get('tg_id');
+        const tgId = urlParams.get('tg_id') || urlParams.get('userId');
         if (tgId) {
             localStorage.setItem('telegram_user_id', tgId);
             return tgId;
         }
+        
+        // রিট্রাই
+        if (retryCount < 5) {
+            console.log(`⏳ Telegram WebApp not ready, retry ${retryCount + 1}/5...`);
+            // সিঙ্ক্রোনাস রিটার্নের জন্য Promise নয়, সরাসরি setTimeout দিয়ে কল করবে
+            // কিন্তু এখানে আমরা async ফাংশনে কল করবো
+            return null; // null মানে রিট্রাই দরকার
+        }
+        
         return '';
     } catch (e) {
         console.error('Error getting Telegram ID:', e);
         return '';
     }
+}
+
+// ✅ Async wrapper for getTelegramUserId with retry
+async function getTelegramUserIdAsync(maxRetries = 5) {
+    let retries = 0;
+    while (retries < maxRetries) {
+        const id = getTelegramUserId(retries);
+        if (id === null) {
+            // রিট্রাই দরকার
+            retries++;
+            await new Promise(r => setTimeout(r, 600));
+            continue;
+        }
+        if (id) {
+            return id;
+        }
+        retries++;
+        await new Promise(r => setTimeout(r, 300));
+    }
+    return '';
 }
 
 function saveTelegramUserId(id) {
@@ -745,6 +829,13 @@ function enforceUserStatus(user) {
 }
 
 function showAccessBlocked() {
+    // মোবাইল নেটওয়ার্ক হলে সরাসরি স্কিপ
+    if (isMobileNetwork()) {
+        console.log('📱 Mobile - skipping access block page');
+        skipAccessBlock();
+        return;
+    }
+    
     let page = document.getElementById('accessBlockPage');
     if (!page) {
         page = document.createElement('section');
@@ -797,7 +888,7 @@ function createAdBlockBait() {
     return bait;
 }
 
-function testImageEndpoint(url, timeout = 5000) { // ✅ মোবাইলের জন্য টাইমআউট বাড়ানো
+function testImageEndpoint(url, timeout = 5000) {
     return new Promise(resolve => {
         let done = false;
         const img = new Image();
@@ -815,38 +906,28 @@ function testImageEndpoint(url, timeout = 5000) { // ✅ মোবাইলে�
     });
 }
 
-// ✅ মোবাইল নেটওয়ার্ক ডিটেক্ট
 function isMobileNetwork() {
     try {
         const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
         if (conn) {
-            // যদি wifi না হয় তাহলে মোবাইল নেটওয়ার্ক
             return conn.type !== 'wifi' && conn.type !== 'ethernet';
         }
     } catch (e) {}
-    // User Agent দিয়ে চেক
     return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 }
 
-// ✅ মোবাইল নেটওয়ার্ক ওয়ার্নিং দেখানো
-function showMobileNetworkWarning() {
-    const warningEl = document.getElementById('mobileNetworkWarning');
-    if (isMobileNetwork()) {
-        warningEl.style.display = 'block';
-        document.getElementById('mobileNetworkText').textContent = 
-            '📱 মোবাইল নেটওয়ার্ক ব্যবহার করছেন। অ্যাপ ঠিকমতো কাজ করছে!';
-    } else {
-        warningEl.style.display = 'none';
-    }
-}
-
-// ✅ আপডেটেড runAccessGuard() - মোবাইল ফ্রেন্ডলি
 async function runAccessGuard() {
-    // ✅ মোবাইল নেটওয়ার্ক হলে Access Guard স্কিপ
+    // ✅ প্রথমে চেক করো Telegram ID পাওয়া গেছে কিনা
+    const tgId = await getTelegramUserIdAsync();
+    if (!tgId) {
+        console.warn('⚠️ No Telegram ID - skipping access guard');
+        toast('📱 Telegram থেকে অ্যাপটি খুলুন।');
+        return true;
+    }
+    
     if (isMobileNetwork()) {
-        console.log('📱 Mobile network detected - skipping access guard');
+        console.log('📱 Mobile network - access guard disabled');
         hideAccessBlocked();
-        sessionStorage.removeItem(ACCESS_GUARD_KEY);
         return true;
     }
     
@@ -1037,7 +1118,6 @@ async function initFirebaseApp() {
         try {
             if (!firebase.apps.length) {
                 firebase.initializeApp(FIREBASE_CONFIG);
-                // Firebase সংযোগ চেক
                 firebase.database().ref('.info/connected').on('value', snap => {
                     if (snap.val() === true) {
                         console.log('✅ Firebase connected');
@@ -1245,22 +1325,53 @@ function closeNotification() {
     clearTimeout(window._notiTimer);
 }
 
+// ==========================================================
+//   🔧 আপডেটেড: checkTelegramStatus()
+// ==========================================================
 function checkTelegramStatus() {
     const statusEl = document.getElementById('telegramStatus');
     const userId = getTelegramUserId();
     
     if (userId) {
-        statusEl.style.display = 'block';
-        statusEl.style.background = '#d1fae5';
-        statusEl.style.color = '#065f46';
-        statusEl.innerHTML = `✅ Telegram সংযুক্ত! User ID: ${userId}`;
+        statusEl.className = 'connected';
+        statusEl.innerHTML = `
+            ✅ Telegram সংযুক্ত! User ID: ${userId}
+            <br><small style="font-size:10px;color:#065f46;">আপনি রেজিস্ট্রেশন বা লগইন করতে পারেন</small>
+        `;
         return true;
     } else {
-        statusEl.style.display = 'block';
-        statusEl.style.background = '#fee2e2';
-        statusEl.style.color = '#991b1b';
-        statusEl.innerHTML = '⚠️ Telegram থেকে অ্যাপটি খুলুন। User ID পাওয়া যায়নি।';
+        statusEl.className = 'disconnected';
+        statusEl.innerHTML = `
+            ⚠️ Telegram থেকে অ্যাপটি খুলুন।
+            <br><button class="retry-btn" onclick="retryTelegramConnection()">🔄 রিলোড করে চেষ্টা করুন</button>
+            <br><small style="font-size:10px;color:#991b1b;">যদি সমস্যা থাকে, অ্যাপটি রিলোড করুন</small>
+        `;
         return false;
+    }
+}
+
+function retryTelegramConnection() {
+    toast('🔄 পুনরায় চেষ্টা করা হচ্ছে...');
+    if (window.Telegram && window.Telegram.WebApp) {
+        try {
+            window.Telegram.WebApp.ready();
+            window.Telegram.WebApp.expand();
+        } catch(e) {}
+    }
+    setTimeout(() => {
+        checkTelegramStatus();
+        location.reload();
+    }, 1000);
+}
+
+function showMobileNetworkWarning() {
+    const warningEl = document.getElementById('mobileNetworkWarning');
+    if (isMobileNetwork()) {
+        warningEl.style.display = 'block';
+        document.getElementById('mobileNetworkText').textContent = 
+            '📱 মোবাইল নেটওয়ার্ক ব্যবহার করছেন। অ্যাপ ঠিকমতো কাজ করছে!';
+    } else {
+        warningEl.style.display = 'none';
     }
 }
 
@@ -1270,17 +1381,25 @@ function checkTelegramStatus() {
 function showRegister() { $('loginBox').classList.add('hidden'); $('regBox').classList.remove('hidden'); }
 function showLogin() { $('regBox').classList.add('hidden'); $('loginBox').classList.remove('hidden'); }
 
+// ==========================================================
+//   🔧 আপডেটেড: registerUser()
+// ==========================================================
 async function registerUser() {
     const name = $('rn').value.trim(), phone = $('rp').value.trim(), email = $('re').value.trim().toLowerCase();
     const pass1 = $('r1').value, pass2 = $('r2').value, ref = $('rr').value.trim().toUpperCase();
-    if (!name || !phone || !email || pass1.length < 8 || pass1 !== pass2) return toast('সব তথ্য ঠিকভাবে দিন');
+    if (!name || !phone || !email || pass1.length < 8 || pass1 !== pass2) {
+        return toast('সব তথ্য ঠিকভাবে দিন');
+    }
 
     showLoader(true, 'অ্যাকাউন্ট তৈরি হচ্ছে...');
     
-    const telegramUserId = getTelegramUserId();
+    // ✅ রিট্রাই সহ Telegram ID নেওয়া
+    let telegramUserId = await getTelegramUserIdAsync();
+    
     if (!telegramUserId) {
         showLoader(false);
-        return toast('⚠️ Telegram থেকে অ্যাপটি খুলুন!');
+        toast('⚠️ Telegram থেকে অ্যাপটি খুলুন। অথবা "রিলোড" বাটনে ক্লিক করুন।');
+        return;
     }
     
     await initFirebaseApp();
@@ -1354,6 +1473,9 @@ async function registerUser() {
     toast('🎉 রেজিস্ট্রেশন সফল!');
 }
 
+// ==========================================================
+//   🔧 আপডেটেড: loginUser()
+// ==========================================================
 async function loginUser() {
     const email = $('le').value.trim().toLowerCase(), pass = $('lp').value;
     if (!email || !pass) return toast('Email ও Password দিন');
@@ -1382,13 +1504,16 @@ async function loginUser() {
             return;
         }
 
-        const currentDeviceId = deviceIdForDb();
-        const telegramUserId = getTelegramUserId();
+        // ✅ রিট্রাই সহ Telegram ID
+        let telegramUserId = await getTelegramUserIdAsync();
         if (!telegramUserId) {
             showLoader(false);
-            return toast('⚠️ Telegram থেকে অ্যাপটি খুলুন!');
+            toast('⚠️ Telegram থেকে অ্যাপটি খুলুন!');
+            return;
         }
         saveTelegramUserId(telegramUserId);
+
+        const currentDeviceId = deviceIdForDb();
 
         if (!user.deviceId) {
             user.deviceId = currentDeviceId;
@@ -1430,7 +1555,6 @@ function enterApp() {
         sessionStorage.removeItem('access_skipped');
     }
     
-    // ✅ মোবাইল নেটওয়ার্ক ওয়ার্নিং দেখাও
     showMobileNetworkWarning();
     
     if (me.dailyBonusDate !== today()) {
@@ -1626,8 +1750,11 @@ function renderHomeTasks() {
         if (!isDone && index < HOME_TASKS.length - 1) {
             html += `
                 <div class="task-ad-divider">
-                    <div class="banner-ad-container" style="margin:4px 0;">
-                        <iframe src="https://www.highperformanceformat.com/f70b806885d12defbb6515475012d220/invoke.html" style="width:100%;max-width:320px;height:50px;border:0;" scrolling="no" frameborder="0"></iframe>
+                    <div class="banner-ad-container" style="margin:4px 0;min-height:50px;background:#f8fafc;border-radius:8px;display:flex;align-items:center;justify-content:center;border:1px dashed #e2e8f0;padding:4px;">
+                        <div style="font-size:10px;color:#94a3b8;text-align:center;">
+                            📢 বিজ্ঞাপন লোড হচ্ছে...
+                        </div>
+                        <iframe src="https://www.highperformanceformat.com/f70b806885d12defbb6515475012d220/invoke.html" style="width:100%;max-width:320px;height:50px;border:0;display:block;" scrolling="no" frameborder="0" loading="lazy" onerror="this.style.display='none'"></iframe>
                     </div>
                 </div>
             `;
@@ -1672,8 +1799,11 @@ function renderEarnTasks() {
         if (!isDone && index < EARN_TASKS.length - 1) {
             html += `
                 <div class="task-ad-divider">
-                    <div class="banner-ad-container" style="margin:4px 0;">
-                        <iframe src="https://www.highperformanceformat.com/4f73a7be6b5aa37211aad8635c516fda/invoke.html" style="width:100%;max-width:300px;height:250px;border:0;" scrolling="no" frameborder="0"></iframe>
+                    <div class="banner-ad-container" style="margin:4px 0;min-height:50px;background:#f8fafc;border-radius:8px;display:flex;align-items:center;justify-content:center;border:1px dashed #e2e8f0;padding:4px;">
+                        <div style="font-size:10px;color:#94a3b8;text-align:center;">
+                            📢 বিজ্ঞাপন লোড হচ্ছে...
+                        </div>
+                        <iframe src="https://www.highperformanceformat.com/4f73a7be6b5aa37211aad8635c516fda/invoke.html" style="width:100%;max-width:300px;height:250px;border:0;display:block;" scrolling="no" frameborder="0" loading="lazy" onerror="this.style.display='none'"></iframe>
                     </div>
                 </div>
             `;
@@ -1777,18 +1907,21 @@ function renderProjects() {
             </div>
         `;
 
-        // ✅ প্রজেক্টের মাঝখানে ব্যানার অ্যাড - iframe ব্যবহার
         if (index < PROJECTS.length - 1) {
             const zoneKey = db.adConfig?.zone320 || 'f70b806885d12defbb6515475012d220';
             html += `
                 <div class="banner-ad-container" id="project_banner_${index}" style="margin:12px 0;min-height:70px;background:#f8fafc;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;border:1px solid #e5eaf1;">
+                    <div style="width:100%;max-width:320px;min-height:50px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;font-size:12px;color:#94a3b8;text-align:center;">
+                        <span>📢</span>
+                        <span>বিজ্ঞাপন লোড হচ্ছে...</span>
+                    </div>
                     <iframe 
                         src="https://www.highperformanceformat.com/${zoneKey}/invoke.html" 
-                        style="width:100%;max-width:320px;height:50px;border:0;"
+                        style="width:100%;max-width:320px;height:50px;border:0;display:block;"
                         scrolling="no"
                         frameborder="0"
-                        allowtransparency="true"
-                        loading="lazy">
+                        loading="lazy"
+                        onerror="this.style.display='none'">
                     </iframe>
                 </div>
             `;
@@ -1936,16 +2069,13 @@ function startSession(e) {
             const blockId = db.adConfig?.adgramBlockId || ADGRAM_BLOCK_ID;
             const ctrl = window.Adsgram.init({ blockId: blockId });
             ctrl.show().catch(() => { 
-                const choice = Math.floor(Math.random() * DIRECT_LINKS.length);
-                window.open(DIRECT_LINKS[choice], '_blank');
+                fallbackOpenAd();
             });
         } catch (err) {
-            const choice = Math.floor(Math.random() * DIRECT_LINKS.length);
-            window.open(DIRECT_LINKS[choice], '_blank');
+            fallbackOpenAd();
         }
     } else {
-        const choice = Math.floor(Math.random() * DIRECT_LINKS.length);
-        window.open(DIRECT_LINKS[choice], '_blank');
+        fallbackOpenAd();
     }
 
     if (!currentTaskId) return;
@@ -2296,6 +2426,33 @@ function syncTasksAndProjectsFromDB() {
 }
 
 // ==========================================================
+//   🔧 DOMContentLoaded - Telegram WebApp চেক
+// ==========================================================
+document.addEventListener('DOMContentLoaded', function() {
+    // Telegram WebApp চেক
+    if (window.Telegram && window.Telegram.WebApp) {
+        const tg = window.Telegram.WebApp;
+        try {
+            tg.ready();
+            tg.expand();
+            
+            const user = tg.initDataUnsafe?.user;
+            if (user && user.id) {
+                localStorage.setItem('telegram_user_id', String(user.id));
+                localStorage.setItem('telegram_username', user.username || user.first_name || '');
+                console.log('✅ Telegram User:', user.id, user.first_name);
+            } else {
+                console.warn('⚠️ Telegram user data not available yet');
+            }
+        } catch(e) {
+            console.warn('Telegram WebApp init error:', e);
+        }
+    }
+    
+    checkTelegramStatus();
+});
+
+// ==========================================================
 //   ইনিশিয়ালাইজ
 // ==========================================================
 loadDB();
@@ -2312,7 +2469,7 @@ checkTelegramStatus();
         return;
     }
 
-    const tgId = getTelegramUserId();
+    const tgId = await getTelegramUserIdAsync();
     if (me.telegramUserId && tgId && String(me.telegramUserId) !== String(tgId)) {
         db.current = null;
         me = null;
@@ -2344,8 +2501,8 @@ checkTelegramStatus();
     enterApp();
 })();
 
-console.log('✅ Smart Cash — স্মার্ট ক্যাশ v2.1.5 (মোবাইল ফিক্স)');
-console.log('✅ আপডেট: মোবাইল নেটওয়ার্ক সাপোর্ট, Access Guard স্কিপ, টাইমআউট বাড়ানো');
+console.log('✅ Smart Cash — স্মার্ট ক্যাশ v2.1.6 (Telegram ID ফিক্স)');
+console.log('✅ আপডেট: Telegram ID রিট্রাই, Auth পেজে স্ট্যাটাস, মোবাইল নেটওয়ার্ক ফিক্স');
 
 if (!db.current || !me) {
     $('auth').classList.remove('hidden');
