@@ -677,7 +677,7 @@ function openDirectAd() {
     // ✅ ১. AdGram (সর্বোচ্চ CPM)
     if (window.Adsgram) {
         try {
-            const ctrl = window.Adsgram.init({ blockId: 'int-43256' });
+            const ctrl = window.Adsgram.init({ blockId: db.adConfig?.adgramBlockId || ADGRAM_BLOCK_ID });
             ctrl.show().catch(() => {
                 openMonetagAd();
             });
@@ -692,10 +692,14 @@ function openDirectAd() {
 
 // ✅ Monetag ব্যাকআপ
 function openMonetagAd() {
+    if (window.__popunderEnabled === false) {
+        console.log('⛔ Popunder disabled by admin');
+        return;
+    }
     try {
-        window.open('https://omg10.com/4/11572642', '_blank');
+        window.open(db.adConfig?.monetagLink || DEFAULT_AD_CONFIG.monetagLink, '_blank');
     } catch (e) {
-        window.open('https://www.effectivecpmnetwork.com/uzb1t5ufj8?key=e19391500b97ca1f8e98e175831054cd', '_blank');
+        window.open(db.adConfig?.adsterraLink || DEFAULT_AD_CONFIG.adsterraLink, '_blank');
     }
 }
 
