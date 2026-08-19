@@ -3,9 +3,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="monetag" content="584a8084bf4f71bb2ae1dc8665eec4f6">
+    <meta name="monetag" content="584a8084bf4f71bb2ae1dc8665e4ecf6">
     
-    <!-- ✅ Rewarded Video Ad SDK -->
+    <!-- ✅ Telegram Web App SDK (Telegram ID ডিটেক্ট করার জন্য আবশ্যক) -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <!-- ✅ Rewarded Video Ad SDK (আপডেট) -->
     <script src='//libtl.com/sdk.js' data-zone='11602031' data-sdk='show_11602031'></script>
     
     <!-- AdGram Interstitial -->
@@ -207,132 +210,6 @@
         }
         .project-btn:hover { transform: scale(0.97); opacity: 0.9; }
         .project-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        .project-queue-status {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 12px 16px;
-            margin: 8px 0;
-            border: 2px solid #facc15;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .project-queue-status .title { font-weight: 700; font-size: 14px; color: #0f172a; }
-        .project-queue-status .progress { font-size: 13px; color: #64748b; }
-        .project-queue-status .next-btn { 
-            background: #facc15; 
-            border: 0; 
-            border-radius: 10px; 
-            padding: 8px 16px; 
-            font-weight: 700; 
-            font-size: 13px; 
-            cursor: pointer; 
-            transition: 0.2s;
-        }
-        .project-queue-status .next-btn:hover { transform: scale(0.97); opacity: 0.9; }
-        .project-queue-status .next-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        
-        .manual-tg-box {
-            margin-top: 15px;
-            padding: 15px;
-            background: #1e293b;
-            border-radius: 12px;
-            border: 2px solid #facc15;
-        }
-        .manual-tg-box label {
-            color: #facc15;
-            font-size: 14px;
-            font-weight: 700;
-            display: block;
-            margin-bottom: 5px;
-        }
-        .manual-tg-box .sub-text {
-            color: #94a3b8;
-            font-size: 12px;
-            margin-bottom: 8px;
-        }
-        .manual-tg-box .input-row {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .manual-tg-box .input-row input {
-            flex: 1;
-            padding: 12px;
-            border-radius: 8px;
-            border: 2px solid #facc15;
-            background: #0f172a;
-            color: #fff;
-            font-size: 14px;
-            min-width: 150px;
-        }
-        .manual-tg-box .input-row button {
-            background: #facc15;
-            border: 0;
-            border-radius: 8px;
-            padding: 12px 24px;
-            font-weight: 700;
-            color: #0f172a;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .manual-tg-box .help-box {
-            margin-top: 10px;
-            padding: 10px;
-            background: #0f172a;
-            border-radius: 8px;
-            border: 1px solid #334155;
-        }
-        .manual-tg-box .help-box p {
-            font-size: 12px;
-            color: #94a3b8;
-        }
-        .manual-tg-box .help-box b { color: #facc15; }
-        .manual-tg-box .help-box a {
-            color: #facc15;
-            text-decoration: underline;
-        }
-        .manual-tg-box .tip-box {
-            margin-top: 8px;
-            padding: 8px 12px;
-            background: #fef3c7;
-            border-radius: 6px;
-            border: 1px solid #f59e0b;
-            text-align: center;
-            font-size: 11px;
-            color: #78350f;
-        }
-
-        /* সেশন কাউন্টার স্টাইল */
-        .session-counter {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 16px;
-            margin: 12px 0;
-            border: 2px solid #facc15;
-            text-align: center;
-        }
-        .session-counter .number {
-            font-size: 48px;
-            font-weight: 800;
-            color: #facc15;
-            display: block;
-        }
-        .session-counter .label {
-            font-size: 14px;
-            color: #64748b;
-        }
-        .session-counter .status-text {
-            font-size: 16px;
-            font-weight: 600;
-            margin-top: 4px;
-        }
-        .session-counter .status-text.done { color: #10b981; }
-        .session-counter .status-text.running { color: #f59e0b; }
-        .session-counter .status-text.waiting { color: #64748b; }
     </style>
 </head>
 <body>
@@ -342,56 +219,6 @@
 
 <!-- ===== TOAST ===== -->
 <div id="toast" class="toast"></div>
-
-<!-- ========================================================== -->
-<!-- ===== TELEGRAM CHECK ===== -->
-<!-- ========================================================== -->
-<section id="telegramCheck" class="auth" style="display:none;">
-    <div class="card" style="border-color:#facc15;max-width:450px;">
-        <div class="logo">📱</div>
-        <h2 style="text-align:center;margin:5px 0;color:#facc15;">Telegram প্রয়োজন</h2>
-        <p style="text-align:center;color:#94a3b8;font-size:13px;">
-            দয়া করে Telegram অ্যাপ থেকে Smart Cash খুলুন
-        </p>
-        
-        <div class="manual-tg-box" id="manualTgContainer">
-            <label>📱 ম্যানুয়ালি Telegram ID দিন</label>
-            <div class="sub-text">⚠️ যদি অটো ডিটেক্ট না হয়, তাহলে আপনার ID দিন</div>
-            <div class="input-row">
-                <input id="manualTgId" placeholder="আপনার Telegram ID (শুধু সংখ্যা)">
-                <button onclick="saveManualTgId()">✅ যাচাই করুন</button>
-            </div>
-            
-            <div class="help-box">
-                <p>📌 <b>কিভাবে আপনার Telegram ID পাবেন:</b></p>
-                <ol style="font-size:12px;color:#94a3b8;padding-left:20px;margin:5px 0;">
-                    <li>Telegram খুলুন এবং <b>@userinfobot</b> সার্চ করুন</li>
-                    <li>বটে গিয়ে <b>/start</b> লিখুন</li>
-                    <li>বট আপনাকে আপনার <b>User ID</b> বলে দেবে</li>
-                    <li>সেই ID টি উপরের বক্সে লিখুন</li>
-                </ol>
-                <a href="https://t.me/userinfobot" target="_blank" 
-                    style="display:inline-block;margin-top:6px;background:#facc15;color:#0f172a;padding:6px 16px;border-radius:6px;text-decoration:none;font-weight:600;font-size:12px;">
-                    📲 @userinfobot খুলুন
-                </a>
-            </div>
-            
-            <div class="tip-box">
-                💡 <b>টিপ:</b> এই পদ্ধতি ১০০% কাজ করবে! শুধু আপনার User ID লিখুন।
-            </div>
-        </div>
-        
-        <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
-            <button class="btn full" onclick="checkTelegramAgain()" style="flex:1;">
-                🔄 পুনরায় চেষ্টা করুন
-            </button>
-        </div>
-        
-        <div style="margin-top:10px;font-size:11px;color:#64748b;text-align:center;">
-            ⚠️ এই অ্যাপ শুধুমাত্র Telegram-এর ভিতরে কাজ করে
-        </div>
-    </div>
-</section>
 
 <!-- ========================================================== -->
 <!-- ===== AUTH ===== -->
@@ -496,18 +323,15 @@
                 <div id="homeTaskList"></div>
             </div>
 
-            <!-- ===== প্রজেক্ট সেকশন - এখানে ভিডিও/প্রজেক্ট থাকবে ===== -->
+            <div id="home-project-top-banner" class="banner-ad-container" style="margin-top:12px;">
+                <script>
+                    atOptions = { 'key' : 'f70b806885d12defbb6515475012d220', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+                </script>
+                <script src="https://www.highperformanceformat.com/f70b806885d12defbb6515475012d220/invoke.js"></script>
+            </div>
+
             <div class="section">
                 <h3 style="color:#0f172a;">⚡ প্রজেক্টসমূহ</h3>
-                
-                <div id="projectQueueStatus" class="project-queue-status" style="display:none;">
-                    <div>
-                        <div class="title" id="queueStatusTitle">⏳ প্রজেক্ট চলছে...</div>
-                        <div class="progress" id="queueStatusProgress">অগ্রগতি: 0/0</div>
-                    </div>
-                    <button class="next-btn" id="queueNextBtn" onclick="startNextProject()">▶️ পরবর্তী শুরু করুন</button>
-                </div>
-                
                 <div id="projectsList"></div>
             </div>
 
@@ -778,28 +602,24 @@
     </nav>
 </section>
 
-<!-- ========================================================== -->
-<!-- ===== সেশন ডিটেইল পেজ (ইউনিভার্সাল কাউন্টার) ===== -->
-<!-- ========================================================== -->
+<!-- ===== TASK DETAIL PAGE ===== -->
 <div class="task-detail-page" id="taskDetailPage">
     <button class="back-btn" onclick="closeTaskDetail()">← ফিরে যান</button>
-    <div class="header" id="detailTitle">📺 সেশন শুরু করুন</div>
-    <div class="reward-info" id="detailReward">💰 রিওয়ার্ড: ০ টাকা</div>
-    <div class="progress-text" id="detailProgress">অগ্রগতি: 0/0</div>
+    <div class="header" id="detailTitle">📺 YouTube চ্যানেল সাবস্ক্রাইব</div>
+    <div class="reward-info" id="detailReward">💰 রিওয়ার্ড: ২০ টাকা</div>
+    <div class="progress-text" id="detailProgress">অগ্রগতি: 0/10</div>
     
     <div id="sessionList"></div>
     
-    <!-- ইউনিভার্সাল কাউন্টার -->
-    <div class="session-counter" id="sessionCounter">
-        <span class="label">⏱️ বাকি সময়</span>
-        <span class="number" id="sessionTimerDisplay">30</span>
-        <span class="label">সেকেন্ড</span>
-        <div class="status-text waiting" id="sessionStatusText">⏳ অপেক্ষা করুন</div>
+    <div class="timer-box" id="timerBox">
+        <div class="label" id="timerLabel">⏱️ অপেক্ষা করুন</div>
+        <div class="time" id="sessionTimer">30</div>
+        <div class="label">সেকেন্ড</div>
     </div>
     
-    <button class="btn-go primary" id="sessionBtn" onclick="startSession(event)">
+    <a href="javascript:void(0)" class="btn-go primary" id="sessionBtn" onclick="startSession(event)">
         ▶️ শুরু করুন
-    </button>
+    </a>
 </div>
 
 <!-- ===== SPIN MODAL ===== -->
@@ -807,7 +627,7 @@
 
 <script>
 // ==========================================================
-//   🔧 DIRECT_LINKS
+//   🔧 DIRECT_LINKS (৩টি লিংক রোটেশন)
 // ==========================================================
 const DIRECT_LINKS = [
     'https://partner.adsgram.ai/units/int-43256/',
@@ -843,33 +663,57 @@ const DEFAULT_AD_CONFIG = {
 };
 
 const ADGRAM_BLOCK_ID = 'int-43256';
+let __directTurn = 0;
 
+// ==========================================================
+//   🔧 openDirectAd() - সঠিক অ্যাড অর্ডার
+// ==========================================================
 function openDirectAd() {
     if (window.__popunderEnabled === false) {
         console.log('⛔ Popunder disabled by admin');
         return;
     }
+    
+    // ✅ ১. AdGram (সর্বোচ্চ CPM)
     if (window.Adsgram) {
         try {
             const ctrl = window.Adsgram.init({ blockId: 'int-43256' });
-            ctrl.show().catch(() => { openMonetagAd(); });
+            ctrl.show().catch(() => {
+                openMonetagAd();
+            });
             return;
-        } catch (e) { openMonetagAd(); }
-    } else { openMonetagAd(); }
+        } catch (e) {
+            openMonetagAd();
+        }
+    } else {
+        openMonetagAd();
+    }
 }
 
+// ✅ Monetag ব্যাকআপ
 function openMonetagAd() {
-    try { window.open('https://omg10.com/4/11572642', '_blank'); } 
-    catch (e) { window.open('https://www.effectivecpmnetwork.com/uzb1t5ufj8?key=e19391500b97ca1f8e98e175831054cd', '_blank'); }
+    try {
+        window.open('https://omg10.com/4/11572642', '_blank');
+    } catch (e) {
+        window.open('https://www.effectivecpmnetwork.com/uzb1t5ufj8?key=e19391500b97ca1f8e98e175831054cd', '_blank');
+    }
 }
 
+// ✅ Rewarded Video - নতুন Zone ID
 function showPostTaskVideoAd() {
     const fn = window.show_11602031;
-    if (typeof fn === 'function') { try { fn().catch(() => {}); } catch (e) {} }
+    if (typeof fn === 'function') {
+        try { fn().catch(() => {}); } catch (e) {}
+    }
 }
 
+// ✅ Rewarded Video Watch
 async function watchDailyAd() {
-    if (window.__videoAdEnabled === false) { toast('⛔ Rewarded Video বন্ধ আছে'); return; }
+    if (window.__videoAdEnabled === false) {
+        toast('⛔ Rewarded Video বন্ধ আছে');
+        return;
+    }
+    
     if (me.adDate !== today()) { me.adDate = today(); me.adViews = 0; }
     if ((me.adViews || 0) >= 10) { toast('আজকের ১০টি Rewarded Ad শেষ'); return; }
     
@@ -883,29 +727,44 @@ async function watchDailyAd() {
         s.dataset.zone = zoneId;
         s.dataset.sdk = 'show_' + zoneId;
         document.head.appendChild(s);
-        setTimeout(() => { if (typeof window['show_' + zoneId] === 'function') watchDailyAd(); else toast('SDK লোড হয়নি'); }, 2000);
+        setTimeout(() => { 
+            if (typeof window['show_' + zoneId] === 'function') watchDailyAd();
+            else toast('SDK লোড হয়নি'); 
+        }, 2000);
         return;
     }
     
+    const eid = 'ad_' + me.id + '_' + Date.now() + '_' + (me.adViews + 1);
     try {
         showLoader(true, 'Rewarded Ad লোড হচ্ছে...');
-        await fn({ ymid: 'ad_' + me.id + '_' + Date.now(), requestVar: 'daily_rewarded_ad_' + Date.now() });
+        await fn({ ymid: eid, requestVar: 'daily_rewarded_ad_' + Date.now() });
         me.adViews = (me.adViews || 0) + 1;
         const r = 0.50;
-        me.balance += r; me.total += r; me.today += r;
+        me.balance += r;
+        me.total += r;
+        me.today += r;
         me.tx = me.tx || [];
-        me.tx.unshift({ type: 'rewarded-ad', amount: r, status: 'completed', date: new Date().toLocaleString('bn-BD') });
-        saveDB(); renderAll(); showLoader(false);
+        me.tx.unshift({
+            type: 'rewarded-ad',
+            amount: r,
+            status: 'completed',
+            date: new Date().toLocaleString('bn-BD')
+        });
+        saveDB();
+        renderAll();
+        showLoader(false);
         toast('✅ Ad দেখা সম্পন্ন! +৳0.50');
-    } catch (e) { showLoader(false); toast('⚠️ Ad লোড হয়নি'); }
-    finally { updateAdStation(); }
+    } catch (e) {
+        showLoader(false);
+        toast('⚠️ Ad লোড হয়নি');
+    } finally { updateAdStation(); }
 }
 
 const STORAGE_KEY = 'smart_income_v3';
 const BOT_LINK = 'https://t.me/smarttcash_bot';
 
 // ==========================================================
-//   🔧 DEVICE & TELEGRAM ID DETECTION
+//   🔧 ACCESS GUARD
 // ==========================================================
 const DEVICE_ID_KEY = 'smart_cash_device_id_v1';
 const TELEGRAM_ID_KEY = 'smart_cash_telegram_id_v1';
@@ -937,63 +796,20 @@ function getTelegramUserId() {
                 localStorage.setItem('telegram_username', user.username || user.first_name || '');
                 return id;
             }
-            const initData = tg.initData || '';
-            if (initData) {
-                const params = new URLSearchParams(initData);
-                const userData = params.get('user');
-                if (userData) {
-                    try {
-                        const parsedUser = JSON.parse(decodeURIComponent(userData));
-                        if (parsedUser && parsedUser.id) {
-                            const id = String(parsedUser.id);
-                            localStorage.setItem('telegram_user_id', id);
-                            return id;
-                        }
-                    } catch (e) {}
-                }
-            }
         }
-    } catch (e) { console.log('WebApp method failed:', e); }
-
-    try {
-        const urlParams = new URLSearchParams(window.location.search);
-        const paramNames = ['tg_id', 'user_id', 'telegram_id', 'id', 'start', 'startapp'];
-        for (const name of paramNames) {
-            const value = urlParams.get(name);
-            if (value) {
-                if (name === 'start' || name === 'startapp') {
-                    const match = value.match(/^(\d+)/);
-                    if (match && match[1]) { localStorage.setItem('telegram_user_id', match[1]); return match[1]; }
-                } else if (!isNaN(value) && value.length >= 5) { localStorage.setItem('telegram_user_id', value); return value; }
-            }
-        }
-        const hash = window.location.hash;
-        if (hash) {
-            const match = hash.match(/tg_id[=:]([^&]+)/);
-            if (match && match[1]) { localStorage.setItem('telegram_user_id', match[1]); return match[1]; }
-        }
-    } catch (e) { console.log('URL method failed:', e); }
-
-    try {
         const savedId = localStorage.getItem('telegram_user_id');
-        if (savedId && savedId.length >= 5) return savedId;
-    } catch (e) {}
-
-    try {
-        const sessionId = sessionStorage.getItem('telegram_user_id');
-        if (sessionId && sessionId.length >= 5) return sessionId;
-    } catch (e) {}
-
-    try {
-        const deviceId = getDeviceId();
-        if (deviceId) {
-            const tempId = 'temp_' + deviceId.slice(0, 8);
-            localStorage.setItem('telegram_user_id', tempId);
-            return tempId;
+        if (savedId) return savedId;
+        const urlParams = new URLSearchParams(window.location.search);
+        const tgId = urlParams.get('tg_id');
+        if (tgId) {
+            localStorage.setItem('telegram_user_id', tgId);
+            return tgId;
         }
-    } catch (e) {}
-
-    return '';
+        return '';
+    } catch (e) {
+        console.error('Error getting Telegram ID:', e);
+        return '';
+    }
 }
 
 function saveTelegramUserId(id) {
@@ -1003,72 +819,6 @@ function saveTelegramUserId(id) {
 function clearTelegramSessionId() {
     localStorage.removeItem(TELEGRAM_ID_KEY);
 }
-
-function checkTelegramRequired() {
-    const tgCheck = document.getElementById('telegramCheck');
-    const authSection = document.getElementById('auth');
-    const tgId = getTelegramUserId();
-    if (!tgId) {
-        tgCheck.style.display = 'flex';
-        authSection.classList.add('hidden');
-        document.getElementById('app')?.classList.add('hidden');
-        return false;
-    }
-    tgCheck.style.display = 'none';
-    authSection.classList.remove('hidden');
-    return true;
-}
-
-function saveManualTgId() {
-    const input = document.getElementById('manualTgId');
-    if (!input) return;
-    const id = input.value.trim();
-    if (!id) { toast('❌ দয়া করে আপনার Telegram ID লিখুন'); input.focus(); return; }
-    if (!/^\d+$/.test(id) && !id.startsWith('temp_')) { toast('❌ শুধু সংখ্যা দিন (যেমন: 123456789)'); input.focus(); return; }
-    if (id.length < 5) { toast('❌ ID টি খুব ছোট (৫+ সংখ্যা হতে হবে)'); input.focus(); return; }
-    localStorage.setItem('telegram_user_id', id);
-    sessionStorage.setItem('telegram_user_id', id);
-    try {
-        if (window.Telegram && window.Telegram.WebApp) {
-            window.Telegram.WebApp.initDataUnsafe = { ...window.Telegram.WebApp.initDataUnsafe, user: { id: parseInt(id) } };
-        }
-    } catch (e) {}
-    toast('✅ Telegram ID সেভ করা হয়েছে!');
-    setTimeout(() => { location.reload(); }, 1200);
-}
-
-function checkTelegramAgain() {
-    const id = getTelegramUserId();
-    if (id) {
-        toast('✅ Telegram সনাক্ত হয়েছে! User ID: ' + id);
-        document.getElementById('telegramCheck').style.display = 'none';
-        document.getElementById('auth').classList.remove('hidden');
-        if (me && db.current === me.id) { enterApp(); }
-    } else {
-        toast('⚠️ অটো ডিটেক্ট হয়নি। নিচে ম্যানুয়ালি আপনার ID দিন।');
-        document.getElementById('manualTgId')?.focus();
-    }
-}
-
-function setupTelegramFallback() {
-    if (!window.Telegram) {
-        window.Telegram = {
-            WebApp: {
-                ready: function() {},
-                expand: function() {},
-                initData: '',
-                initDataUnsafe: { user: null }
-            }
-        };
-    }
-    const savedId = localStorage.getItem('telegram_user_id');
-    if (savedId) {
-        try {
-            window.Telegram.WebApp.initDataUnsafe.user = { id: parseInt(savedId) || savedId, username: localStorage.getItem('telegram_username') || 'user' };
-        } catch (e) {}
-    }
-}
-setupTelegramFallback();
 
 function showAccountBlocked() {
     let page = document.getElementById('accountBlockedPage');
@@ -1115,7 +865,9 @@ function showAccessBlocked() {
             <div style="width:100%;max-width:430px;background:#fff;border-radius:22px;padding:28px 20px;text-align:center;border:3px solid #facc15;box-shadow:0 15px 50px #0008;">
                 <div style="font-size:56px;margin-bottom:8px;">⚠️</div>
                 <h2 style="margin:0 0 10px;color:#0f172a;">অ্যাক্সেস ব্লক করা হয়েছে</h2>
-                <p style="margin:0;color:#475569;line-height:1.7;font-size:14px;">${ACCESS_BLOCK_MESSAGE}</p>
+                <p style="margin:0;color:#475569;line-height:1.7;font-size:14px;">
+                    ${ACCESS_BLOCK_MESSAGE}
+                </p>
                 <div style="margin-top:16px;display:flex;flex-direction:column;gap:8px;">
                     <button onclick="skipAccessBlock()" style="width:100%;border:0;border-radius:12px;padding:12px 20px;background:#facc15;color:#0f172a;font-weight:800;cursor:pointer;">⏭️ তবুও যান</button>
                     <button onclick="location.reload()" style="width:100%;border:0;border-radius:12px;padding:12px 20px;background:#e2e8f0;color:#0f172a;font-weight:600;cursor:pointer;">🔄 আবার চেষ্টা করুন</button>
@@ -1133,8 +885,12 @@ function skipAccessBlock() {
     sessionStorage.removeItem(ACCESS_GUARD_KEY);
     sessionStorage.setItem('access_skipped', 'true');
     hideAccessBlocked();
-    if (me) { enterApp(); }
-    else { document.getElementById('auth')?.classList.remove('hidden'); document.getElementById('app')?.classList.add('hidden'); }
+    if (me) {
+        enterApp();
+    } else {
+        document.getElementById('auth')?.classList.remove('hidden');
+        document.getElementById('app')?.classList.add('hidden');
+    }
     toast('⏭️ অ্যাক্সেস ব্লক স্কিপ করা হয়েছে');
 }
 
@@ -1183,29 +939,36 @@ async function runAccessGuard() {
         showAccessBlocked();
         return false;
     }
+
     try {
         const bait = createAdBlockBait();
         await new Promise(r => setTimeout(r, 120));
+
         const style = getComputedStyle(bait);
         const baitBlocked = !document.body.contains(bait) ||
             style.display === 'none' ||
             style.visibility === 'hidden' ||
             Number(style.width) === 0 ||
             Number(style.height) === 0;
+
         const endpointOK = await Promise.race([
             testImageEndpoint('https://pl30829859.effectivecpmnetwork.com/favicon.ico', 1500),
             new Promise(resolve => setTimeout(() => resolve(true), 1500))
         ]);
+
         bait.remove();
+
         if (baitBlocked && !endpointOK) {
             sessionStorage.setItem(ACCESS_GUARD_KEY, 'blocked');
             showAccessBlocked();
             return false;
         }
+
         hideAccessBlocked();
         sessionStorage.removeItem(ACCESS_GUARD_KEY);
         sessionStorage.removeItem('block_count');
         return true;
+        
     } catch (e) {
         console.warn('Access guard error:', e);
         hideAccessBlocked();
@@ -1219,7 +982,10 @@ async function ensureDeviceAvailable(deviceId) {
     try {
         const snap = await firebase.database().ref('deviceRegistry/' + encodeURIComponent(deviceId)).once('value');
         return !snap.exists();
-    } catch (e) { return true; }
+    } catch (e) {
+        console.warn('Device registry check failed:', e);
+        return true;
+    }
 }
 
 async function claimDevice(deviceId, userId) {
@@ -1228,7 +994,10 @@ async function claimDevice(deviceId, userId) {
         const ref = firebase.database().ref('deviceRegistry/' + encodeURIComponent(deviceId));
         const result = await ref.transaction(current => current === null ? userId : current);
         return result.committed && result.snapshot.val() === userId;
-    } catch (e) { return false; }
+    } catch (e) {
+        console.warn('Device registry claim failed:', e);
+        return false;
+    }
 }
 
 // ==========================================================
@@ -1252,8 +1021,9 @@ const MIN_WITHDRAW = 20;
 function getWithdrawalLevel(referrals) {
     let level = 0;
     for (let i = 0; i < WITHDRAWAL_LEVELS.length; i++) {
-        if (referrals >= WITHDRAWAL_LEVELS[i].referralsNeeded) { level = i + 1; }
-        else break;
+        if (referrals >= WITHDRAWAL_LEVELS[i].referralsNeeded) {
+            level = i + 1;
+        } else break;
     }
     return level;
 }
@@ -1261,7 +1031,13 @@ function getWithdrawalLevel(referrals) {
 function getNextLevelInfo(referrals) {
     for (let i = 0; i < WITHDRAWAL_LEVELS.length; i++) {
         if (referrals < WITHDRAWAL_LEVELS[i].referralsNeeded) {
-            return { level: i + 1, needed: WITHDRAWAL_LEVELS[i].referralsNeeded, maxWithdraw: WITHDRAWAL_LEVELS[i].maxWithdraw, progress: referrals, total: WITHDRAWAL_LEVELS[i].referralsNeeded };
+            return {
+                level: i + 1,
+                needed: WITHDRAWAL_LEVELS[i].referralsNeeded,
+                maxWithdraw: WITHDRAWAL_LEVELS[i].maxWithdraw,
+                progress: referrals,
+                total: WITHDRAWAL_LEVELS[i].referralsNeeded
+            };
         }
     }
     return { level: 10, needed: 100, maxWithdraw: 50, progress: 100, total: 100 };
@@ -1271,115 +1047,33 @@ function getNextLevelInfo(referrals) {
 //   টাস্ক (ডিফল্ট)
 // ==========================================================
 const HOME_TASKS = [
-    { id: 'h1', icon: '📺', title: 'YouTube চ্যানেল সাবস্ক্রাইব করুন', desc: 'আমাদের প্রধান YouTube চ্যানেল সাবস্ক্রাইব করুন', reward: 30, sessions: 10, isMain: true, link: 'https://youtube.com' },
-    { id: 'h2', icon: '📨', title: 'টেলিগ্রাম চ্যানেল জয়েন করুন', desc: 'আমাদের প্রধান টেলিগ্রাম চ্যানেল জয়েন করুন', reward: 30, sessions: 10, isMain: true, link: 'https://t.me/joinchat' },
-    { id: 'h3', icon: '📨', title: 'টেলিগ্রাম চ্যানেল জয়েন করুন', desc: 'আমাদের দ্বিতীয় টেলিগ্রাম চ্যানেল জয়েন করুন', reward: 30, sessions: 10, isMain: true, link: 'https://t.me/joinchat2' },
-    { id: 'h4', icon: '👍', title: 'ফেসবুক পেজ লাইক করুন', desc: 'আমাদের প্রধান ফেসবুক পেজ লাইক করুন', reward: 30, sessions: 10, isMain: true, link: 'https://facebook.com' },
-    { id: 'h5', icon: '📱', title: 'ইনস্টাগ্রাম ফলো করুন', desc: 'আমাদের প্রধান ইনস্টাগ্রাম পেজ ফলো করুন', reward: 30, sessions: 10, isMain: true, link: 'https://instagram.com' }
+    { id: 'h1', icon: '📺', title: 'YouTube চ্যানেল সাবস্ক্রাইব করুন', desc: 'আমাদের প্রধান YouTube চ্যানেল সাবস্ক্রাইব করুন', reward: 30, sessions: 10, isMain: true },
+    { id: 'h2', icon: '📨', title: 'টেলিগ্রাম চ্যানেল জয়েন করুন', desc: 'আমাদের প্রধান টেলিগ্রাম চ্যানেল জয়েন করুন', reward: 30, sessions: 10, isMain: true },
+    { id: 'h3', icon: '📨', title: 'টেলিগ্রাম চ্যানেল জয়েন করুন', desc: 'আমাদের দ্বিতীয় টেলিগ্রাম চ্যানেল জয়েন করুন', reward: 30, sessions: 10, isMain: true },
+    { id: 'h4', icon: '👍', title: 'ফেসবুক পেজ লাইক করুন', desc: 'আমাদের প্রধান ফেসবুক পেজ লাইক করুন', reward: 30, sessions: 10, isMain: true },
+    { id: 'h5', icon: '📱', title: 'ইনস্টাগ্রাম ফলো করুন', desc: 'আমাদের প্রধান ইনস্টাগ্রাম পেজ ফলো করুন', reward: 30, sessions: 10, isMain: true }
 ];
 
 const EARN_TASKS = [
-    { id: 'e1', icon: '🐦', title: 'টুইটার ফলো করুন', desc: 'আমাদের টুইটার অ্যাকাউন্ট ফলো করুন', reward: 20, sessions: 10, isMain: false, link: 'https://twitter.com' },
-    { id: 'e2', icon: '📺', title: 'YouTube ভিডিও দেখুন', desc: 'আমাদের একটি ভিডিও সম্পূর্ণ দেখুন', reward: 20, sessions: 10, isMain: false, link: 'https://youtube.com/watch' },
-    { id: 'e3', icon: '📨', title: 'টেলিগ্রাম গ্রুপ জয়েন করুন', desc: 'আমাদের টেলিগ্রাম গ্রুপ জয়েন করুন', reward: 20, sessions: 10, isMain: false, link: 'https://t.me/group' },
-    { id: 'e4', icon: '🌐', title: 'ওয়েবসাইট ভিজিট করুন', desc: 'আমাদের ওয়েবসাইট ভিজিট করুন', reward: 20, sessions: 10, isMain: false, link: 'https://example.com' },
-    { id: 'e5', icon: '📢', title: 'শেয়ার করুন', desc: 'আমাদের পোস্ট শেয়ার করুন', reward: 20, sessions: 10, isMain: false, link: 'https://example.com/share' },
-    { id: 'e6', icon: '🎯', title: 'অফার ভিজিট করুন', desc: 'আমাদের স্পেশাল অফার ভিজিট করুন', reward: 20, sessions: 10, isMain: false, link: 'https://example.com/offer' },
-    { id: 'e7', icon: '📹', title: 'লাইভ ভিডিও দেখুন', desc: 'আমাদের লাইভ ভিডিও দেখুন', reward: 20, sessions: 10, isMain: false, link: 'https://example.com/live' },
-    { id: 'e8', icon: '📰', title: 'ব্লগ পোস্ট পড়ুন', desc: 'আমাদের ব্লগ পোস্ট পড়ুন', reward: 20, sessions: 10, isMain: false, link: 'https://example.com/blog' },
-    { id: 'e9', icon: '🎁', title: 'গিফট অফার দাবি করুন', desc: 'আমাদের গিফট অফার দাবি করুন', reward: 20, sessions: 10, isMain: false, link: 'https://example.com/gift' },
-    { id: 'e10', icon: '⭐', title: 'রিভিউ দিন', desc: 'আমাদের একটি রিভিউ দিন', reward: 20, sessions: 10, isMain: false, link: 'https://example.com/review' }
+    { id: 'e1', icon: '🐦', title: 'টুইটার ফলো করুন', desc: 'আমাদের টুইটার অ্যাকাউন্ট ফলো করুন', reward: 20, sessions: 10, isMain: false },
+    { id: 'e2', icon: '📺', title: 'YouTube ভিডিও দেখুন', desc: 'আমাদের একটি ভিডিও সম্পূর্ণ দেখুন', reward: 20, sessions: 10, isMain: false },
+    { id: 'e3', icon: '📨', title: 'টেলিগ্রাম গ্রুপ জয়েন করুন', desc: 'আমাদের টেলিগ্রাম গ্রুপ জয়েন করুন', reward: 20, sessions: 10, isMain: false },
+    { id: 'e4', icon: '🌐', title: 'ওয়েবসাইট ভিজিট করুন', desc: 'আমাদের ওয়েবসাইট ভিজিট করুন', reward: 20, sessions: 10, isMain: false },
+    { id: 'e5', icon: '📢', title: 'শেয়ার করুন', desc: 'আমাদের পোস্ট শেয়ার করুন', reward: 20, sessions: 10, isMain: false },
+    { id: 'e6', icon: '🎯', title: 'অফার ভিজিট করুন', desc: 'আমাদের স্পেশাল অফার ভিজিট করুন', reward: 20, sessions: 10, isMain: false },
+    { id: 'e7', icon: '📹', title: 'লাইভ ভিডিও দেখুন', desc: 'আমাদের লাইভ ভিডিও দেখুন', reward: 20, sessions: 10, isMain: false },
+    { id: 'e8', icon: '📰', title: 'ব্লগ পোস্ট পড়ুন', desc: 'আমাদের ব্লগ পোস্ট পড়ুন', reward: 20, sessions: 10, isMain: false },
+    { id: 'e9', icon: '🎁', title: 'গিফট অফার দাবি করুন', desc: 'আমাদের গিফট অফার দাবি করুন', reward: 20, sessions: 10, isMain: false },
+    { id: 'e10', icon: '⭐', title: 'রিভিউ দিন', desc: 'আমাদের একটি রিভিউ দিন', reward: 20, sessions: 10, isMain: false }
 ];
 
 const ALL_TASKS = [...HOME_TASKS, ...EARN_TASKS];
-
-// ===== প্রজেক্ট (ভিডিও/টাস্ক) =====
 const PROJECTS = [
-    { id: 'p1', icon: '🎬', title: 'ভিডিও ১ দেখুন', desc: 'প্রথম ভিডিও দেখুন এবং ৩০ সেকেন্ড অপেক্ষা করুন', reward: 1, color: '#facc15', link: 'https://example.com/video1', duration: 30 },
-    { id: 'p2', icon: '🎬', title: 'ভিডিও ২ দেখুন', desc: 'দ্বিতীয় ভিডিও দেখুন এবং ৩০ সেকেন্ড অপেক্ষা করুন', reward: 1.50, color: '#f59e0b', link: 'https://example.com/video2', duration: 30 },
-    { id: 'p3', icon: '🎬', title: 'ভিডিও ৩ দেখুন', desc: 'তৃতীয় ভিডিও দেখুন এবং ৩০ সেকেন্ড অপেক্ষা করুন', reward: 2, color: '#10b981', link: 'https://example.com/video3', duration: 30 },
-    { id: 'p4', icon: '🎬', title: 'ভিডিও ৪ দেখুন', desc: 'চতুর্থ ভিডিও দেখুন এবং ৩০ সেকেন্ড অপেক্ষা করুন', reward: 2.50, color: '#2563eb', link: 'https://example.com/video4', duration: 30 },
-    { id: 'p5', icon: '🎬', title: 'ভিডিও ৫ দেখুন', desc: 'পঞ্চম ভিডিও দেখুন এবং ৩০ সেকেন্ড অপেক্ষা করুন', reward: 3, color: '#8b5cf6', link: 'https://example.com/video5', duration: 30 }
+    { id: 'p1', icon: '🎬', title: 'ভিডিও দেখুন', desc: 'রিওয়ার্ডেড ভিডিও দেখুন', reward: 0.50, color: '#facc15' },
+    { id: 'p2', icon: '📋', title: 'ডেইলি টাস্ক', desc: 'দৈনিক টাস্ক সম্পন্ন করুন', reward: 1, color: '#facc15' },
+    { id: 'p3', icon: '🌟', title: 'স্পেশাল প্রজেক্ট', desc: 'বিশেষ প্রজেক্টে অংশ নিন', reward: 2, color: '#facc15' },
+    { id: 'p4', icon: '🎯', title: 'বোনাস অফার', desc: 'লিমিটেড সময়ের অফার', reward: 1.50, color: '#facc15' }
 ];
-
-// ==========================================================
-//   🔧 সেশন কাউন্টার সিস্টেম (ইউনিভার্সাল)
-// ==========================================================
-let sessionTimerInterval = null;
-let sessionTimeLeft = 30;
-let sessionIsRunning = false;
-let sessionCurrentTaskId = null;
-let sessionCurrentProjectId = null;
-let sessionType = null; // 'task' or 'project'
-let sessionOnComplete = null; // callback
-
-function startUniversalSession(taskId, projectId, type, onComplete) {
-    // Stop any existing session
-    stopUniversalSession();
-    
-    sessionCurrentTaskId = taskId;
-    sessionCurrentProjectId = projectId;
-    sessionType = type;
-    sessionOnComplete = onComplete;
-    sessionTimeLeft = 30;
-    sessionIsRunning = true;
-    
-    // Update UI
-    updateSessionUI();
-    
-    // Start timer
-    sessionTimerInterval = setInterval(() => {
-        sessionTimeLeft--;
-        updateSessionUI();
-        
-        if (sessionTimeLeft <= 0) {
-            // Session complete!
-            stopUniversalSession();
-            
-            // Show completion
-            document.getElementById('sessionTimerDisplay').textContent = '✅';
-            document.getElementById('sessionStatusText').textContent = '✅ সম্পন্ন!';
-            document.getElementById('sessionStatusText').className = 'status-text done';
-            
-            // Call complete callback
-            if (typeof sessionOnComplete === 'function') {
-                setTimeout(() => {
-                    sessionOnComplete();
-                }, 500);
-            }
-        }
-    }, 1000);
-}
-
-function stopUniversalSession() {
-    if (sessionTimerInterval) {
-        clearInterval(sessionTimerInterval);
-        sessionTimerInterval = null;
-    }
-    sessionIsRunning = false;
-}
-
-function updateSessionUI() {
-    const timerDisplay = document.getElementById('sessionTimerDisplay');
-    const statusText = document.getElementById('sessionStatusText');
-    
-    if (timerDisplay) {
-        timerDisplay.textContent = sessionTimeLeft > 0 ? sessionTimeLeft : '0';
-    }
-    
-    if (statusText) {
-        if (sessionTimeLeft > 0 && sessionIsRunning) {
-            statusText.textContent = `⏳ চলছে... ${sessionTimeLeft} সেকেন্ড বাকি`;
-            statusText.className = 'status-text running';
-        } else if (sessionTimeLeft <= 0) {
-            statusText.textContent = '✅ সম্পন্ন!';
-            statusText.className = 'status-text done';
-        } else {
-            statusText.textContent = '⏳ অপেক্ষা করুন';
-            statusText.className = 'status-text waiting';
-        }
-    }
-}
 
 // ==========================================================
 //   ডাটাবেস
@@ -1405,43 +1099,9 @@ function saveDB() {
     }
 }
 
-// ===== Firebase =====
+// ===== Firebase Realtime Database =====
 let __firebaseReady = false;
 let __firebaseListenersStarted = false;
-
-const PROJECT_CATALOG_FIREBASE_CONFIG = {
-    apiKey: "AIzaSyDbDnU34J_rYTcyhEUUzAh6lmft84YMCx4",
-    authDomain: "f24boost-2.firebaseapp.com",
-    projectId: "f24boost-2",
-    storageBucket: "f24boost-2.firebasestorage.app",
-    messagingSenderId: "56763148795",
-    appId: "1:56763148795:web:3a3fa91b6c304978dac35e"
-};
-let __projectCatalogDb = null;
-
-function initProjectCatalogFirebase() {
-    try {
-        if (!window.firebase) return false;
-        const appName = 'smartCashProjectCatalogBridge';
-        let app = firebase.apps.find(a => a.name === appName);
-        if (!app) app = firebase.initializeApp(PROJECT_CATALOG_FIREBASE_CONFIG, appName);
-        __projectCatalogDb = app.database();
-        return true;
-    } catch (e) { return false; }
-}
-
-function startProjectCatalogSync() {
-    if (!initProjectCatalogFirebase()) return;
-    try {
-        __projectCatalogDb.ref('projects').on('value', snap => {
-            if (!snap.exists()) return;
-            const raw = snap.val() || {};
-            db.projects = Array.isArray(raw) ? raw : Object.entries(raw).map(([id, p]) => ({ id, ...(p || {}) }));
-            syncTasksAndProjectsFromDB();
-            renderProjects();
-        });
-    } catch (e) { console.warn('Project catalog sync failed:', e); }
-}
 
 async function initFirebaseApp() {
     if (__firebaseReady) return true;
@@ -1451,7 +1111,10 @@ async function initFirebaseApp() {
         __firebaseReady = true;
         window.firebaseInitialized = true;
         return true;
-    } catch (e) { console.error('Firebase init error:', e); return false; }
+    } catch (e) {
+        console.error('Firebase init error:', e);
+        return false;
+    }
 }
 
 async function loadAllUsersFromFirebase() {
@@ -1460,7 +1123,10 @@ async function loadAllUsersFromFirebase() {
         const snap = await firebase.database().ref('users').once('value');
         const v = snap.val();
         return v ? Object.values(v) : [];
-    } catch (e) { return []; }
+    } catch (e) {
+        console.warn('Firebase read error:', e);
+        return [];
+    }
 }
 
 async function syncUserToFirebase(user = me) {
@@ -1471,7 +1137,10 @@ async function syncUserToFirebase(user = me) {
             lastSync: new Date().toISOString()
         });
         return true;
-    } catch (e) { return false; }
+    } catch (e) {
+        console.warn('Firebase sync error:', e);
+        return false;
+    }
 }
 
 function applyRemoteUser(remote) {
@@ -1556,11 +1225,19 @@ function startFirebaseRealtimeSync() {
 
 function updateAdSettings() {
     const config = db.adConfig || DEFAULT_AD_CONFIG;
+    
     window.__popunderEnabled = config.popunderEnabled !== false;
     window.__vignetteEnabled = config.vignetteEnabled !== false;
     window.__videoAdEnabled = config.videoAdEnabled !== false;
+    
     if (config.adsterraLink) DIRECT_LINKS[1] = config.adsterraLink;
     if (config.monetagLink) DIRECT_LINKS[2] = config.monetagLink;
+    
+    console.log('✅ অ্যাড সেটিংস আপডেট:', {
+        popunder: window.__popunderEnabled,
+        vignette: window.__vignetteEnabled,
+        videoAd: window.__videoAdEnabled
+    });
 }
 
 function reloadBannerAds() {
@@ -1573,19 +1250,31 @@ function reloadBannerAds() {
                     <script>
                         (function() {
                             try {
-                                var atOptions = { 'key' : '${zoneKey}', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+                                var atOptions = { 
+                                    'key' : '${zoneKey}', 
+                                    'format' : 'iframe', 
+                                    'height' : 50, 
+                                    'width' : 320, 
+                                    'params' : {} 
+                                };
                                 document.write('<scr' + 'ipt src="https://www.highperformanceformat.com/' + atOptions.key + '/invoke.js"><\/scr' + 'ipt>');
-                            } catch(e) { console.log('Ad reload error:', e); }
+                            } catch(e) {
+                                console.log('Ad reload error:', e);
+                            }
                         })();
                     <\/script>
                 `;
             }
-        } catch(e) {}
+        } catch(e) {
+            console.log('Banner reload error:', e);
+        }
     });
 }
 
 setInterval(() => {
-    if (document.querySelector('.page.active')) { reloadBannerAds(); }
+    if (document.querySelector('.page.active')) {
+        reloadBannerAds();
+    }
 }, 60000);
 
 function today() { return new Date().toISOString().slice(0, 10); }
@@ -1615,7 +1304,9 @@ function showNotification(text) {
     textEl.innerHTML = text.replace(/\n/g, '<br>');
     bar.style.display = 'flex';
     clearTimeout(window._notiTimer);
-    window._notiTimer = setTimeout(() => { bar.style.display = 'none'; }, 15000);
+    window._notiTimer = setTimeout(() => {
+        bar.style.display = 'none';
+    }, 15000);
 }
 
 function closeNotification() {
@@ -1626,6 +1317,7 @@ function closeNotification() {
 function checkTelegramStatus() {
     const statusEl = document.getElementById('telegramStatus');
     const userId = getTelegramUserId();
+    
     if (userId) {
         statusEl.style.display = 'block';
         statusEl.style.background = '#d1fae5';
@@ -1653,8 +1345,12 @@ async function registerUser() {
     if (!name || !phone || !email || pass1.length < 8 || pass1 !== pass2) return toast('সব তথ্য ঠিকভাবে দিন');
 
     showLoader(true, 'অ্যাকাউন্ট তৈরি হচ্ছে...');
+    
     const telegramUserId = getTelegramUserId();
-    if (!telegramUserId) { showLoader(false); return toast('⚠️ Telegram থেকে অ্যাপটি খুলুন!'); }
+    if (!telegramUserId) {
+        showLoader(false);
+        return toast('⚠️ Telegram থেকে অ্যাপটি খুলুন!');
+    }
     
     await initFirebaseApp();
     const remoteUsers = await loadAllUsersFromFirebase();
@@ -1699,10 +1395,7 @@ async function registerUser() {
         balance: 0, total: 0, today: 0, todayDate: today(), tx: [], spunDate: null, dailyDate: null,
         referrals: 0, activeRef: 0, refEarn: 0, adDate: null, adViews: 0, status: 'active',
         completedTasks: [], taskSessions: {}, notifications: [], dailyBonusDate: null,
-        taskLastDone: {},
-        completedProjects: [],
-        projectLastReset: null,
-        projectQueueProgress: {}
+        taskLastDone: {}
     };
 
     db.users = merged;
@@ -1749,13 +1442,22 @@ async function loginUser() {
 
     setTimeout(async () => {
         const user = db.users.find(u => u.email === email && u.password === pass);
-        if (!user) { showLoader(false); return toast('Email বা Password ভুল'); }
+        if (!user) {
+            showLoader(false);
+            return toast('Email বা Password ভুল');
+        }
 
-        if (!enforceUserStatus(user)) { showLoader(false); return; }
+        if (!enforceUserStatus(user)) {
+            showLoader(false);
+            return;
+        }
 
         const currentDeviceId = deviceIdForDb();
         const telegramUserId = getTelegramUserId();
-        if (!telegramUserId) { showLoader(false); return toast('⚠️ Telegram থেকে অ্যাপটি খুলুন!'); }
+        if (!telegramUserId) {
+            showLoader(false);
+            return toast('⚠️ Telegram থেকে অ্যাপটি খুলুন!');
+        }
         saveTelegramUserId(telegramUserId);
 
         if (!user.deviceId) {
@@ -1773,7 +1475,10 @@ async function loginUser() {
         startFirebaseRealtimeSync();
 
         const accessOK = await runAccessGuard();
-        if (!accessOK) { showLoader(false); return; }
+        if (!accessOK) {
+            showLoader(false);
+            return;
+        }
 
         showLoader(false);
         enterApp();
@@ -1790,15 +1495,21 @@ function forgotPassword() {
 
 function enterApp() {
     if (!me || !enforceUserStatus(me)) return;
-    if (sessionStorage.getItem('access_skipped') === 'true') { sessionStorage.removeItem('access_skipped'); }
     
-    checkAndResetProjects();
+    if (sessionStorage.getItem('access_skipped') === 'true') {
+        sessionStorage.removeItem('access_skipped');
+    }
     
     if (me.dailyBonusDate !== today()) {
         me.dailyBonusDate = today();
         me.balance = (me.balance || 0) + 1;
         me.tx = me.tx || [];
-        me.tx.unshift({ type: 'daily-bonus', amount: 1, status: 'completed', date: new Date().toLocaleString('bn-BD') });
+        me.tx.unshift({
+            type: 'daily-bonus',
+            amount: 1,
+            status: 'completed',
+            date: new Date().toLocaleString('bn-BD')
+        });
         saveDB();
         toast('🎁 ডেইলি বোনাস: +৳১');
     }
@@ -1810,7 +1521,9 @@ function enterApp() {
     renderProjects();
     renderLevels();
     renderLeaderboard();
+    
     showNotification();
+    
     if (me.notifications && me.notifications.length > 0) {
         const lastNoti = me.notifications[0];
         if (lastNoti && !lastNoti.read) {
@@ -1823,8 +1536,6 @@ function enterApp() {
 }
 
 function logoutUser() {
-    stopProjectQueue();
-    stopUniversalSession();
     db.current = null;
     me = null;
     clearTelegramSessionId();
@@ -1832,259 +1543,6 @@ function logoutUser() {
     sessionStorage.removeItem('access_skipped');
     saveDB();
     location.reload();
-}
-
-// ==========================================================
-//   ২৪ ঘন্টা রিসেট চেক
-// ==========================================================
-function checkAndResetProjects() {
-    const lastReset = me.projectLastReset;
-    const now = Date.now();
-    if (!lastReset || (now - lastReset) >= 24 * 60 * 60 * 1000) {
-        me.completedProjects = [];
-        me.projectQueueProgress = {};
-        me.projectLastReset = now;
-        saveDB();
-        console.log('🔄 Projects reset after 24 hours');
-        toast('🔄 ২৪ ঘন্টা পর প্রজেক্টসমূহ রিসেট করা হয়েছে!');
-    }
-}
-
-function isProjectCompleted(projectId) {
-    return (me.completedProjects || []).includes(projectId);
-}
-
-function markProjectCompleted(projectId) {
-    if (!me.completedProjects) me.completedProjects = [];
-    if (!me.completedProjects.includes(projectId)) {
-        me.completedProjects.push(projectId);
-    }
-    if (!me.projectQueueProgress) me.projectQueueProgress = {};
-    me.projectQueueProgress[projectId] = { completed: true, completedAt: Date.now() };
-    saveDB();
-}
-
-function getAvailableProjects() {
-    const allProjects = PROJECTS.filter(p => p && (p.status == null || p.status === 'live') && p.hidden !== true);
-    const completedIds = me.completedProjects || [];
-    return allProjects.filter(p => !completedIds.includes(p.id));
-}
-
-// ==========================================================
-//   🔧 SEQUENTIAL PROJECT QUEUE
-// ==========================================================
-let projectQueue = [];
-let currentProjectIndex = 0;
-let isProjectQueueRunning = false;
-let projectQueueAdTriggered = false;
-let currentProjectTimer = null;
-let isWaitingForAd = false;
-
-function startProjectQueue() {
-    if (isProjectQueueRunning) { toast('⏳ ইতিমধ্যে একটি প্রজেক্ট চলছে'); return; }
-    checkAndResetProjects();
-    const available = getAvailableProjects();
-    if (available.length === 0) {
-        toast('🎉 সব প্রজেক্ট সম্পন্ন হয়েছে! ২৪ ঘন্টা পরে আবার চেষ্টা করুন।');
-        return;
-    }
-    projectQueue = available;
-    currentProjectIndex = 0;
-    isProjectQueueRunning = true;
-    projectQueueAdTriggered = false;
-    isWaitingForAd = false;
-    updateQueueStatus();
-    processNextProject();
-}
-
-function processNextProject() {
-    if (!isProjectQueueRunning) return;
-    if (currentProjectIndex >= projectQueue.length) {
-        isProjectQueueRunning = false;
-        toast('🎉 সব প্রজেক্ট সম্পন্ন হয়েছে! ২৪ ঘন্টা পরে আবার চেষ্টা করুন।');
-        updateQueueStatus();
-        renderProjects();
-        return;
-    }
-    const project = projectQueue[currentProjectIndex];
-    if (!project) { currentProjectIndex++; processNextProject(); return; }
-    if (isProjectCompleted(project.id)) { currentProjectIndex++; processNextProject(); return; }
-    executeProject(project);
-}
-
-function executeProject(project) {
-    const link = String(project.link || project.url || project.directLink || '').trim();
-    if (!link) {
-        toast(`⚠️ ${project.title} - লিংক সেট করা নেই`);
-        currentProjectIndex++;
-        setTimeout(processNextProject, 500);
-        return;
-    }
-    let targetUrl;
-    try { targetUrl = new URL(link, location.href).href; }
-    catch (e) { toast(`⚠️ ${project.title} - লিংক সঠিক নয়`); currentProjectIndex++; setTimeout(processNextProject, 500); return; }
-    
-    showLoader(true, `⏳ ${project.title} - ৩০ সেকেন্ড বাকি`);
-    updateQueueStatus(project);
-    
-    // Open link
-    let opened = false;
-    try { const win = window.open(targetUrl, '_blank', 'noopener,noreferrer'); opened = !!win; } catch (e) {}
-    if (!opened) {
-        try { location.href = targetUrl; return; }
-        catch (e) { toast(`⚠️ ${project.title} ওপেন করা যায়নি`); currentProjectIndex++; setTimeout(processNextProject, 500); return; }
-    }
-    
-    // Start universal session with complete callback
-    projectQueueAdTriggered = false;
-    sessionCurrentProjectId = project.id;
-    
-    startUniversalSession(null, project.id, 'project', function() {
-        // This runs when 30s completes
-        completeSequentialProject(project);
-    });
-}
-
-function completeSequentialProject(project) {
-    if (!project) return;
-    if (isProjectCompleted(project.id)) { moveToNextProject(); return; }
-    
-    markProjectCompleted(project.id);
-    const reward = Number(project.reward || 0);
-    me.balance = (me.balance || 0) + reward;
-    me.total = (me.total || 0) + reward;
-    me.today = (me.today || 0) + reward;
-    me.tx = me.tx || [];
-    me.tx.unshift({
-        type: 'project',
-        amount: reward,
-        status: 'completed',
-        details: `${project.title} (${currentProjectIndex + 1}/${projectQueue.length})`,
-        projectId: project.id,
-        date: new Date().toLocaleString('bn-BD')
-    });
-    saveDB();
-    
-    showLoader(false);
-    toast(`✅ ${project.title} সম্পন্ন! +৳${money(reward)}`);
-    
-    // Trigger Ad immediately after completion
-    if (!projectQueueAdTriggered) {
-        projectQueueAdTriggered = true;
-        isWaitingForAd = true;
-        openDirectAd();
-        
-        // After ad, show next
-        setTimeout(() => {
-            isWaitingForAd = false;
-            renderAll();
-            renderProjects();
-            
-            const available = getAvailableProjects();
-            if (available.length > 0) {
-                updateQueueStatus(null, null, true);
-                toast('▶️ "পরবর্তী শুরু করুন" ক্লিক করুন');
-            } else {
-                isProjectQueueRunning = false;
-                toast('🎉 সব প্রজেক্ট সম্পন্ন হয়েছে!');
-                updateQueueStatus();
-                renderProjects();
-            }
-        }, 1000);
-    } else {
-        renderAll();
-        renderProjects();
-        moveToNextProject();
-    }
-}
-
-function startNextProject() {
-    if (!isProjectQueueRunning) { startProjectQueue(); return; }
-    if (isWaitingForAd) { toast('⏳ এড দেখুন, তারপর পরবর্তী শুরু করুন'); return; }
-    moveToNextProject();
-}
-
-function moveToNextProject() {
-    stopUniversalSession();
-    if (isProjectQueueRunning) {
-        currentProjectIndex++;
-        if (currentProjectIndex >= projectQueue.length) {
-            isProjectQueueRunning = false;
-            showLoader(false);
-            toast('🎉 সব প্রজেক্ট সম্পন্ন হয়েছে! ২৪ ঘন্টা পরে আবার চেষ্টা করুন।');
-            updateQueueStatus();
-            renderProjects();
-        } else {
-            updateQueueStatus();
-            setTimeout(processNextProject, 500);
-        }
-    } else {
-        showLoader(false);
-        renderProjects();
-    }
-}
-
-function stopProjectQueue() {
-    isProjectQueueRunning = false;
-    projectQueue = [];
-    currentProjectIndex = 0;
-    stopUniversalSession();
-    isWaitingForAd = false;
-    showLoader(false);
-    updateQueueStatus();
-}
-
-function updateQueueStatus(project = null, secondsLeft = null, showNextBtn = false) {
-    const statusDiv = document.getElementById('projectQueueStatus');
-    const titleEl = document.getElementById('queueStatusTitle');
-    const progressEl = document.getElementById('queueStatusProgress');
-    const nextBtn = document.getElementById('queueNextBtn');
-    if (!statusDiv) return;
-    
-    const total = PROJECTS.filter(p => p && (p.status == null || p.status === 'live') && p.hidden !== true).length;
-    const completed = (me.completedProjects || []).length;
-    const available = getAvailableProjects().length;
-    
-    if (isProjectQueueRunning && project) {
-        statusDiv.style.display = 'flex';
-        const secText = secondsLeft !== null ? ` (${secondsLeft}s বাকি)` : '';
-        titleEl.textContent = `⏳ চলছে: ${project.icon} ${project.title}${secText}`;
-        progressEl.textContent = `অগ্রগতি: ${completed}/${total} সম্পন্ন | বাকি: ${available}`;
-        nextBtn.textContent = '⏳ চলছে...';
-        nextBtn.disabled = true;
-    } else if (isProjectQueueRunning && isWaitingForAd) {
-        statusDiv.style.display = 'flex';
-        titleEl.textContent = `📺 এড দেখুন...`;
-        progressEl.textContent = `অগ্রগতি: ${completed}/${total} সম্পন্ন | বাকি: ${available}`;
-        nextBtn.textContent = '⏳ এড চলছে...';
-        nextBtn.disabled = true;
-    } else if (isProjectQueueRunning && showNextBtn) {
-        statusDiv.style.display = 'flex';
-        titleEl.textContent = `▶️ পরবর্তী প্রজেক্টের জন্য প্রস্তুত`;
-        progressEl.textContent = `অগ্রগতি: ${completed}/${total} সম্পন্ন | বাকি: ${available}`;
-        nextBtn.textContent = '▶️ পরবর্তী শুরু করুন';
-        nextBtn.disabled = false;
-        nextBtn.onclick = startNextProject;
-    } else if (isProjectQueueRunning) {
-        statusDiv.style.display = 'flex';
-        titleEl.textContent = `⏳ প্রজেক্ট চলছে...`;
-        progressEl.textContent = `অগ্রগতি: ${completed}/${total} সম্পন্ন | বাকি: ${available}`;
-        nextBtn.textContent = '⏳ চলছে...';
-        nextBtn.disabled = true;
-    } else if (available > 0) {
-        statusDiv.style.display = 'flex';
-        titleEl.textContent = `📋 প্রজেক্ট শুরু করুন`;
-        progressEl.textContent = `${available} টি প্রজেক্ট বাকি (${completed}/${total} সম্পন্ন)`;
-        nextBtn.textContent = '▶️ শুরু করুন';
-        nextBtn.disabled = false;
-        nextBtn.onclick = startProjectQueue;
-    } else {
-        statusDiv.style.display = 'flex';
-        titleEl.textContent = `✅ সব প্রজেক্ট সম্পন্ন!`;
-        progressEl.textContent = `${completed}/${total} সম্পন্ন`;
-        nextBtn.textContent = '⏳ ২৪ ঘন্টা পরে';
-        nextBtn.disabled = true;
-    }
 }
 
 // ==========================================================
@@ -2201,6 +1659,9 @@ function updateAdStation() {
     if ($('earnAdCount')) $('earnAdCount').textContent = n;
 }
 
+// ==========================================================
+//   🟢 ২৪ ঘন্টা চেক ফাংশন
+// ==========================================================
 function canDoTask(taskId) {
     const lastDone = me.taskLastDone?.[taskId];
     if (!lastDone) return true;
@@ -2217,7 +1678,7 @@ function getRemainingTime(taskId) {
 }
 
 // ==========================================================
-//   টাস্ক রেন্ডার
+//   হোম টাস্ক
 // ==========================================================
 function renderHomeTasks() {
     const container = $('homeTaskList');
@@ -2274,6 +1735,9 @@ function renderHomeTasks() {
     container.innerHTML = html;
 }
 
+// ==========================================================
+//   আর্নিং টাস্ক
+// ==========================================================
 function renderEarnTasks() {
     const container = $('earnTaskList');
     if (!container) return;
@@ -2328,73 +1792,172 @@ function renderEarnTasks() {
     container.innerHTML = html;
 }
 
+// ==========================================================
+//   🔧 প্রজেক্ট (৩০ সেকেন্ড কাউন্টার)
+// ==========================================================
+let __projectSession = {
+    active: false,
+    projectId: null,
+    secondsLeft: 0,
+    interval: null
+};
+
+function __projectButtonText(projectId) {
+    if (__projectSession.active && __projectSession.projectId === projectId) {
+        return `⏳ ${__projectSession.secondsLeft}s`;
+    }
+    if (__projectSession.active) {
+        return '⏳ অন্য প্রজেক্ট চলছে';
+    }
+    return '▶️ ভিতরে প্রবেশ করাবে';
+}
+
+function __projectFinish(id) {
+    const p = PROJECTS.find(x => x.id === id);
+    if (!p || !me) return;
+
+    me.balance = (me.balance || 0) + p.reward;
+    me.total = (me.total || 0) + p.reward;
+    me.today = (me.today || 0) + p.reward;
+    me.tx = me.tx || [];
+    me.tx.unshift({
+        type: 'project',
+        amount: p.reward,
+        status: 'completed',
+        details: p.title,
+        date: new Date().toLocaleString('bn-BD')
+    });
+
+    saveDB();
+    renderAll();
+    showLoader(false);
+    toast(`✅ ${p.title} সম্পন্ন! +৳${money(p.reward)}`);
+    
+    setTimeout(() => {
+        openMonetagAd();
+    }, 300);
+    showPostTaskVideoAd();
+
+    __projectSession.active = false;
+    __projectSession.projectId = null;
+    __projectSession.secondsLeft = 0;
+    if (__projectSession.interval) {
+        clearInterval(__projectSession.interval);
+        __projectSession.interval = null;
+    }
+    renderProjects();
+}
+
+function __projectTick() {
+    if (!__projectSession.active) {
+        if (__projectSession.interval) {
+            clearInterval(__projectSession.interval);
+            __projectSession.interval = null;
+        }
+        return;
+    }
+
+    __projectSession.secondsLeft--;
+    renderProjects();
+
+    if (__projectSession.secondsLeft <= 0) {
+        const id = __projectSession.projectId;
+        if (__projectSession.interval) {
+            clearInterval(__projectSession.interval);
+            __projectSession.interval = null;
+        }
+        __projectFinish(id);
+    }
+}
+
 function renderProjects() {
     const container = $('projectsList');
     if (!container) return;
 
-    const totalProjects = PROJECTS.filter(p => p && (p.status == null || p.status === 'live') && p.hidden !== true).length;
-    const completedCount = (me.completedProjects || []).length;
-    const available = getAvailableProjects();
-    const allDone = available.length === 0 && totalProjects > 0;
-
-    updateQueueStatus();
-
     let html = '';
-    PROJECTS.filter(p => p && (p.status == null || p.status === 'live') && p.hidden !== true).forEach((p) => {
-        const isDone = isProjectCompleted(p.id);
-        const isQueued = isProjectQueueRunning && projectQueue.some(q => q.id === p.id) && currentProjectIndex < projectQueue.length && projectQueue[currentProjectIndex]?.id === p.id;
+    PROJECTS.forEach((p) => {
+        const isRunning = __projectSession.active && __projectSession.projectId === p.id;
+        const isOtherRunning = __projectSession.active && __projectSession.projectId !== p.id;
+        let buttonText = '▶️ ভিতরে প্রবেশ করাবে';
+        let buttonStyle = '';
         
-        let statusIcon = '🔒';
-        let statusText = 'লকড';
-        let statusClass = 'locked';
-        
-        if (isDone) {
-            statusIcon = '✅';
-            statusText = 'সম্পন্ন';
-            statusClass = 'completed';
-        } else if (isQueued) {
-            statusIcon = '⏳';
-            statusText = 'চলছে...';
-            statusClass = 'running';
-        } else if (isProjectQueueRunning) {
-            statusIcon = '⏳';
-            statusText = 'কিউতে';
-            statusClass = 'pending';
-        } else {
-            statusIcon = '▶️';
-            statusText = 'শুরু করুন';
-            statusClass = 'available';
+        if (isRunning) {
+            buttonText = `⏳ ${__projectSession.secondsLeft}s`;
+            buttonStyle = 'background:#f59e0b;';
+        } else if (isOtherRunning) {
+            buttonText = '⏳ অন্য প্রজেক্ট চলছে';
+            buttonStyle = 'opacity:0.5;cursor:not-allowed;';
         }
-        
-        const isDisabled = isDone || isProjectQueueRunning || (isProjectQueueRunning && !isQueued);
-        
+
         html += `
-            <div class="project-card" style="border-left:4px solid ${isDone ? '#10b981' : (isQueued ? '#f59e0b' : (p.color || '#facc15'))}; opacity:${isDone ? '0.7' : '1'};">
+            <div class="project-card" style="border-left:4px solid ${p.color};">
                 <div class="info">
-                    <h4>${p.icon || '📁'} ${p.title || 'Project'}</h4>
-                    <div class="desc">${p.desc || 'প্রজেক্ট সম্পন্ন করুন'}</div>
-                    ${isDone ? '<div style="font-size:11px;color:#10b981;font-weight:600;">✅ সম্পন্ন</div>' : ''}
-                    ${isQueued ? '<div style="font-size:11px;color:#f59e0b;font-weight:600;">⏳ চলছে...</div>' : ''}
+                    <h4>${p.icon} ${p.title}</h4>
+                    <div class="desc">${p.desc}</div>
                 </div>
-                <div class="reward">+৳${money(Number(p.reward || 0))}</div>
-                <button class="project-btn"
-                    ${isDisabled ? 'disabled' : ''}
-                    onclick="startProjectQueue()"
-                    style="${isDisabled ? 'opacity:0.5;cursor:not-allowed;' : ''}">
-                    ${statusIcon} ${statusText}
+                <div class="reward">+৳${money(p.reward)}</div>
+                <button class="project-btn" 
+                    id="projectBtn_${p.id}"
+                    ${isOtherRunning ? 'disabled' : ''}
+                    onclick="doProject('${p.id}')"
+                    style="${buttonStyle}">
+                    ${buttonText}
                 </button>
             </div>
         `;
     });
-    
-    container.innerHTML = html || '<div class="muted" style="padding:15px;text-align:center">কোনো লাইভ প্রজেক্ট নেই</div>';
+    container.innerHTML = html;
+}
+
+function doProject(id) {
+    const p = PROJECTS.find(x => x.id === id);
+    if (!p) return;
+
+    if (__projectSession.active) {
+        return toast(`⏳ ${__projectSession.secondsLeft} সেকেন্ড বাকি`);
+    }
+
+    if (__projectSession.interval) {
+        clearInterval(__projectSession.interval);
+        __projectSession.interval = null;
+    }
+
+    if ((me.today || 0) >= 100) return toast('আজকের earning limit শেষ');
+
+    // অ্যাড দেখাও
+    openDirectAd();
+
+    __projectSession.active = true;
+    __projectSession.projectId = id;
+    __projectSession.secondsLeft = 30;
+
+    renderProjects();
+    showLoader(true, '⏳ ৩০ সেকেন্ড অপেক্ষা করুন...');
+
+    __projectSession.interval = setInterval(() => {
+        __projectSession.secondsLeft--;
+        renderProjects();
+        
+        if (__projectSession.secondsLeft > 0) {
+            showLoader(true, `⏳ ${__projectSession.secondsLeft} সেকেন্ড বাকি`);
+        }
+        
+        if (__projectSession.secondsLeft <= 0) {
+            clearInterval(__projectSession.interval);
+            __projectSession.interval = null;
+            showLoader(false);
+            __projectFinish(id);
+        }
+    }, 1000);
 }
 
 // ==========================================================
-//   টাস্ক ডিটেইল (সেশন কাউন্টার সহ)
+//   টাস্ক ডিটেইল
 // ==========================================================
 let currentTaskId = null;
+let sessionTimer = null;
 let currentSessionIndex = 0;
+let isWaitingForComplete = false;
 
 function openTaskDetail(taskId) {
     const task = ALL_TASKS.find(t => t.id === taskId);
@@ -2414,26 +1977,33 @@ function openTaskDetail(taskId) {
 
     currentTaskId = taskId;
     currentSessionIndex = 0;
+    isWaitingForComplete = false;
     if (!me.taskSessions) me.taskSessions = {};
     if (!me.taskSessions[taskId]) me.taskSessions[taskId] = { completed: [] };
 
-    // Setup detail page
     $('detailTitle').textContent = task.icon + ' ' + task.title;
-    $('detailReward').textContent = '💰 রিওয়ার্ড: ' + task.reward + ' টাকা (প্রতি সেশন)';
+    $('detailReward').textContent = '💰 রিওয়ার্ড: ' + task.reward + ' টাকা';
     $('taskDetailPage').classList.add('show');
 
     renderSessions(taskId);
-    updateTaskSessionUI(taskId);
+    updateSessionUI(taskId);
 }
 
 function closeTaskDetail() {
     $('taskDetailPage').classList.remove('show');
-    stopUniversalSession();
-    setTimeout(() => { openDirectAd(); }, 300);
+    if (sessionTimer) { clearInterval(sessionTimer); sessionTimer = null; }
+    isWaitingForComplete = false;
+    
+    setTimeout(() => {
+        openMonetagAd();
+    }, 300);
+    
     if (currentTaskId) {
         const task = ALL_TASKS.find(t => t.id === currentTaskId);
         if (task && !(me.completedTasks || []).includes(currentTaskId)) {
-            setTimeout(() => { showPostTaskVideoAd(); }, 500);
+            setTimeout(() => {
+                showPostTaskVideoAd();
+            }, 500);
         }
         currentTaskId = null;
     }
@@ -2466,7 +2036,7 @@ function renderSessions(taskId) {
     $('detailProgress').textContent = 'অগ্রগতি: ' + completed.length + '/' + task.sessions;
 }
 
-function updateTaskSessionUI(taskId) {
+function updateSessionUI(taskId) {
     const task = ALL_TASKS.find(t => t.id === taskId);
     if (!task) return;
     const sessions = me.taskSessions[taskId] || { completed: [] };
@@ -2476,58 +2046,71 @@ function updateTaskSessionUI(taskId) {
     renderSessions(taskId);
 
     if (isAllDone) {
-        document.getElementById('sessionTimerDisplay').textContent = '✅';
-        document.getElementById('sessionStatusText').textContent = '🎉 সম্পন্ন!';
-        document.getElementById('sessionStatusText').className = 'status-text done';
-        document.getElementById('sessionBtn').textContent = '✅ টাস্ক সম্পন্ন হয়েছে';
-        document.getElementById('sessionBtn').className = 'btn-go success';
-        document.getElementById('sessionBtn').disabled = true;
+        $('sessionTimer').textContent = '✅';
+        $('sessionTimer').className = 'time done';
+        $('timerLabel').textContent = '🎉 সম্পন্ন!';
+        $('sessionBtn').textContent = '✅ টাস্ক সম্পন্ন হয়েছে';
+        $('sessionBtn').className = 'btn-go success';
+        $('sessionBtn').style.pointerEvents = 'none';
         completeFullTask(taskId);
         return;
     }
 
-    currentSessionIndex = completed.length;
-    document.getElementById('sessionTimerDisplay').textContent = '30';
-    document.getElementById('sessionStatusText').textContent = '⏳ অপেক্ষা করুন';
-    document.getElementById('sessionStatusText').className = 'status-text waiting';
-    document.getElementById('sessionBtn').textContent = '▶️ শুরু করুন';
-    document.getElementById('sessionBtn').className = 'btn-go primary';
-    document.getElementById('sessionBtn').disabled = false;
-    stopUniversalSession();
+    const nextIndex = completed.length;
+    currentSessionIndex = nextIndex;
+    $('sessionTimer').textContent = '30';
+    $('sessionTimer').className = 'time';
+    $('timerLabel').textContent = '⏱️ অপেক্ষা করুন';
+    $('sessionBtn').textContent = '▶️ শুরু করুন';
+    $('sessionBtn').className = 'btn-go primary';
+    $('sessionBtn').style.pointerEvents = 'auto';
+    clearInterval(sessionTimer);
+    sessionTimer = null;
+    isWaitingForComplete = false;
 }
 
 function startSession(e) {
+    openDirectAd();
+
     if (!currentTaskId) return;
     const task = ALL_TASKS.find(t => t.id === currentTaskId);
     if (!task) return;
     const sessions = me.taskSessions[currentTaskId] || { completed: [] };
     if (sessions.completed.length >= task.sessions) return;
-    if (sessionIsRunning) return;
+    if (isWaitingForComplete) return;
 
-    // Open direct link first
-    const link = String(task.link || '').trim();
-    if (link) {
-        try {
-            const win = window.open(link, '_blank', 'noopener,noreferrer');
-            if (!win) { location.href = link; }
-        } catch (e) { location.href = link; }
-    }
-    
-    // Trigger popunder
-    openDirectAd();
+    const btn = $('sessionBtn');
+    const timerEl = $('sessionTimer');
+    const timerLabel = $('timerLabel');
 
-    const btn = document.getElementById('sessionBtn');
     btn.disabled = true;
-    btn.textContent = '⏳ চলছে...';
-    btn.className = 'btn-go primary';
-    document.getElementById('sessionStatusText').textContent = '⏳ সেশন চলছে...';
-    document.getElementById('sessionStatusText').className = 'status-text running';
+    btn.textContent = '⏳ অপেক্ষা করুন...';
+    btn.style.pointerEvents = 'none';
+    timerLabel.textContent = '⏳ সেশন চলছে...';
 
-    // Start universal session
-    startUniversalSession(currentTaskId, null, 'task', function() {
-        // Complete this session
-        autoCompleteSession();
-    });
+    let timeLeft = 30;
+    timerEl.textContent = timeLeft;
+
+    renderSessions(currentTaskId);
+    isWaitingForComplete = true;
+
+    if (sessionTimer) clearInterval(sessionTimer);
+    sessionTimer = setInterval(() => {
+        timeLeft--;
+        timerEl.textContent = timeLeft;
+        if (timeLeft <= 0) {
+            clearInterval(sessionTimer);
+            sessionTimer = null;
+            timerEl.textContent = '✅';
+            timerEl.className = 'time done';
+            timerLabel.textContent = '✅ সেশন সম্পন্ন!';
+            btn.textContent = '✅ সম্পন্ন!';
+            btn.className = 'btn-go success';
+            btn.disabled = true;
+            btn.style.pointerEvents = 'none';
+            autoCompleteSession();
+        }
+    }, 1000);
 }
 
 function autoCompleteSession() {
@@ -2542,27 +2125,18 @@ function autoCompleteSession() {
 
     const task = ALL_TASKS.find(t => t.id === currentTaskId);
     if (sessions.completed.length >= task.sessions) {
-        // All sessions done
-        document.getElementById('sessionTimerDisplay').textContent = '✅';
-        document.getElementById('sessionStatusText').textContent = '🎉 সব সেশন সম্পন্ন!';
-        document.getElementById('sessionStatusText').className = 'status-text done';
-        document.getElementById('sessionBtn').textContent = '✅ সম্পন্ন!';
-        document.getElementById('sessionBtn').className = 'btn-go success';
-        document.getElementById('sessionBtn').disabled = true;
         completeFullTask(currentTaskId);
     } else {
-        // Show next session ready
-        document.getElementById('sessionStatusText').textContent = '▶️ পরবর্তী সেশন শুরু করুন';
-        document.getElementById('sessionStatusText').className = 'status-text waiting';
-        document.getElementById('sessionBtn').textContent = '▶️ পরবর্তী সেশন';
-        document.getElementById('sessionBtn').className = 'btn-go primary';
-        document.getElementById('sessionBtn').disabled = false;
-        document.getElementById('sessionTimerDisplay').textContent = '30';
-        renderSessions(currentTaskId);
-        renderAll();
-        renderHomeTasks();
-        renderEarnTasks();
-        showPostTaskVideoAd();
+        setTimeout(() => {
+            isWaitingForComplete = false;
+            updateSessionUI(currentTaskId);
+            renderSessions(currentTaskId);
+            renderAll();
+            renderHomeTasks();
+            renderEarnTasks();
+            openMonetagAd();
+            showPostTaskVideoAd();
+        }, 500);
     }
 }
 
@@ -2598,7 +2172,9 @@ function completeFullTask(taskId) {
         toast(`🎉 টাস্ক সম্পন্ন! +৳${task.reward}`);
         showPostTaskVideoAd();
 
-        // Auto close after 2 seconds
+        updateSessionUI(taskId);
+        renderSessions(taskId);
+        
         setTimeout(() => {
             closeTaskDetail();
         }, 2000);
@@ -2697,9 +2273,14 @@ function loadAllNativeAds() {
 function copyRef() {
     const link = BOT_LINK + '?start=ref_' + me.referral;
     if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(link).then(() => toast('✅ লিংক কপি হয়েছে: ' + link))
-            .catch(() => fallbackCopy(link));
-    } else { fallbackCopy(link); }
+        navigator.clipboard.writeText(link).then(() => {
+            toast('✅ লিংক কপি হয়েছে: ' + link);
+        }).catch(() => {
+            fallbackCopy(link);
+        });
+    } else {
+        fallbackCopy(link);
+    }
 }
 
 function fallbackCopy(text) {
@@ -2711,8 +2292,16 @@ function fallbackCopy(text) {
     textarea.style.top = '-9999px';
     document.body.appendChild(textarea);
     textarea.select();
-    try { document.execCommand('copy'); toast('✅ লিংক কপি হয়েছে: ' + text); } 
-    catch (e) { toast('⚠️ কপি করতে ব্যর্থ, ম্যানুয়ালি কপি করুন: ' + text); }
+    try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+            toast('✅ লিংক কপি হয়েছে: ' + text);
+        } else {
+            toast('⚠️ কপি করতে ব্যর্থ, ম্যানুয়ালি কপি করুন: ' + text);
+        }
+    } catch (e) {
+        toast('⚠️ কপি করতে ব্যর্থ, ম্যানুয়ালি কপি করুন: ' + text);
+    }
     document.body.removeChild(textarea);
 }
 
@@ -2758,40 +2347,22 @@ function syncTasksAndProjectsFromDB() {
                 existing.sessions = t.sessions || existing.sessions;
                 existing.icon = t.icon || existing.icon;
                 existing.isMain = t.isMain !== undefined ? t.isMain : existing.isMain;
-                existing.link = t.link || t.url || t.directLink || existing.link || '';
             } else {
                 ALL_TASKS.push(t);
             }
         });
     }
-
     if (db.projects && db.projects.length > 0) {
         db.projects.forEach(p => {
-            if (!p || p.status === 'rejected' || p.hidden === true) return;
-            const id = p.id || p.projectId;
-            if (!id) return;
-            const existing = PROJECTS.find(x => x.id === id);
+            const existing = PROJECTS.find(x => x.id === p.id);
             if (existing) {
                 existing.title = p.title || existing.title;
-                existing.desc = p.desc || p.description || existing.desc;
-                existing.reward = p.reward !== undefined ? Number(p.reward) : existing.reward;
+                existing.desc = p.desc || existing.desc;
+                existing.reward = p.reward || existing.reward;
                 existing.color = p.color || existing.color;
                 existing.icon = p.icon || existing.icon;
-                existing.link = p.link || p.url || p.directLink || existing.link || '';
-                existing.duration = Math.max(1, parseInt(p.duration, 10) || existing.duration || 30);
-                existing.status = p.status || existing.status || 'live';
             } else {
-                PROJECTS.push({
-                    id,
-                    icon: p.icon || '📁',
-                    title: p.title || 'Project',
-                    desc: p.desc || p.description || 'প্রজেক্ট সম্পন্ন করুন',
-                    reward: Number(p.reward || 0),
-                    color: p.color || '#facc15',
-                    link: p.link || p.url || p.directLink || '',
-                    duration: Math.max(1, parseInt(p.duration, 10) || 30),
-                    status: p.status || 'live'
-                });
+                PROJECTS.push(p);
             }
         });
     }
@@ -2800,27 +2371,19 @@ function syncTasksAndProjectsFromDB() {
 // ==========================================================
 //   ইনিশিয়ালাইজ
 // ==========================================================
-
-const hasTelegram = checkTelegramRequired();
-
 loadDB();
 syncTasksAndProjectsFromDB();
 
-if (!hasTelegram) {
-    document.getElementById('telegramCheck').style.display = 'flex';
-    document.getElementById('auth').classList.add('hidden');
-} else {
-    document.getElementById('telegramCheck').style.display = 'none';
-    document.getElementById('auth').classList.remove('hidden');
-    checkTelegramStatus();
-}
+checkTelegramStatus();
 
 (async () => {
     await initFirebaseApp();
     startFirebaseRealtimeSync();
-    startProjectCatalogSync();
 
-    if (!me || !db.current) { return; }
+    if (!me || !db.current) {
+        $('auth').classList.remove('hidden');
+        return;
+    }
 
     const tgId = getTelegramUserId();
     if (me.telegramUserId && tgId && String(me.telegramUserId) !== String(tgId)) {
@@ -2828,7 +2391,7 @@ if (!hasTelegram) {
         me = null;
         clearTelegramSessionId();
         saveDB();
-        document.getElementById('auth').classList.remove('hidden');
+        $('auth').classList.remove('hidden');
         toast('⚠️ এই অ্যাকাউন্ট অন্য Telegram ID দিয়ে তৈরি!');
         return;
     }
@@ -2841,7 +2404,7 @@ if (!hasTelegram) {
         me = null;
         clearTelegramSessionId();
         saveDB();
-        document.getElementById('auth').classList.remove('hidden');
+        $('auth').classList.remove('hidden');
         toast('⚠️ এই অ্যাকাউন্টটি এই ডিভাইসের জন্য অনুমোদিত নয়।');
         return;
     } else {
@@ -2854,11 +2417,12 @@ if (!hasTelegram) {
     enterApp();
 })();
 
-console.log('✅ Smart Cash — স্মার্ট ক্যাশ v2.6.0 (Universal Session Counter + Sequential Projects)');
+console.log('✅ Smart Cash — স্মার্ট ক্যাশ v2.5.0 (সম্পূর্ণ আপডেট)');
 
 if (!db.current || !me) {
+    $('auth').classList.remove('hidden');
 } else {
-    document.getElementById('auth').classList.add('hidden');
+    $('auth').classList.add('hidden');
 }
 
 try { 
@@ -2867,31 +2431,6 @@ try {
         Telegram.WebApp.expand(); 
     } 
 } catch (e) {}
-
-// Export functions
-window.getTelegramUserId = getTelegramUserId;
-window.saveManualTgId = saveManualTgId;
-window.checkTelegramAgain = checkTelegramAgain;
-window.startProjectQueue = startProjectQueue;
-window.startNextProject = startNextProject;
-window.startSession = startSession;
-window.openTaskDetail = openTaskDetail;
-window.closeTaskDetail = closeTaskDetail;
-window.page = page;
-window.logoutUser = logoutUser;
-window.copyRef = copyRef;
-window.watchDailyAd = watchDailyAd;
-window.spin = spin;
-window.openSpin = openSpin;
-window.closeSpin = closeSpin;
-window.changePassword = changePassword;
-window.submitWithdraw = submitWithdraw;
-window.calculateWithdraw = calculateWithdraw;
-window.registerUser = registerUser;
-window.loginUser = loginUser;
-window.showRegister = showRegister;
-window.showLogin = showLogin;
-window.forgotPassword = forgotPassword;
 </script>
 
 <!-- Monetag Popunder -->
