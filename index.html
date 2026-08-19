@@ -711,6 +711,47 @@ function showPostTaskVideoAd() {
     }
 }
 
+// ==========================================================
+//   🔧 AdsgramError পপআপ ও স্ক্যাম-স্টাইল নেটিভ/পুশ অ্যাড হাইড
+// ==========================================================
+const BAD_AD_PATTERNS = [
+    'no ads to display',
+    'adsgramerror',
+    'অভিনন্দন! আপনার বোনাস অ্যাকাউন্টে',
+    'আপনার পুরস্কার বাতিল হতে পারে',
+    'পুরস্কার বাতিল হতে পারে'
+];
+
+function isBadAdElement(el) {
+    if (!el || el.nodeType !== 1) return false;
+    const txt = (el.innerText || el.textContent || '').toLowerCase();
+    if (!txt || txt.length > 400) return false; // বড় কনটেইনার (পুরো পেজ ইত্যাদি) স্কিপ করি, ভুলবশত আসল কনটেন্ট মুছে না যায়
+    return BAD_AD_PATTERNS.some(p => txt.includes(p.toLowerCase()));
+}
+
+function hideBadAdElement(el) {
+    try {
+        el.style.setProperty('display', 'none', 'important');
+        el.remove();
+    } catch (e) {}
+}
+
+(function watchForBadAds() {
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach(m => {
+            m.addedNodes.forEach(node => {
+                if (node.nodeType !== 1) return;
+                if (isBadAdElement(node)) { hideBadAdElement(node); return; }
+                // এক-দুই লেভেল ভিতরের ছোট এলিমেন্টও চেক করি, তবে বড় কনটেইনার (নিজেদের পেজ) বাদ
+                node.querySelectorAll && node.querySelectorAll('div,section,article,span').forEach(child => {
+                    if (isBadAdElement(child)) hideBadAdElement(child);
+                });
+            });
+        });
+    });
+    observer.observe(document.documentElement, { childList: true, subtree: true });
+})();
+
 // ✅ Rewarded Video Watch
 async function watchDailyAd() {
     if (window.__videoAdEnabled === false) {
