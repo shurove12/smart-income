@@ -52,8 +52,18 @@
   .day.done{background:#22c55e;color:#fff;border-color:#22c55e}
   .day.today{background:#0ea5e9;color:#fff;border-color:#0ea5e9}
   .day.locked{opacity:.5}
-  .ad-slot{background:repeating-linear-gradient(45deg,#1a2332,#1a2332 10px,#232f42 10px,#232f42 20px);border:1px dashed #475569;border-radius:10px;padding:14px;text-align:center;color:#94a3b8;font-size:11px;margin:12px 0}
-  .ad-slot::before{content:'📢 AD';display:block;font-size:14px;color:#f59e0b;font-weight:700;margin-bottom:3px}
+  /* AD SLOTS */
+  .ad-slot{
+    background:repeating-linear-gradient(45deg,#1a2332,#1a2332 10px,#232f42 10px,#232f42 20px);
+    border:1px dashed #475569;border-radius:10px;
+    padding:8px;text-align:center;color:#94a3b8;
+    font-size:11px;margin:12px 0;
+    min-height:60px;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .ad-slot.has-ad{border:none;background:none;padding:0}
+  .ad-slot::before{content:'📢';margin-right:4px}
+  .ad-slot.has-ad::before{content:'';margin:0}
   .session-bar{background:#0f172a;height:8px;border-radius:5px;overflow:hidden;margin:6px 0}
   .session-fill{background:linear-gradient(90deg,#f59e0b,#ef4444);height:100%;transition:.4s}
   .check-item{display:flex;justify-content:space-between;padding:6px 0;font-size:13px}
@@ -82,9 +92,10 @@
 <body>
 
 <div class="auth show" id="loadingScreen">
-  <div class="loading">⏳ Loading Firebase...</div>
+  <div class="loading">⏳ Loading...</div>
 </div>
 
+<!-- REGISTER -->
 <div class="auth" id="authScreen">
   <div class="auth-box">
     <h2>💠 Smart Earning BD</h2>
@@ -101,13 +112,14 @@
     <input class="input" id="regPass" type="password" placeholder="কমপক্ষে ৬ অক্ষর">
     <label>🔒 কনফার্ম পাসওয়ার্ড <span class="req">*</span></label>
     <input class="input" id="regPass2" type="password" placeholder="আবার লিখুন">
-    <label>🎁 রেফারেল কোড <span class="req">*</span> <small style="color:#64748b">(Admin: SEADMIN2026)</small></label>
+    <label>🎁 রেফারেল কোড <span class="req">*</span></label>
     <input class="input" id="regRef" placeholder="রেফারেল কোড লিখুন">
     <button class="btn btn-green btn-full" onclick="register()" id="regBtn">✅ রেজিস্ট্রেশন করুন</button>
     <button class="btn btn-full" onclick="showLogin()">🔑 লগইন</button>
   </div>
 </div>
 
+<!-- LOGIN -->
 <div class="auth" id="loginScreen">
   <div class="auth-box">
     <h2>🔑 লগইন</h2>
@@ -121,6 +133,7 @@
   </div>
 </div>
 
+<!-- MAIN APP -->
 <div class="app" id="mainApp" style="display:none">
 
 <!-- HOME -->
@@ -150,8 +163,8 @@
     <div class="check-item"><span>👍 Like + Comment</span><span id="chkLike" class="check-pending">Pending</span></div>
   </div>
 
-  <!-- AD SLOT 1: TOP BANNER -->
-  <div class="ad-slot" id="adHomeTop">Adsterra Banner 320x50</div>
+  <!-- 🔥 AD: HOME TOP BANNER -->
+  <div class="ad-slot" id="adHomeTop" data-label="Home Top Banner">Ad Loading...</div>
 
   <div class="section-title">⚡ Quick Actions</div>
   <div class="actions">
@@ -161,27 +174,31 @@
     <button class="action-btn" onclick="go('bonus')"><span class="icon">🎁</span>Daily Bonus</button>
   </div>
 
-  <!-- AD SLOT 2: NATIVE -->
-  <div class="ad-slot" id="adHomeNative">Adsterra Native Ad</div>
+  <!-- 🔥 AD: HOME NATIVE -->
+  <div class="ad-slot" id="adHomeNative" data-label="Home Native">Ad Loading...</div>
 
   <div class="section-title">🔥 Featured Tasks</div>
   <div id="featuredList"></div>
 
-  <!-- AD SLOT 3: RECTANGLE -->
-  <div class="ad-slot" id="adHomeRect">Monetag Rectangle 300x250</div>
+  <!-- 🔥 AD: HOME RECTANGLE -->
+  <div class="ad-slot" id="adHomeRect" data-label="Home Rectangle" style="min-height:250px">Ad Loading...</div>
 
   <div class="section-title">🏆 Top Earners</div>
-  <div class="card" id="topEarners">
-    <div class="row"><span>🥇 Loading...</span><span>—</span></div>
+  <div class="card">
+    <div class="row"><span>🥇 User123</span><span>৳12,450</span></div>
+    <div class="row"><span>🥈 EarnKing</span><span>৳9,980</span></div>
+    <div class="row"><span>🥉 TaskPro</span><span>৳8,750</span></div>
   </div>
 </div>
 
 <!-- TASKS -->
 <div id="page-tasks" class="page">
   <div class="header"><h1>🎯 Tasks</h1></div>
-  <div class="ad-slot">Top Banner</div>
+  <!-- 🔥 AD: TASK TOP BANNER -->
+  <div class="ad-slot" id="adTaskTop" data-label="Task Top Banner">Ad Loading...</div>
   <div id="taskList"></div>
-  <div class="ad-slot">In-Feed Native Ad</div>
+  <!-- 🔥 AD: TASK NATIVE -->
+  <div class="ad-slot" id="adTaskNative" data-label="Task Native">Ad Loading...</div>
 </div>
 
 <!-- WATCH -->
@@ -191,9 +208,10 @@
     <p style="font-size:13px;color:#94a3b8;margin-bottom:8px">প্রতি অ্যাডে ৳<span id="adRewardTxt">0.50</span>। দিনে <b id="watchLimitTxt">15</b> টা।</p>
     <div class="row"><span>আজ দেখা হয়েছে</span><b id="watchToday">0</b></div>
     <div class="row"><span>টার্গেট</span><b id="watchTarget">15</b></div>
-    <button class="btn btn-green btn-full" id="watchBtn" onclick="openAd()">📺 অ্যাড দেখুন +৳0.50</button>
+    <button class="btn btn-green btn-full" id="watchBtn" onclick="watchAdAndEarn()">📺 অ্যাড দেখুন +৳0.50</button>
   </div>
-  <div class="ad-slot">Banner Ad</div>
+  <!-- 🔥 AD: WATCH BANNER -->
+  <div class="ad-slot" id="adWatchTop" data-label="Watch Banner">Ad Loading...</div>
   <div class="card">
     <h3 style="font-size:14px;margin-bottom:8px">📺 YouTube Task</h3>
     <div class="row"><span>1️⃣ Subscribe</span><b id="ytSub" class="check-pending">Pending</b></div>
@@ -208,7 +226,8 @@
 <!-- WALLET -->
 <div id="page-wallet" class="page">
   <div class="header"><h1>💳 Wallet</h1></div>
-  <div class="ad-slot">Banner Ad</div>
+  <!-- 🔥 AD: WALLET TOP -->
+  <div class="ad-slot" id="adWalletTop" data-label="Wallet Banner">Ad Loading...</div>
   <div class="card">
     <div class="row"><span>Available</span><b>৳ <span id="wBal">0.00</span></b></div>
     <div class="row"><span>Total Earned</span><span>৳ <span id="wEarned">0.00</span></span></div>
@@ -245,7 +264,8 @@
     <input class="input" id="myRefCode" readonly style="color:#22c55e;font-weight:700;text-align:center;font-size:16px">
     <button class="btn btn-full" onclick="copyRef()">📤 Copy Link</button>
   </div>
-  <div class="ad-slot">Banner Ad</div>
+  <!-- 🔥 AD: REFER BANNER -->
+  <div class="ad-slot" id="adReferTop" data-label="Refer Banner">Ad Loading...</div>
   <div class="grid2">
     <div class="stat"><div class="num" id="refCount">0</div><div class="lbl">Referrals</div></div>
     <div class="stat"><div class="num" id="refEarn">৳0</div><div class="lbl">Referral Earnings</div></div>
@@ -259,7 +279,8 @@
     <div class="streak" id="streakBar"></div>
     <button class="btn btn-green btn-full" id="bonusBtn" onclick="claimBonus()">🎁 আজকের বোনাস</button>
   </div>
-  <div class="ad-slot">Banner Ad</div>
+  <!-- 🔥 AD: BONUS BANNER -->
+  <div class="ad-slot" id="adBonusTop" data-label="Bonus Banner">Ad Loading...</div>
 </div>
 
 <!-- PROFILE -->
@@ -292,12 +313,13 @@
 </div>
 </div>
 
+<!-- AD MODAL (Fallback Timer) -->
 <div class="modal" id="adModal">
   <div class="modal-box">
-    <h3 style="color:#38bdf8">📺 Ad Running...</h3>
-    <div class="ad-frame">Monetag Rewarded Loading...</div>
+    <h3 style="color:#38bdf8">📺 অ্যাড চলছে...</h3>
+    <div class="ad-frame">Ad Loading...</div>
     <div class="timer" id="adTimer">30</div>
-    <button class="btn btn-green btn-full" id="claimBtn" disabled onclick="claimAd()">✅ Claim ৳0.50</button>
+    <button class="btn btn-green btn-full" id="claimBtn" onclick="claimFallbackAd()">⏳ অপেক্ষা করুন...</button>
     <button class="btn btn-red btn-full" onclick="cancelAd()">❌ বাতিল</button>
     <div id="adWarnBox"></div>
   </div>
@@ -323,7 +345,6 @@ const fbApp = initializeApp(firebaseConfig);
 const auth = getAuth(fbApp);
 const db = getDatabase(fbApp);
 
-// Expose to window for non-module access
 window.FB = { auth, db, ref, set, get, update, push, onValue,
   createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged };
 
@@ -341,7 +362,7 @@ const SESSIONS=[
   {num:9,refs:5,ads:30,max:9000},{num:10,refs:5,ads:30,max:10000},
 ];
 let FB=null, user=null, userKey=null, tasks=[], settings={};
-let adTimer=null, adSeconds=30, adActive=false;
+let adState={running:false,seconds:0,timer:null,reward:0.50,fallbackMode:false};
 
 function $(id){return document.getElementById(id);}
 function toast(m,c='#22c55e'){
@@ -355,25 +376,53 @@ function go(p){
   $('page-'+p).classList.add('active');
   const n=$('nav-'+p); if(n)n.classList.add('active');
   window.scrollTo(0,0); refresh();
+  // Ad inject when page changes
+  setTimeout(loadAllAds, 100);
 }
 function currentSession(){return SESSIONS[Math.min((user?.session||1)-1,9)];}
 
-// ============ MONETAG ============
-function monetagReady(){ return typeof window.show_11853293 === 'function'; }
-
-async function showRewardedAd(){
-  if(!monetagReady()){
-    await new Promise(r=>setTimeout(r,2500));
-    if(!monetagReady()) throw new Error('Monetag SDK not ready');
+// ============ AD CODE INJECTION ============
+function injectAdCode(slotId, code){
+  const slot = document.getElementById(slotId);
+  if(!slot) return;
+  if(!code || code.trim()===''){
+    slot.innerHTML = '📢 Ad Slot (' + (slot.dataset.label||'') + ')';
+    slot.classList.remove('has-ad');
+    return;
   }
-  await window.show_11853293();
-  return true;
+  slot.innerHTML = code;
+  slot.classList.add('has-ad');
+  // Re-execute scripts
+  slot.querySelectorAll('script').forEach(oldScript => {
+    const newScript = document.createElement('script');
+    Array.from(oldScript.attributes).forEach(attr => {
+      newScript.setAttribute(attr.name, attr.value);
+    });
+    newScript.textContent = oldScript.textContent;
+    oldScript.parentNode.replaceChild(newScript, oldScript);
+  });
 }
 
+function loadAllAds(){
+  const codes = settings.adCodes || {};
+  injectAdCode('adHomeTop',    codes.adHomeTop);
+  injectAdCode('adHomeNative', codes.adHomeNative);
+  injectAdCode('adHomeRect',   codes.adHomeRect);
+  injectAdCode('adTaskTop',    codes.adTaskTop);
+  injectAdCode('adTaskNative', codes.adTaskNative);
+  injectAdCode('adWatchTop',   codes.adWatchTop);
+  injectAdCode('adWalletTop',  codes.adWalletTop);
+  injectAdCode('adReferTop',   codes.adReferTop);
+  injectAdCode('adBonusTop',   codes.adBonusTop);
+}
+
+// ============ MONETAG ============
+function isMonetagReady(){ return typeof window.show_11853293 === 'function'; }
+
 function startInAppAds(){
-  if(!monetagReady()){ setTimeout(startInAppAds,3000); return; }
+  if(!isMonetagReady()){ setTimeout(startInAppAds,3000); return; }
   if(window.__inAppStarted) return;
-  window.__inAppStarted = true;
+  window.__inAppStarted=true;
   try{
     window.show_11853293({
       type:'inApp',
@@ -381,6 +430,127 @@ function startInAppAds(){
     });
     console.log('✅ Monetag In-App started');
   }catch(e){ console.warn('In-App err:',e); }
+}
+
+async function triggerRewardedAd(){
+  if(!isMonetagReady()){
+    await new Promise(r=>setTimeout(r,2500));
+    if(!isMonetagReady()) return {success:false,reason:'sdk_not_ready'};
+  }
+  try{
+    console.log('🎬 Triggering rewarded ad...');
+    await window.show_11853293();
+    console.log('✅ Rewarded ad completed');
+    return {success:true};
+  }catch(e){
+    console.warn('❌ Rewarded failed:', e);
+    return {success:false,reason:e.message||'unknown'};
+  }
+}
+
+// ============ AD BLOCK DETECT ============
+function hasAdBlocker(){
+  const test=document.createElement('div');
+  test.className='ad-banner adsbox ad-placement';
+  test.style.cssText='position:absolute;left:-9999px;height:10px;width:10px';
+  document.body.appendChild(test);
+  const blocked=test.offsetHeight===0;
+  document.body.removeChild(test);
+  return blocked;
+}
+
+// ============ FALLBACK TIMER ============
+function runFallbackTimer(seconds){
+  return new Promise((resolve)=>{
+    adState.fallbackMode=true;
+    adState.running=true;
+    adState.seconds=seconds;
+    const modal=$('adModal');
+    const timerEl=$('adTimer');
+    const claimBtn=$('claimBtn');
+    if(modal)modal.classList.add('show');
+    if(timerEl)timerEl.textContent=seconds;
+    if(claimBtn){
+      claimBtn.disabled=true;
+      claimBtn.textContent='⏳ অপেক্ষা করুন...';
+    }
+    clearInterval(adState.timer);
+    adState.timer=setInterval(()=>{
+      adState.seconds--;
+      if(timerEl)timerEl.textContent=adState.seconds;
+      if(adState.seconds<=0){
+        clearInterval(adState.timer);
+        adState.running=false;
+        if(claimBtn){
+          claimBtn.disabled=false;
+          claimBtn.textContent=`✅ Claim ৳${adState.reward.toFixed(2)}`;
+        }
+      }
+    },1000);
+    window.__onFallbackClaim=()=>{
+      if(adState.seconds>0)return;
+      clearInterval(adState.timer);
+      if(modal)modal.classList.remove('show');
+      adState.fallbackMode=false;
+      resolve({success:true,fallback:true});
+    };
+  });
+}
+
+// ============ MAIN: WATCH AD ============
+async function watchAdAndEarn(){
+  if(adState.running){ toast('⏳ আগের অ্যাড শেষ করুন','#f59e0b'); return; }
+  const sess=currentSession();
+  if((user.adsToday||0)>=sess.ads) return toast('❌ আজকের লিমিট শেষ','#f59e0b');
+  if(hasAdBlocker()) return toast('❌ Ad Blocker বন্ধ করুন','#ef4444');
+  if(!user.ytSub||!user.ytLike||!user.ytComment) return toast('⚠️ আগে YouTube Task করুন','#f59e0b');
+
+  toast('📺 অ্যাড লোড হচ্ছে...','#0ea5e9');
+
+  const result=await triggerRewardedAd();
+  if(result.success){
+    await creditReward();
+    return;
+  }
+  console.log('⚠️ Fallback timer');
+  toast('⚠️ Monetag fail, timer mode','#f59e0b');
+  const fbResult=await runFallbackTimer(settings.adTimerSec||30);
+  if(fbResult.success) await creditReward();
+}
+
+async function creditReward(){
+  const reward=settings.adReward||0.50;
+  try{
+    const newBal=(user.balance||0)+reward;
+    const newEarn=(user.totalEarned||0)+reward;
+    const newToday=(user.todayEarn||0)+reward;
+    const newAds=(user.adsToday||0)+1;
+    let newXp=(user.xp||0)+5;
+    let newLevel=user.level||1;
+    while(newXp>=newLevel*1000){newXp-=newLevel*1000;newLevel++;}
+
+    await FB.update(FB.ref(FB.db,'users/'+userKey),{
+      balance:newBal,totalEarned:newEarn,todayEarn:newToday,
+      adsToday:newAds,xp:newXp,level:newLevel
+    });
+    await FB.update(FB.ref(FB.db,'history/'+userKey),{
+      [Date.now()]:{t:'📺 Ad Watch',a:reward,type:'in',d:Date.now()}
+    });
+    toast(`✅ +৳${reward.toFixed(2)} যোগ হয়েছে`);
+  }catch(e){
+    console.error('Credit failed:',e);
+    toast('❌ Reward save হয়নি','#ef4444');
+  }
+}
+
+function claimFallbackAd(){ if(window.__onFallbackClaim) window.__onFallbackClaim(); }
+function cancelAd(){
+  clearInterval(adState.timer);
+  adState.running=false;
+  adState.fallbackMode=false;
+  const modal=$('adModal');
+  if(modal)modal.classList.remove('show');
+  toast('❌ বাতিল','#ef4444');
 }
 
 // ============ TELEGRAM ============
@@ -537,7 +707,6 @@ async function initApp(){
   FB = window.FB;
   if(!FB) return;
 
-  // Load tasks
   const tSnap = await FB.get(FB.ref(FB.db,'tasks'));
   if(tSnap.exists()) tasks = Object.values(tSnap.val());
   else{
@@ -551,13 +720,12 @@ async function initApp(){
     for(const t of tasks) await FB.set(FB.ref(FB.db,'tasks/'+t.id),t);
   }
 
-  // Load settings
   FB.onValue(FB.ref(FB.db,'settings'), s=>{
     settings = s.exists()?s.val():{};
+    loadAllAds();
     refresh();
   });
 
-  // Task realtime
   FB.onValue(FB.ref(FB.db,'tasks'), s=>{
     if(s.exists()){ tasks=Object.values(s.val()); refresh(); }
   });
@@ -567,18 +735,14 @@ async function initApp(){
     if(u){
       userKey = u.uid;
       const snap = await FB.get(FB.ref(FB.db,'users/'+u.uid));
-      if(!snap.exists()){
-        FB.signOut(FB.auth); show('authScreen'); return;
-      }
+      if(!snap.exists()){ FB.signOut(FB.auth); show('authScreen'); return; }
       user = snap.val();
 
-      // Check blocked
       if(user.status==='blocked'){
         toast('🚫 আপনি Blocked','#ef4444');
         FB.signOut(FB.auth); show('authScreen'); return;
       }
 
-      // Daily reset
       const today = new Date().toDateString();
       if(user.lastReset !== today){
         await FB.update(FB.ref(FB.db,'users/'+userKey),{
@@ -586,12 +750,10 @@ async function initApp(){
         });
       }
 
-      // Realtime user
       FB.onValue(FB.ref(FB.db,'users/'+userKey), (s)=>{
         if(s.exists()){ user=s.val(); if($('mainApp').style.display!=='none') refresh(); }
       });
 
-      // Realtime history
       FB.onValue(FB.ref(FB.db,'history/'+userKey), (s)=>{
         const h = s.exists()?Object.values(s.val()).sort((a,b)=>b.d-a.d):[];
         renderHistory(h);
@@ -601,9 +763,9 @@ async function initApp(){
       $('authScreen').classList.remove('show');
       $('loginScreen').classList.remove('show');
       refresh();
+      loadAllAds();
 
-      // ⭐ Monetag In-App start
-      startInAppAds();
+      setTimeout(()=>startInAppAds(), 3000);
     } else {
       show('authScreen');
       $('mainApp').style.display='none';
@@ -714,7 +876,6 @@ function refresh(){
   $('pEarn').textContent=(user.totalEarned||0).toFixed(2);
   if(user.photo)$('pPhoto').src=user.photo;
 
-  // Admin link
   const isAdmin = user.isAdmin || user.referredBy===ADMIN_CODE;
   $('adminLinkBox').innerHTML = isAdmin
     ? '<a href="admin.html" class="admin-link">🔐 Open Admin Panel</a>'
@@ -727,83 +888,6 @@ function renderHistory(hist){
       <span>${h.t}<br><small style="color:#64748b;font-size:10px">${new Date(h.d).toLocaleString('bn-BD')}</small></span>
       <b style="color:${h.type==='in'?'#22c55e':'#ef4444'}">${h.type==='in'?'+':'-'}৳${h.a}</b>
     </div>`).join('')||'<div style="color:#64748b;font-size:12px;text-align:center;padding:10px">কোনো লেনদেন নেই</div>';
-}
-
-// ============ AD SYSTEM ============
-function detectAdBlocker(){
-  const t=document.createElement('div');
-  t.className='ad-banner adsbox ad-placement';
-  t.style.cssText='position:absolute;left:-9999px;height:10px;width:10px';
-  document.body.appendChild(t);
-  const b=t.offsetHeight===0;
-  document.body.removeChild(t);
-  return b;
-}
-
-async function openAd(){
-  const sess=currentSession();
-  if((user.adsToday||0)>=sess.ads) return toast('❌ আজকের লিমিট শেষ','#f59e0b');
-  if(detectAdBlocker()) return toast('❌ Ad Blocker বন্ধ করুন','#ef4444');
-  if(!user.ytSub||!user.ytLike||!user.ytComment) return toast('⚠️ আগে YouTube Task করুন','#f59e0b');
-
-  toast('📺 অ্যাড লোড হচ্ছে...','#0ea5e9');
-
-  try{
-    await showRewardedAd();
-    await creditAdReward();
-  }catch(e){
-    console.warn('Rewarded failed:', e);
-    toast('⚠️ Ad load হয়নি, timer mode','#f59e0b');
-    startFallbackTimer();
-  }
-}
-
-function startFallbackTimer(){
-  const timerSec = settings.adTimerSec||30;
-  adActive=true; adSeconds=timerSec;
-  $('adTimer').textContent=adSeconds;
-  $('claimBtn').disabled=true;
-  $('adWarnBox').innerHTML='';
-  $('adModal').classList.add('show');
-  clearInterval(adTimer);
-  adTimer=setInterval(()=>{
-    adSeconds--;
-    $('adTimer').textContent=adSeconds;
-    if(adSeconds<=0){clearInterval(adTimer);$('claimBtn').disabled=false;$('adTimer').textContent='✅';}
-  },1000);
-}
-
-async function creditAdReward(){
-  const reward = settings.adReward||0.50;
-  const newBal=(user.balance||0)+reward;
-  const newEarn=(user.totalEarned||0)+reward;
-  const newToday=(user.todayEarn||0)+reward;
-  const newAds=(user.adsToday||0)+1;
-  let newXp=(user.xp||0)+5;
-  let newLevel=user.level||1;
-  while(newXp>=newLevel*1000){newXp-=newLevel*1000;newLevel++;}
-
-  await FB.update(FB.ref(FB.db,'users/'+userKey),{
-    balance:newBal,totalEarned:newEarn,todayEarn:newToday,
-    adsToday:newAds,xp:newXp,level:newLevel
-  });
-  await FB.update(FB.ref(FB.db,'history/'+userKey),{
-    [Date.now()]:{t:'📺 Ad Watch (Monetag)',a:reward,type:'in',d:Date.now()}
-  });
-  toast(`✅ +৳${reward.toFixed(2)} যোগ হয়েছে`);
-}
-
-async function claimAd(){
-  if(adSeconds>0) return;
-  clearInterval(adTimer);adActive=false;
-  $('adModal').classList.remove('show');
-  await creditAdReward();
-}
-
-function cancelAd(){
-  clearInterval(adTimer);adActive=false;
-  $('adModal').classList.remove('show');
-  toast('❌ বাতিল','#ef4444');
 }
 
 // ============ TASK ============
@@ -881,7 +965,7 @@ async function withdraw(){
     [Date.now()]:{t:`Withdraw (${method}) - Pending`,a:amt,type:'out',d:Date.now()}
   });
   $('wdAmount').value='';$('wdNumber').value='';
-  toast(`💸 ৳${amt} রিকোয়েস্ট পাঠানো হয়েছে`);
+  toast(`💸 ৳${amt} রিকোয়েস্ট`);
 }
 
 // ============ BONUS ============
@@ -908,21 +992,12 @@ function copyRef(){
   toast('📋 লিংক কপি হয়েছে!');
 }
 
-// expose to window
-window.register=register;
-window.login=login;
-window.logout=logout;
-window.showLogin=showLogin;
-window.showRegister=showRegister;
-window.go=go;
-window.openAd=openAd;
-window.claimAd=claimAd;
-window.cancelAd=cancelAd;
-window.startTask=startTask;
-window.openYouTube=openYouTube;
-window.withdraw=withdraw;
-window.claimBonus=claimBonus;
-window.copyRef=copyRef;
+// Expose to window
+Object.assign(window,{
+  register, login, logout, showLogin, showRegister, go,
+  watchAdAndEarn, claimFallbackAd, cancelAd,
+  startTask, openYouTube, withdraw, claimBonus, copyRef
+});
 </script>
 </body>
 </html>
